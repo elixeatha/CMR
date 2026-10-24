@@ -1,0 +1,1765 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CMR Primer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Interactive cardiac MRI primer for cardiologists: acquisition physics, standard views, interpretation, seminal papers and a quiz.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: sticky masthead + tab rail; each tab = slim in-page contents column beside a reading column; figures sit on an "MR image" ground. */
+:root {
+  --bg: #f3f5f7;
+  --surface: #ffffff;
+  --surface-2: #e9eef2;
+  --ink: #142230;
+  --muted: #566778;
+  --line: #d6dde4;
+  --accent: #0a6c96;
+  --accent-ink: #ffffff;
+  --accent-soft: #dcebf3;
+  --signal: #c2410c;
+  --signal-soft: #fbe6da;
+  --good: #23784a;
+  --good-soft: #dcf0e4;
+  --bad: #b42828;
+  --bad-soft: #f8e0e0;
+  --c-myo: #0a6c96;
+  --c-scar: #c2410c;
+  --c-blood: #7b4bb3;
+  --c-fat: #a07a00;
+  --img-bg: #07090b;
+  --img-label: #9aa3ad;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step--1: 0.875rem;
+  --step-0: 1rem;
+  --step-1: 1.2rem;
+  --step-2: 1.5rem;
+  --step-3: 2.1rem;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c1319; --surface: #131d26; --surface-2: #1a2732; --ink: #e2eaf1; --muted: #93a5b5; --line: #263542;
+    --accent: #4cb2de; --accent-ink: #06141c; --accent-soft: #123447; --signal: #ff8f57; --signal-soft: #3d2216;
+    --good: #5fcf8e; --good-soft: #153325; --bad: #ff7b7b; --bad-soft: #3f1c1c;
+    --c-myo: #4cb2de; --c-scar: #ff8f57; --c-blood: #b48cf0; --c-fat: #e0b93a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c1319; --surface: #131d26; --surface-2: #1a2732; --ink: #e2eaf1; --muted: #93a5b5; --line: #263542;
+  --accent: #4cb2de; --accent-ink: #06141c; --accent-soft: #123447; --signal: #ff8f57; --signal-soft: #3d2216;
+  --good: #5fcf8e; --good-soft: #153325; --bad: #ff7b7b; --bad-soft: #3f1c1c;
+  --c-myo: #4cb2de; --c-scar: #ff8f57; --c-blood: #b48cf0; --c-fat: #e0b93a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 var(--step-0)/1.6 var(--font-body);
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg);
+}
+a { color: var(--accent); text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h2 { font-size: var(--step-3); font-weight: 700; }
+h3 { font-size: var(--step-2); font-weight: 600; }
+h4 { font-size: var(--step-1); font-weight: 600; }
+p { margin: 0; }
+ul, ol { margin: 0; padding-left: 1.2em; }
+li + li { margin-top: 0.3em; }
+code, .mono { font-family: var(--font-mono); font-size: 0.88em; }
+.muted { color: var(--muted); }
+.eyebrow { font: 600 0.75rem/1.2 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.num { font-variant-numeric: tabular-nums; }
+
+.wrap {
+  max-width: 1160px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Masthead */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+.top-row { display: flex; align-items: center; gap: 16px; padding-block: 14px 8px; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand svg { flex: none; }
+.brand h1 { font-size: 1.35rem; font-weight: 700; }
+.brand p { font-size: var(--step--1); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.spacer { flex: 1; }
+.icon-btn {
+  display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  font: 600 var(--step--1)/1 var(--font-body); padding: 9px 12px; border-radius: 999px; cursor: pointer;
+}
+.icon-btn:hover { border-color: var(--accent); }
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; padding-bottom: 0; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: none; border: 0; background: none; color: var(--muted); cursor: pointer;
+  font: 600 0.95rem/1 var(--font-body); padding: 10px 12px 12px; border-bottom: 3px solid transparent;
+  display: inline-flex; gap: 8px; align-items: baseline;
+}
+.tab .n { font: 600 0.72rem/1 var(--font-mono); color: var(--muted); opacity: 0.8; }
+.tab:hover { color: var(--ink); }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.tab[aria-selected="true"] .n { color: var(--accent); opacity: 1; }
+
+/* Panels */
+main { padding-block: 28px 64px; }
+.panel-head { display: grid; gap: 10px; max-width: 760px; margin-bottom: 28px; }
+.panel-head p { color: var(--muted); font-size: var(--step-1); line-height: 1.5; }
+.grid { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 44px; align-items: start; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 112px); display: grid; gap: 2px; }
+.toc-title { font: 600 0.72rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 0 10px 8px; }
+.toc button {
+  text-align: left; border: 0; background: none; color: var(--muted); cursor: pointer; font: 400 0.93rem/1.3 var(--font-body);
+  padding: 7px 10px; border-radius: 6px; border-left: 2px solid transparent;
+}
+.toc button:hover { color: var(--ink); background: var(--surface-2); }
+.toc button.on { color: var(--ink); border-left-color: var(--accent); background: var(--surface); font-weight: 600; }
+.content { display: grid; gap: 56px; min-width: 0; }
+.section { display: grid; gap: 18px; scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 120px); min-width: 0; }
+.section > header { display: grid; gap: 6px; }
+.prose { display: grid; gap: 12px; max-width: 70ch; }
+.lede { font-size: var(--step-1); line-height: 1.5; color: var(--muted); max-width: 66ch; }
+
+@media (max-width: 880px) {
+  .grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .toc { position: static; display: flex; flex-wrap: wrap; gap: 6px; }
+  .toc-title { width: 100%; padding: 0 0 2px; }
+  .toc button { border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 0.88rem; background: var(--surface); }
+  .toc button.on { border-color: var(--accent); }
+  h2 { font-size: 1.75rem; }
+  .brand p { display: none; }
+}
+
+/* Cards and blocks */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; min-width: 0; }
+.cards-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.concepts { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.concept { padding: 16px 18px 16px 0; border-bottom: 1px solid var(--line); display: grid; gap: 6px; align-content: start; }
+.concept h4 { font-size: 1.05rem; }
+.concept p { font-size: 0.95rem; }
+.callout { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 0.97rem; max-width: 76ch; }
+.callout.warn { border-left-color: var(--signal); background: var(--signal-soft); }
+.callout strong { font-weight: 700; }
+
+/* Figures / widgets */
+.fig { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: grid; gap: 14px; min-width: 0; align-content: start; }
+.fig-title { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; justify-content: space-between; }
+.fig-title h4 { font-size: 1.05rem; }
+.fig-cap { font-size: var(--step--1); color: var(--muted); max-width: 80ch; }
+.svg-scroll { overflow-x: auto; }
+svg text { font-family: var(--font-body); }
+.t-ink { fill: var(--ink); } .t-muted { fill: var(--muted); } .t-mono { font-family: var(--font-mono); }
+.s-line { stroke: var(--line); } .s-ink { stroke: var(--ink); } .s-muted { stroke: var(--muted); }
+.controls { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: end; }
+.ctl { display: grid; gap: 4px; min-width: 180px; flex: 1 1 200px; }
+.ctl label { font-size: var(--step--1); color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.ctl output { font: 600 0.88rem/1 var(--font-mono); color: var(--ink); font-variant-numeric: tabular-nums; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); flex-wrap: wrap; }
+.seg button { border: 0; background: none; color: var(--muted); padding: 8px 12px; font: 600 0.85rem/1 var(--font-body); cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.status { font-size: 0.95rem; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); }
+.status.good { border-color: var(--good); background: var(--good-soft); }
+.status.bad { border-color: var(--signal); background: var(--signal-soft); }
+.split { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; align-items: center; }
+@media (max-width: 720px) { .split { grid-template-columns: minmax(0, 1fr); } }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: var(--step--1); color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+.canvas-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.canvas-pair figure { margin: 0; display: grid; gap: 6px; }
+.canvas-pair canvas { width: 100%; aspect-ratio: 1; max-width: 100%; background: var(--img-bg); border-radius: 6px; display: block; }
+.canvas-pair figcaption { font: 600 0.72rem/1.2 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+
+/* Sequence cards */
+.seq { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.seq-head { padding: 18px 20px 14px; display: grid; gap: 6px; border-bottom: 1px solid var(--line); }
+.seq-head .tag { font: 600 0.72rem/1 var(--font-mono); color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.seq-head p { color: var(--muted); max-width: 72ch; }
+.seq-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.seq-col { padding: 16px 20px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.seq-col + .seq-col { border-left: 1px solid var(--line); }
+.seq-col h5 { margin: 0; font: 600 0.74rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.seq-col ul { font-size: 0.96rem; }
+.artefacts { border-top: 1px solid var(--line); padding: 16px 20px; display: grid; gap: 8px; }
+.artefacts h5 { margin: 0; font: 600 0.74rem/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--signal); }
+.fix-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+.fix-table th, .fix-table td { text-align: left; vertical-align: top; padding: 8px 10px 8px 0; border-top: 1px solid var(--line); }
+.fix-table th { font-weight: 600; width: 34%; }
+.fix-table td { color: var(--ink); }
+.seq-fig { border-top: 1px solid var(--line); padding: 18px 20px; background: var(--surface-2); display: grid; gap: 14px; }
+@media (max-width: 720px) {
+  .seq-body { grid-template-columns: minmax(0, 1fr); }
+  .seq-col + .seq-col { border-left: 0; border-top: 1px solid var(--line); }
+  .fix-table th, .fix-table td { display: block; width: 100%; padding: 4px 0; }
+  .fix-table td { border-top: 0; padding-bottom: 10px; color: var(--muted); }
+}
+
+/* Tables */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table.data { width: 100%; border-collapse: collapse; font-size: 0.95rem; min-width: 560px; }
+table.data th, table.data td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.data thead th { font: 600 0.74rem/1.2 var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); background: var(--surface-2); }
+table.data tbody tr:last-child td, table.data tbody tr:last-child th { border-bottom: 0; }
+table.data td.num, table.data th.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.up { color: var(--signal); font-weight: 700; } .down { color: var(--accent); font-weight: 700; }
+
+/* Views stepper */
+.stepper { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: 18px; }
+.steps { display: grid; gap: 6px; align-content: start; counter-reset: s; }
+.steps button {
+  display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; text-align: left; cursor: pointer;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; color: var(--ink); font: 400 0.93rem/1.3 var(--font-body);
+}
+.steps button b { font: 600 0.8rem/28px var(--font-mono); width: 28px; height: 28px; text-align: center; border-radius: 50%; background: var(--surface-2); color: var(--muted); }
+.steps button.on { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+.steps button.on b { background: var(--accent); color: var(--accent-ink); }
+.steps small { display: block; color: var(--muted); font-size: 0.82rem; margin-top: 2px; }
+.step-view { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.step-view svg { width: 100%; height: auto; border-radius: 8px; display: block; }
+.step-text { display: grid; gap: 10px; align-content: start; }
+.step-nav { display: flex; gap: 8px; }
+.btn { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 8px 14px; font: 600 0.9rem/1 var(--font-body); cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+@media (max-width: 880px) { .stepper, .step-view { grid-template-columns: minmax(0, 1fr); } .steps { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); } }
+
+.views-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
+.view-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
+.view-card svg { width: 100%; height: auto; display: block; }
+.view-card .body { padding: 14px 16px; display: grid; gap: 6px; align-content: start; font-size: 0.94rem; }
+
+/* Protocol timeline */
+.timeline { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; }
+.timeline li { display: grid; grid-template-columns: 64px 26px minmax(0, 1fr); gap: 12px; margin: 0; }
+.timeline .t { font: 600 0.82rem/1.2 var(--font-mono); color: var(--muted); padding-top: 14px; text-align: right; font-variant-numeric: tabular-nums; }
+.timeline .rail { position: relative; }
+.timeline .rail::before { content: ""; position: absolute; left: 12px; top: 0; bottom: 0; width: 2px; background: var(--line); }
+.timeline .rail::after { content: ""; position: absolute; left: 6px; top: 15px; width: 14px; height: 14px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); }
+.timeline li.contrast .rail::after { background: var(--signal); border-color: var(--signal); }
+.timeline li.optional .rail::after { border-style: dashed; border-color: var(--muted); }
+.timeline .box { padding: 10px 0 18px; display: grid; gap: 4px; }
+.timeline .box h4 { font-size: 1.02rem; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+.pill { font: 600 0.68rem/1 var(--font-mono); letter-spacing: 0.05em; text-transform: uppercase; padding: 4px 7px; border-radius: 999px; background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
+.pill.gd { background: var(--signal-soft); color: var(--signal); border-color: transparent; }
+.pill.acc { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.timeline .box p { font-size: 0.95rem; color: var(--muted); }
+
+/* LGE gallery */
+.lge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+.lge-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; display: grid; gap: 10px; align-content: start; }
+.lge-card svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.lge-card h4 { font-size: 1rem; }
+.lge-card p { font-size: 0.9rem; color: var(--muted); }
+.kind { font: 600 0.68rem/1 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.kind.isch { color: var(--signal); } .kind.non { color: var(--accent); }
+
+/* Disease cards */
+.dx-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 7px 13px;
+  font: 600 0.88rem/1 var(--font-body); cursor: pointer;
+}
+.chip:hover { border-color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.dx { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; }
+.dx svg { width: 100%; height: auto; border-radius: 8px; display: block; }
+.dx-side { display: grid; gap: 8px; align-content: start; }
+.dx-side p { font-size: 0.86rem; color: var(--muted); }
+.dx-main { display: grid; gap: 14px; min-width: 0; }
+.dx-rows { display: grid; gap: 0; }
+.dx-row { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; padding: 10px 0; border-top: 1px solid var(--line); font-size: 0.96rem; }
+.dx-row h5 { margin: 0; font: 600 0.72rem/1.6 var(--font-mono); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+@media (max-width: 720px) { .dx { grid-template-columns: minmax(0, 1fr); } .dx-side { max-width: 260px; } .dx-row { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+ol.approach { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; counter-reset: a; border-top: 1px solid var(--line); }
+ol.approach > li { counter-increment: a; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 10px; padding: 14px 0; border-bottom: 1px solid var(--line); margin: 0; }
+ol.approach > li::before { content: counter(a, decimal-leading-zero); font: 600 0.9rem/1.6 var(--font-mono); color: var(--accent); }
+ol.approach h4 { font-size: 1.05rem; margin-bottom: 4px; }
+ol.approach p { font-size: 0.96rem; color: var(--muted); }
+
+/* Papers */
+.paper-group { display: grid; gap: 0; }
+.paper-group > h3 { font-size: 1.25rem; padding-bottom: 10px; }
+.paper { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+.paper .yr { font: 600 1rem/1.4 var(--font-mono); color: var(--accent); font-variant-numeric: tabular-nums; }
+.paper .cite { font-size: 0.95rem; }
+.paper .cite em { font-style: italic; }
+.paper .why { font-size: 0.95rem; color: var(--muted); margin-top: 4px; }
+.paper .link { margin-top: 6px; font: 400 0.82rem/1.4 var(--font-mono); word-break: break-all; }
+.paper .link .note { font-family: var(--font-body); color: var(--muted); word-break: normal; }
+.paper-filter { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Quiz */
+.quiz-bar {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 100px); z-index: 5;
+  display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px;
+}
+.score { display: flex; align-items: baseline; gap: 10px; }
+.score b { font: 700 1.6rem/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.score span { color: var(--muted); font-size: 0.9rem; }
+@media (max-width: 880px) { .quiz-bar { position: static; } }
+.meter { height: 6px; background: var(--surface-2); border-radius: 999px; overflow: hidden; width: 100%; flex-basis: 100%; display: flex; }
+.meter i { display: block; height: 100%; }
+.meter .ok { background: var(--good); } .meter .no { background: var(--bad); }
+.topic-scores { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.85rem; color: var(--muted); }
+.topic-scores b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.qlist { display: grid; gap: 16px; }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px; display: grid; gap: 12px; }
+.q.right { border-color: var(--good); } .q.wrong { border-color: var(--bad); }
+.q-head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.q-head .qn { font: 600 0.8rem/1 var(--font-mono); color: var(--muted); }
+.q-text { font-size: 1.05rem; font-weight: 600; max-width: 75ch; }
+.opts { display: grid; gap: 8px; }
+.opt {
+  display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start; text-align: left; cursor: pointer;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 10px 12px; font: 400 0.97rem/1.4 var(--font-body);
+}
+.opt b { font: 600 0.8rem/1.6 var(--font-mono); color: var(--muted); }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:disabled { cursor: default; }
+.opt.correct { border-color: var(--good); background: var(--good-soft); }
+.opt.correct b { color: var(--good); }
+.opt.chosen-wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt.chosen-wrong b { color: var(--bad); }
+.explain { font-size: 0.95rem; border-left: 3px solid var(--good); padding: 8px 12px; background: var(--surface-2); border-radius: 0 6px 6px 0; }
+.q.wrong .explain { border-left-color: var(--bad); }
+.explain strong { display: block; margin-bottom: 2px; }
+
+footer.site { border-top: 1px solid var(--line); padding-block: 22px 40px; color: var(--muted); font-size: var(--step--1); }
+footer.site .wrap { display: grid; gap: 6px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel:not([hidden]) { animation: fade 0.25s ease-out; }
+  @keyframes fade { from { opacity: 0.4; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-row">
+      <div class="brand">
+        <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+          <rect width="34" height="34" rx="8" fill="var(--img-bg)"/>
+          <circle cx="18.5" cy="17" r="9.5" fill="none" stroke="#3a3f45" stroke-width="5"/>
+          <path d="M18.5 7.5 A9.5 9.5 0 0 1 27.3 20.5" fill="none" stroke="#f1f1f1" stroke-width="5"/>
+          <circle cx="18.5" cy="17" r="5" fill="#cfd3d8"/>
+        </svg>
+        <div>
+          <h1>CMR Primer</h1>
+          <p>Cardiac MRI fundamentals for cardiologists</p>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle light or dark theme">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg>
+        <span id="themeLabel">Dark</span>
+      </button>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" id="tab-acquisition" aria-controls="acquisition" data-tab="acquisition"><span class="n">1</span>Acquisition</button>
+      <button class="tab" role="tab" id="tab-views" aria-controls="views" data-tab="views"><span class="n">2</span>Views &amp; protocol</button>
+      <button class="tab" role="tab" id="tab-interpretation" aria-controls="interpretation" data-tab="interpretation"><span class="n">3</span>Interpretation</button>
+      <button class="tab" role="tab" id="tab-papers" aria-controls="papers" data-tab="papers"><span class="n">4</span>Seminal papers</button>
+      <button class="tab" role="tab" id="tab-quiz" aria-controls="quiz" data-tab="quiz"><span class="n">5</span>Quiz</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ 1. ACQUISITION ============ -->
+<section class="panel" id="acquisition" role="tabpanel" aria-labelledby="tab-acquisition">
+  <div class="panel-head">
+    <span class="eyebrow">Tab 1 · Acquisition</span>
+    <h2>How a CMR image is made</h2>
+    <p>Enough physics to choose the right sequence, recognise an artefact and ask the radiographer for the right fix.</p>
+  </div>
+  <div class="grid">
+    <nav class="toc" aria-label="Acquisition contents" data-toc>
+      <div class="toc-title">On this tab</div>
+    </nav>
+    <div class="content">
+
+      <article class="section" id="acq-physics" data-title="MR physics in brief">
+        <header><span class="eyebrow">Physics</span><h3>MR physics in brief</h3></header>
+        <p class="lede">Every image is a map of how quickly hydrogen protons in each tissue recover (T1) or lose (T2) their signal after a radiofrequency pulse. Sequences are recipes that make one of those differences dominate.</p>
+        <div class="concepts">
+          <div class="concept"><h4>Net magnetisation</h4><p>In the scanner field B<sub>0</sub> (1.5 or 3 T), protons align to give a small net magnetisation along the bore. An RF pulse at the Larmor frequency (≈64 MHz at 1.5 T, 128 MHz at 3 T) tips it sideways, and the rotating transverse component induces the signal in the coils.</p></div>
+          <div class="concept"><h4>T1: longitudinal recovery</h4><p>Time for magnetisation to regrow to 63% along B<sub>0</sub>. Fat recovers fast, blood slowly. <strong>Gadolinium shortens T1</strong>, so tissue with more contrast (scar, expanded extracellular space) is brighter on T1-weighted images.</p></div>
+          <div class="concept"><h4>T2: transverse decay</h4><p>Time for the transverse signal to fall to 37% as spins dephase. Free water lengthens T2, so <strong>oedema is bright</strong> on T2-weighted images and raises T2 maps.</p></div>
+          <div class="concept"><h4>T2*: T2 plus field inhomogeneity</h4><p>Always shorter than T2. Paramagnetic iron and susceptibility interfaces (lung, metal) speed up dephasing. That is why T2* measures myocardial iron.</p></div>
+          <div class="concept"><h4>TR and TE</h4><p>Repetition time (TR) mainly controls T1 weighting; echo time (TE) controls T2/T2* weighting. Short TR + short TE = T1-weighted; long TR + long TE = T2-weighted.</p></div>
+          <div class="concept"><h4>Field strength</h4><p>3 T gives more signal (SNR), so better perfusion and mapping resolution, but T1 values are longer, bSSFP banding is worse, and RF heating (SAR) and device issues are greater.</p></div>
+        </div>
+        <div class="fig" id="relaxFig">
+          <div class="fig-title"><h4>Relaxation curves for cardiac tissues</h4>
+            <div class="seg" role="group" aria-label="Field strength">
+              <button type="button" data-field="1.5" aria-pressed="true">1.5 T</button>
+              <button type="button" data-field="3" aria-pressed="false">3 T</button>
+            </div>
+          </div>
+          <div class="cards-2">
+            <div class="svg-scroll"><svg id="t1Plot" viewBox="0 0 420 250" role="img" aria-label="T1 recovery curves"></svg></div>
+            <div class="svg-scroll"><svg id="t2Plot" viewBox="0 0 420 250" role="img" aria-label="T2 decay curves"></svg></div>
+          </div>
+          <div class="legend" id="relaxLegend"></div>
+          <p class="fig-cap">Approximate native values; real numbers depend on sequence and site. The contrast between curves at a chosen time point is the image contrast. Blood vs myocardium differ most in T2/T1 ratio, which is what bSSFP exploits.</p>
+        </div>
+      </article>
+
+      <article class="section" id="acq-kspace" data-title="k-space">
+        <header><span class="eyebrow">Physics</span><h3>k-space, intuitively</h3></header>
+        <div class="prose">
+          <p>The scanner does not record pixels. It records <strong>spatial frequencies</strong> into a grid called k-space; a Fourier transform turns that grid into the image. Every k-space point contributes to every pixel.</p>
+          <ul>
+            <li><strong>Centre</strong> = coarse shapes and overall contrast. The moment the centre is acquired decides the image contrast (e.g. relative to the inversion pulse in LGE).</li>
+            <li><strong>Periphery</strong> = edges and fine detail (spatial resolution).</li>
+            <li>k-space is filled <strong>line by line</strong> (phase-encode lines). More lines = more time. That is why a cine is assembled over several heartbeats and needs a breath-hold.</li>
+            <li><strong>Inconsistency between lines</strong> (breathing, ectopics) produces ghosts copied along the phase-encode direction. <strong>Skipping lines</strong> to save time wraps the image onto itself, which parallel imaging (SENSE/GRAPPA) and compressed sensing undo using coil information.</li>
+          </ul>
+        </div>
+        <div class="fig">
+          <div class="fig-title"><h4>Try it: edit k-space and reconstruct</h4>
+            <div class="seg" role="group" aria-label="k-space manipulation" id="kMode">
+              <button type="button" data-mode="full" aria-pressed="true">Full</button>
+              <button type="button" data-mode="centre" aria-pressed="false">Centre only</button>
+              <button type="button" data-mode="edge" aria-pressed="false">Edges only</button>
+              <button type="button" data-mode="under" aria-pressed="false">Skip lines</button>
+              <button type="button" data-mode="motion" aria-pressed="false">Breathing</button>
+            </div>
+          </div>
+          <div class="controls">
+            <div class="ctl"><label for="kSlider"><span id="kSliderLabel">Strength</span><output id="kSliderOut">–</output></label><input type="range" id="kSlider" min="0" max="100" value="20" disabled></div>
+          </div>
+          <div class="canvas-pair">
+            <figure><canvas id="kspaceCanvas" width="128" height="128" aria-label="k-space magnitude"></canvas><figcaption>k-space (log magnitude)</figcaption></figure>
+            <figure><canvas id="imageCanvas" width="128" height="128" aria-label="Reconstructed image"></canvas><figcaption>Reconstructed image</figcaption></figure>
+          </div>
+          <p class="fig-cap" id="kCaption">A synthetic bSSFP-like axial slice, Fourier-transformed in your browser. Pick a manipulation to see what each part of k-space carries.</p>
+        </div>
+      </article>
+
+      <article class="section" id="acq-gating" data-title="ECG gating & breath-holding">
+        <header><span class="eyebrow">Motion control</span><h3>ECG gating and breath-holding</h3></header>
+        <div class="prose">
+          <p>A heartbeat is far shorter than the time needed to fill k-space, so most CMR is <strong>segmented</strong>: each beat contributes a few lines for each cardiac phase, and the image assumes every beat is the same. Breathing is frozen with a breath-hold, usually at end-expiration because it is the most reproducible position between slices.</p>
+        </div>
+        <div class="fig">
+          <div class="fig-title"><h4>Segmented acquisition across heartbeats</h4></div>
+          <div class="svg-scroll"><svg id="gatingSvg" viewBox="0 0 720 300" role="img" aria-label="ECG gating diagram" style="min-width:560px"></svg></div>
+          <p class="fig-cap">Cine (top): retrospective gating acquires continuously and sorts lines into ~25–30 phases afterwards, covering the whole RR interval. LGE (bottom): one inversion pulse, a trigger delay, then a short readout in mid-diastolic diastasis, typically every other beat to let magnetisation recover.</p>
+        </div>
+        <div class="cards-2">
+          <div class="card"><h4>Getting a good trigger</h4>
+            <ul style="margin-top:8px">
+              <li>Flowing blood in B<sub>0</sub> induces a voltage that inflates the T wave (magnetohydrodynamic effect). Vectorcardiographic (VCG) gating separates true R waves from it.</li>
+              <li>Poor ECG: reposition leads on the back, or use peripheral pulse gating (delayed by ~200 ms; acceptable for retrospective cine and flow).</li>
+              <li>The ECG cannot be used for ST-segment monitoring in the bore.</li>
+            </ul></div>
+          <div class="card"><h4>Arrhythmia and breathing</h4>
+            <ul style="margin-top:8px">
+              <li>Ectopics or AF blur cine: use arrhythmia rejection, prospective triggering, or <strong>real-time (single-shot) cine</strong> at lower resolution.</li>
+              <li>Poor breath-holders: shorter breath-holds (fewer slices per hold, parallel imaging), single-shot or motion-corrected averaged LGE, navigator-gated free breathing.</li>
+              <li>Tachycardia: shorten the acquisition window; consider systolic acquisition for mapping and LGE.</li>
+            </ul></div>
+        </div>
+      </article>
+
+      <article class="section" id="acq-sequences" data-title="Core sequences">
+        <header><span class="eyebrow">Sequences</span><h3>The core sequences</h3>
+          <p class="lede">For each: what it shows, the parameters that matter, and the artefacts you will meet with their fixes.</p></header>
+        <div class="dx-tabs" id="seqChips" role="group" aria-label="Choose sequence"></div>
+        <div id="seqHost"></div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. VIEWS & PROTOCOL ============ -->
+<section class="panel" id="views" role="tabpanel" aria-labelledby="tab-views" hidden>
+  <div class="panel-head">
+    <span class="eyebrow">Tab 2 · Standard views &amp; protocol</span>
+    <h2>Planning the heart's own axes</h2>
+    <p>CMR images in planes aligned to the heart rather than the body. Each view is planned from the one before it.</p>
+  </div>
+  <div class="grid">
+    <nav class="toc" aria-label="Views contents" data-toc>
+      <div class="toc-title">On this tab</div>
+    </nav>
+    <div class="content">
+      <article class="section" id="views-plan" data-title="Planning sequence">
+        <header><span class="eyebrow">Step by step</span><h3>From localiser to the standard views</h3></header>
+        <div class="stepper">
+          <div class="steps" id="planSteps"></div>
+          <div class="fig">
+            <div class="step-view">
+              <div id="planSvg"></div>
+              <div class="step-text" id="planText"></div>
+            </div>
+            <div class="step-nav"><button class="btn" id="planPrev" type="button">Previous</button><button class="btn primary" id="planNext" type="button">Next step</button></div>
+          </div>
+        </div>
+        <p class="fig-cap">Schematic drawings, not to scale. Dashed lines are the planned slice; the arrow names the view it produces.</p>
+      </article>
+
+      <article class="section" id="views-check" data-title="What a good view shows">
+        <header><span class="eyebrow">Quality check</span><h3>What each standard view should show</h3></header>
+        <div class="views-grid" id="viewCards"></div>
+      </article>
+
+      <article class="section" id="views-protocol" data-title="Typical protocol">
+        <header><span class="eyebrow">Running order</span><h3>A typical clinical protocol</h3>
+          <p class="lede">Order matters: native mapping must come before gadolinium, and the wait for LGE is used for cines. Times are approximate minutes from the start of the scan.</p></header>
+        <ol class="timeline" id="protocolList"></ol>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Indication</th><th>Add or emphasise</th></tr></thead>
+            <tbody>
+              <tr><td>Ischaemia / viability</td><td>Stress (± rest) perfusion; LGE for transmurality; LV thrombus check with early gadolinium.</td></tr>
+              <tr><td>Cardiomyopathy (HCM, DCM, infiltrative)</td><td>Full SAX cine for wall thickness and mass; native T1 and ECV; LVOT cine and flow if obstruction suspected.</td></tr>
+              <tr><td>Myocarditis / inflammation</td><td>T2 mapping (± T2-weighted STIR), native T1, LGE, ECV (Lake Louise 2018).</td></tr>
+              <tr><td>Iron overload</td><td>Mid-ventricular SAX T2* with liver T2* in the same session; often no contrast needed.</td></tr>
+              <tr><td>Valve disease / shunts</td><td>Phase-contrast flow (aorta, pulmonary artery), valve-plane cines, LV/RV volumes for regurgitant volume and Qp:Qs.</td></tr>
+              <tr><td>ARVC</td><td>Axial and RV-focused cines (RV 2-chamber, RVOT), RV volumes, LGE including LV inferolateral wall.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. INTERPRETATION ============ -->
+<section class="panel" id="interpretation" role="tabpanel" aria-labelledby="tab-interpretation" hidden>
+  <div class="panel-head">
+    <span class="eyebrow">Tab 3 · Interpretation</span>
+    <h2>Reading a CMR study</h2>
+    <p>A fixed order stops you anchoring on the first abnormality. Function first, then tissue, then synthesis.</p>
+  </div>
+  <div class="grid">
+    <nav class="toc" aria-label="Interpretation contents" data-toc>
+      <div class="toc-title">On this tab</div>
+    </nav>
+    <div class="content">
+      <article class="section" id="int-approach" data-title="Systematic approach">
+        <header><span class="eyebrow">Method</span><h3>A systematic approach</h3></header>
+        <ol class="approach">
+          <li><div><h4>Technique and image quality</h4><p>Field strength, contrast dose and timing, arrhythmia or breathing artefact, whether TI was optimised. Decide what you can and cannot conclude.</p></div></li>
+          <li><div><h4>Volumes and function</h4><p>LV and RV EDV, ESV, EF and LV mass, indexed to BSA, from the SAX stack. Regional wall motion by the 17-segment model. Compare with sex- and age-specific reference ranges.</p></div></li>
+          <li><div><h4>Morphology</h4><p>Wall thickness and pattern of hypertrophy, wall thinning, aneurysm, thrombus, trabeculation, atria, valves, pericardium (thickness, effusion), great vessels and extracardiac findings.</p></div></li>
+          <li><div><h4>Tissue characterisation</h4><p>Oedema (T2 map, T2-weighted STIR), then LGE: present or absent, pattern (subendocardial vs non-subendocardial), territory, transmurality, extent. Then mapping: native T1, T2, ECV, T2* as indicated.</p></div></li>
+          <li><div><h4>Perfusion and flow</h4><p>Stress perfusion defects matched against LGE (ischaemia vs infarct). Flow: stroke volumes, regurgitant fraction, Qp:Qs, peak velocities.</p></div></li>
+          <li><div><h4>Synthesis</h4><p>Ischaemic vs non-ischaemic; a unifying diagnosis or differential; prognostic markers (LGE extent, EF, RV function); answer the clinical question.</p></div></li>
+        </ol>
+      </article>
+
+      <article class="section" id="int-volumes" data-title="Volumes & function">
+        <header><span class="eyebrow">Quantification</span><h3>Volumes and function</h3></header>
+        <div class="prose">
+          <p>CMR is the reference standard for ventricular volumes and EF because it measures a full 3D stack without geometric assumptions, with better interstudy reproducibility than 2D echo. Contour the SAX stack at end-diastole and end-systole; check the basal slice against long-axis views (atrium vs ventricle).</p>
+        </div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Measure (adult, bSSFP)</th><th class="num">Approximate normal limit</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>LVEF</td><td class="num">≥ ~57%</td><td>Lower limit varies with age and sex; CMR EF runs a little higher than echo.</td></tr>
+              <tr><td>LVEDV index</td><td class="num">≤ ~105 mL/m² (M), ≤ ~95 (F)</td><td>Depends on whether papillary muscles are counted in the blood pool.</td></tr>
+              <tr><td>LV mass index</td><td class="num">≤ ~85 g/m² (M), ≤ ~70 (F)</td><td>Same contouring caveat; trabeculation handling matters.</td></tr>
+              <tr><td>Max LV wall thickness</td><td class="num">≤ ~12 mm</td><td>End-diastolic SAX, perpendicular to wall; ≥ 15 mm suggests HCM in adults.</td></tr>
+              <tr><td>RVEF</td><td class="num">≥ ~47–50%</td><td>Basal slice choice dominates RV error; use axial stack if in doubt.</td></tr>
+              <tr><td>RVEDV index</td><td class="num">≤ ~115 mL/m² (M), ≤ ~100 (F)</td><td>ARVC Task Force cut-offs use 110 (M) / 100 (F).</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="callout">These are rounded teaching values. For reporting, use sex- and age-specific ranges matched to your contouring method (Kawel-Boehm et al., JCMR 2020; see Seminal papers).</p>
+      </article>
+
+      <article class="section" id="int-lge" data-title="LGE patterns">
+        <header><span class="eyebrow">Tissue</span><h3>LGE patterns</h3>
+          <p class="lede">The single most useful question: <strong>does the enhancement involve the subendocardium?</strong> Infarction starts at the subendocardium and spreads outwards (the wavefront phenomenon), so ischaemic LGE is subendocardial or transmural and follows a coronary territory. LGE that spares the subendocardium is non-ischaemic.</p></header>
+        <div class="lge-grid" id="lgeGrid"></div>
+        <p class="fig-cap">Schematic mid-ventricular short-axis views as displayed on the scanner: anterior (A) at the top, septum (S) on the left beside the RV, lateral (L) on the right, inferior (I) at the bottom. White = enhancement; nulled normal myocardium is black.</p>
+      </article>
+
+      <article class="section" id="int-mapping" data-title="Mapping values">
+        <header><span class="eyebrow">Tissue</span><h3>Mapping values</h3></header>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Parameter</th><th class="num">Typical normal 1.5 T</th><th class="num">Typical normal 3 T</th><th>High in</th><th>Low in</th></tr></thead>
+            <tbody>
+              <tr><td>Native T1 (MOLLI)</td><td class="num">~950–1050 ms</td><td class="num">~1150–1250 ms</td><td><span class="up">↑</span> Amyloid (very high), oedema, fibrosis, infarction</td><td><span class="down">↓</span> Fabry, iron overload, fat</td></tr>
+              <tr><td>T2</td><td class="num">~45–55 ms</td><td class="num">~40–50 ms</td><td><span class="up">↑</span> Oedema: acute MI, myocarditis, Takotsubo, sarcoid, rejection</td><td><span class="down">↓</span> Iron, haemorrhage core</td></tr>
+              <tr><td>ECV</td><td class="num" colspan="2">~22–28% (field-independent)</td><td><span class="up">↑</span> Amyloid (often &gt; 40%), diffuse fibrosis, oedema, infarction</td><td>Rarely clinically relevant</td></tr>
+              <tr><td>T2* (septum)</td><td class="num">&gt; 20 ms</td><td class="num">Not validated</td><td>—</td><td><span class="down">↓</span> Iron: &lt; 20 ms loading, &lt; 10 ms severe</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout warn"><strong>Native T1 and T2 are sequence-, vendor- and site-specific.</strong> Each centre should derive its own normal range, as the SCMR mapping consensus statements recommend. Treat the numbers above as orientation only. ECV and T2* travel better between sites.</div>
+      </article>
+
+      <article class="section" id="int-dx" data-title="Classic appearances">
+        <header><span class="eyebrow">Diagnoses</span><h3>Classic appearances</h3></header>
+        <div class="dx-tabs" id="dxChips" role="group" aria-label="Choose diagnosis"></div>
+        <div id="dxHost"></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. PAPERS ============ -->
+<section class="panel" id="papers" role="tabpanel" aria-labelledby="tab-papers" hidden>
+  <div class="panel-head">
+    <span class="eyebrow">Tab 4 · Seminal papers</span>
+    <h2>A reading list</h2>
+    <p>Papers that changed practice or set the standards, grouped by topic. Each DOI link goes to the publisher's record.</p>
+  </div>
+  <div class="grid">
+    <nav class="toc" aria-label="Paper topics" data-toc>
+      <div class="toc-title">Topics</div>
+    </nav>
+    <div class="content" id="paperHost"></div>
+  </div>
+</section>
+
+<!-- ============ 5. QUIZ ============ -->
+<section class="panel" id="quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+  <div class="panel-head">
+    <span class="eyebrow">Tab 5 · Quiz</span>
+    <h2>Test yourself</h2>
+    <p>Answer to see the explanation immediately. Filter by topic; your score updates as you go.</p>
+  </div>
+  <div class="content" style="max-width:860px">
+    <div class="quiz-bar">
+      <div class="score"><b id="scoreNum">0 / 0</b><span id="scoreSub">answered 0 of 0</span></div>
+      <div class="paper-filter" id="quizFilter" role="group" aria-label="Filter questions by topic"></div>
+      <button class="btn" id="quizReset" type="button">Reset answers</button>
+      <div class="meter" aria-hidden="true"><i class="ok" id="meterOk" style="width:0"></i><i class="no" id="meterNo" style="width:0"></i></div>
+      <div class="topic-scores" id="topicScores"></div>
+    </div>
+    <div class="qlist" id="qlist"></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p>An educational overview for clinicians learning CMR. Values are rounded teaching figures; use local reference ranges and current guidelines for clinical reporting.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+"use strict";
+
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const store = {
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage unavailable */ } }
+};
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const rad = d => d * Math.PI / 180;
+const pt = (cx, cy, r, a) => [cx + r * Math.cos(rad(a)), cy + r * Math.sin(rad(a))];
+const f1 = n => Math.round(n * 10) / 10;
+let uid = 0;
+
+/* ---------- theme ---------- */
+const root = document.documentElement;
+function effectiveDark() {
+  const t = root.getAttribute("data-theme");
+  if (t) return t === "dark";
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+function syncThemeLabel() { $("#themeLabel").textContent = effectiveDark() ? "Light" : "Dark"; }
+const savedTheme = store.get("cmr-theme");
+if (savedTheme === "dark" || savedTheme === "light") root.setAttribute("data-theme", savedTheme);
+syncThemeLabel();
+$("#themeBtn").addEventListener("click", () => {
+  const next = effectiveDark() ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  store.set("cmr-theme", next);
+  syncThemeLabel();
+});
+if (window.matchMedia) {
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  if (mq.addEventListener) mq.addEventListener("change", syncThemeLabel);
+}
+
+/* ---------- tabs ---------- */
+const TABS = ["acquisition", "views", "interpretation", "papers", "quiz"];
+function showTab(id, push) {
+  if (!TABS.includes(id)) id = "acquisition";
+  $$(".tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === id)));
+  $$(".panel").forEach(p => { p.hidden = p.id !== id; });
+  if (push) {
+    try { history.replaceState(null, "", "#" + id); } catch (e) { /* ignore */ }
+    store.set("cmr-tab", id);
+    window.scrollTo({ top: 0 });
+  }
+}
+$$(".tab").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab, true)));
+const hash = (location.hash || "").replace("#", "");
+showTab(TABS.includes(hash) ? hash : (store.get("cmr-tab") || "acquisition"), false);
+
+/* ---------- in-tab contents ---------- */
+function buildToc(nav) {
+  const panel = nav.closest(".panel");
+  const sections = $$(".section[data-title]", panel);
+  sections.forEach(sec => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = sec.dataset.title;
+    b.addEventListener("click", () => sec.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }));
+    nav.appendChild(b);
+    sec._tocBtn = b;
+  });
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          $$("button", nav).forEach(x => x.classList.remove("on"));
+          if (e.target._tocBtn) e.target._tocBtn.classList.add("on");
+        }
+      });
+    }, { rootMargin: "-30% 0px -60% 0px" });
+    sections.forEach(s => io.observe(s));
+  }
+}
+
+/* =========================================================
+   1. ACQUISITION
+   ========================================================= */
+
+/* --- relaxation curves --- */
+const RELAX = {
+  "1.5": { myo: [1000, 50], blood: [1550, 250], fat: [260, 70] },
+  "3":   { myo: [1200, 45], blood: [1850, 200], fat: [380, 65] }
+};
+const TISSUE = { myo: ["Myocardium", "var(--c-myo)"], blood: ["Blood", "var(--c-blood)"], fat: ["Fat", "var(--c-fat)"] };
+function plotAxes(svg, xmax, xlabel, ylabel, ymin, ymax, xticks, yticks) {
+  const L = 52, R = 404, T = 16, B = 206;
+  const X = v => L + (v / xmax) * (R - L);
+  const Y = v => B - ((v - ymin) / (ymax - ymin)) * (B - T);
+  let s = "";
+  yticks.forEach(t => { s += `<line x1="${L}" x2="${R}" y1="${Y(t)}" y2="${Y(t)}" class="s-line" stroke-width="1"/><text x="${L - 8}" y="${Y(t) + 4}" text-anchor="end" font-size="11" class="t-muted t-mono">${t}</text>`; });
+  xticks.forEach(t => { s += `<text x="${X(t)}" y="${B + 16}" text-anchor="middle" font-size="11" class="t-muted t-mono">${t}</text>`; });
+  s += `<line x1="${L}" x2="${R}" y1="${B}" y2="${B}" class="s-muted" stroke-width="1"/>`;
+  s += `<text x="${(L + R) / 2}" y="${B + 36}" text-anchor="middle" font-size="12" class="t-muted">${xlabel}</text>`;
+  s += `<text x="14" y="${(T + B) / 2}" text-anchor="middle" font-size="12" class="t-muted" transform="rotate(-90 14 ${(T + B) / 2})">${ylabel}</text>`;
+  return { s, X, Y, L, R, T, B };
+}
+function drawRelax(field) {
+  const v = RELAX[field];
+  const a1 = plotAxes(null, 3000, "Time after 90° pulse (ms)", "Mz / M0", 0, 1, [0, 1000, 2000, 3000], [0, 0.5, 1]);
+  let s1 = a1.s;
+  const a2 = plotAxes(null, 300, "Time after excitation (ms)", "Mxy / M0", 0, 1, [0, 100, 200, 300], [0, 0.5, 1]);
+  let s2 = a2.s;
+  Object.keys(v).forEach(k => {
+    const [t1, t2] = v[k];
+    let p1 = "", p2 = "";
+    for (let i = 0; i <= 120; i++) {
+      const t = 3000 * i / 120; p1 += (i ? "L" : "M") + a1.X(t).toFixed(1) + " " + a1.Y(1 - Math.exp(-t / t1)).toFixed(1);
+      const u = 300 * i / 120; p2 += (i ? "L" : "M") + a2.X(u).toFixed(1) + " " + a2.Y(Math.exp(-u / t2)).toFixed(1);
+    }
+    s1 += `<path d="${p1}" fill="none" stroke="${TISSUE[k][1]}" stroke-width="2.5"/>`;
+    s2 += `<path d="${p2}" fill="none" stroke="${TISSUE[k][1]}" stroke-width="2.5"/>`;
+    // mark T1 (63%) and T2 (37%)
+    if (t1 <= 3000) s1 += `<circle cx="${a1.X(t1)}" cy="${a1.Y(0.632)}" r="3.5" fill="${TISSUE[k][1]}"/>`;
+    if (t2 <= 300) s2 += `<circle cx="${a2.X(t2)}" cy="${a2.Y(0.368)}" r="3.5" fill="${TISSUE[k][1]}"/>`;
+  });
+  s1 += `<text x="${a1.R}" y="${a1.T + 2}" text-anchor="end" font-size="12" font-weight="600" class="t-ink">T1 recovery</text>`;
+  s2 += `<text x="${a2.R}" y="${a2.T + 2}" text-anchor="end" font-size="12" font-weight="600" class="t-ink">T2 decay</text>`;
+  $("#t1Plot").innerHTML = s1;
+  $("#t2Plot").innerHTML = s2;
+  $("#relaxLegend").innerHTML = Object.keys(v).map(k =>
+    `<span><i style="background:${TISSUE[k][1]}"></i>${TISSUE[k][0]} <span class="mono">T1 ≈ ${v[k][0]} · T2 ≈ ${v[k][1]} ms</span></span>`).join("") +
+    `<span>Dots mark T1 (63% recovered) and T2 (37% remaining).</span>`;
+}
+$$("#relaxFig [data-field]").forEach(b => b.addEventListener("click", () => {
+  $$("#relaxFig [data-field]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  drawRelax(b.dataset.field);
+}));
+drawRelax("1.5");
+
+/* --- k-space demo --- */
+const N = 128;
+function fft1d(re, im, inv) {
+  const n = re.length;
+  for (let i = 1, j = 0; i < n; i++) {
+    let bit = n >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) { [re[i], re[j]] = [re[j], re[i]]; [im[i], im[j]] = [im[j], im[i]]; }
+  }
+  for (let len = 2; len <= n; len <<= 1) {
+    const ang = (inv ? 2 : -2) * Math.PI / len, wr = Math.cos(ang), wi = Math.sin(ang);
+    for (let i = 0; i < n; i += len) {
+      let cr = 1, ci = 0;
+      for (let k = 0; k < len / 2; k++) {
+        const a = i + k, b = a + len / 2;
+        const tr = re[b] * cr - im[b] * ci, ti = re[b] * ci + im[b] * cr;
+        re[b] = re[a] - tr; im[b] = im[a] - ti; re[a] += tr; im[a] += ti;
+        const nr = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = nr;
+      }
+    }
+  }
+  if (inv) for (let i = 0; i < n; i++) { re[i] /= n; im[i] /= n; }
+}
+function fft2d(re, im, inv) {
+  const r = new Float64Array(N), i_ = new Float64Array(N);
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) { r[x] = re[y * N + x]; i_[x] = im[y * N + x]; }
+    fft1d(r, i_, inv);
+    for (let x = 0; x < N; x++) { re[y * N + x] = r[x]; im[y * N + x] = i_[x]; }
+  }
+  for (let x = 0; x < N; x++) {
+    for (let y = 0; y < N; y++) { r[y] = re[y * N + x]; i_[y] = im[y * N + x]; }
+    fft1d(r, i_, inv);
+    for (let y = 0; y < N; y++) { re[y * N + x] = r[y]; im[y * N + x] = i_[y]; }
+  }
+}
+function phantom() {
+  const img = new Float64Array(N * N);
+  const inE = (u, v, cx, cy, rx, ry) => ((u - cx) / rx) ** 2 + ((v - cy) / ry) ** 2 < 1;
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const u = (x - N / 2) / (N / 2), v = (y - N / 2) / (N / 2);
+    let s = 0;
+    if (inE(u, v, 0, 0.02, 0.94, 0.74)) s = 0.85;               // subcutaneous fat (bright on bSSFP)
+    if (inE(u, v, 0, 0.02, 0.86, 0.66)) s = 0.3;                // chest wall muscle
+    if (inE(u, v, 0.48, -0.02, 0.3, 0.44)) s = 0.04;            // lungs
+    if (inE(u, v, -0.5, -0.02, 0.3, 0.44)) s = 0.04;
+    if (inE(u, v, 0.08, 0.02, 0.4, 0.33)) s = 0.22;             // heart / pericardial region
+    if (inE(u, v, -0.13, -0.02, 0.2, 0.24)) s = 0.88;           // RV blood
+    if (inE(u, v, 0.17, 0.04, 0.21, 0.21)) s = 0.27;            // LV myocardium
+    if (inE(u, v, 0.17, 0.04, 0.12, 0.12)) s = 1.0;             // LV blood
+    if (inE(u, v, 0.1, 0.42, 0.07, 0.07)) s = 0.95;             // descending aorta
+    if (inE(u, v, -0.02, 0.56, 0.1, 0.09)) s = 0.45;            // vertebra
+    img[y * N + x] = s;
+  }
+  return img;
+}
+const kRe0 = phantom(), kIm0 = new Float64Array(N * N);
+fft2d(kRe0, kIm0, false);
+const kf = i => (i < N / 2 ? i : i - N);           // signed frequency index
+const kState = { mode: "full", val: 20 };
+const K_MODES = {
+  full: { label: "Strength", min: 0, max: 100, def: 0, out: () => "–", cap: "All of k-space: the full-resolution image." },
+  centre: { label: "Central portion kept", min: 3, max: 100, def: 12, out: v => v + "%", cap: "Only the centre is kept: contrast and overall shape survive, but edges blur. Low-resolution scans keep just the centre of k-space." },
+  edge: { label: "Central portion removed", min: 1, max: 40, def: 6, out: v => v + "%", cap: "Centre removed: contrast and bulk signal vanish and only edges remain. Image contrast lives at the centre of k-space." },
+  under: { label: "Acceleration (keep 1 line in R)", min: 1, max: 4, def: 2, out: v => "R = " + v, cap: "Skipping phase-encode lines shrinks the field of view, so the image wraps onto itself (top to bottom here). Parallel imaging uses coil sensitivity maps to unfold this." },
+  motion: { label: "Breathing amplitude", min: 0, max: 10, def: 4, out: v => v + " px", cap: "The object moves between k-space lines, so the lines disagree. The result is ghost copies along the phase-encode direction (vertical here), the classic breathing artefact." }
+};
+function renderK() {
+  const re = Float64Array.from(kRe0), im = Float64Array.from(kIm0);
+  const m = kState.mode, v = kState.val;
+  for (let y = 0; y < N; y++) {
+    const fy = kf(y), line = fy + N / 2;
+    for (let x = 0; x < N; x++) {
+      const fx = kf(x), idx = y * N + x;
+      let keep = 1;
+      if (m === "centre") { const r = (v / 100) * N / 2; keep = Math.abs(fx) <= r && Math.abs(fy) <= r ? 1 : 0; }
+      else if (m === "edge") { const r = (v / 100) * N / 2; keep = Math.abs(fx) < r && Math.abs(fy) < r ? 0 : 1; }
+      else if (m === "under") { keep = line % v === 0 ? v : 0; }
+      if (m === "motion") {
+        const d = v * Math.sin(2 * Math.PI * line / 9);
+        const ph = -2 * Math.PI * fy * d / N, c = Math.cos(ph), s = Math.sin(ph);
+        const a = re[idx], b = im[idx];
+        re[idx] = a * c - b * s; im[idx] = a * s + b * c;
+      } else { re[idx] *= keep; im[idx] *= keep; }
+    }
+  }
+  // k-space display (shifted)
+  const kc = $("#kspaceCanvas").getContext("2d"), kd = kc.createImageData(N, N);
+  let kmax = 0; const mag = new Float64Array(N * N);
+  for (let i = 0; i < N * N; i++) { mag[i] = Math.log(1 + Math.hypot(re[i], im[i])); if (mag[i] > kmax) kmax = mag[i]; }
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const sy = (y + N / 2) % N, sx = (x + N / 2) % N;
+    const g = Math.round(255 * Math.pow(mag[sy * N + sx] / (kmax || 1), 1.4));
+    const o = (y * N + x) * 4; kd.data[o] = g; kd.data[o + 1] = g; kd.data[o + 2] = g; kd.data[o + 3] = 255;
+  }
+  kc.putImageData(kd, 0, 0);
+  // reconstruct
+  fft2d(re, im, true);
+  const ic = $("#imageCanvas").getContext("2d"), id = ic.createImageData(N, N);
+  let imax = 0; const im2 = new Float64Array(N * N);
+  for (let i = 0; i < N * N; i++) { im2[i] = Math.hypot(re[i], im[i]); if (im2[i] > imax) imax = im2[i]; }
+  const scale = m === "edge" ? imax : 1;
+  for (let i = 0; i < N * N; i++) {
+    const g = Math.round(255 * clamp(im2[i] / (scale || 1), 0, 1));
+    id.data[i * 4] = g; id.data[i * 4 + 1] = g; id.data[i * 4 + 2] = g; id.data[i * 4 + 3] = 255;
+  }
+  ic.putImageData(id, 0, 0);
+  const spec = K_MODES[m];
+  $("#kSliderOut").textContent = spec.out(v);
+  $("#kCaption").textContent = spec.cap;
+}
+function setKMode(m) {
+  kState.mode = m;
+  const spec = K_MODES[m], sl = $("#kSlider");
+  sl.min = spec.min; sl.max = spec.max; sl.value = spec.def; sl.disabled = m === "full";
+  kState.val = spec.def;
+  $("#kSliderLabel").textContent = spec.label;
+  $$("#kMode button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === m)));
+  renderK();
+}
+$$("#kMode button").forEach(b => b.addEventListener("click", () => setKMode(b.dataset.mode)));
+$("#kSlider").addEventListener("input", e => { kState.val = +e.target.value; renderK(); });
+setKMode("full");
+
+/* --- gating diagram --- */
+function ecgPath(x0, y0, w) {
+  // one beat starting at the R wave; returns path segment points
+  const p = [];
+  const add = (dx, dy) => p.push([x0 + dx * w, y0 - dy]);
+  add(0, 0); add(0.015, 34); add(0.03, -8); add(0.05, 0); add(0.18, 0);
+  for (let i = 0; i <= 10; i++) { const t = i / 10; add(0.2 + t * 0.16, Math.sin(Math.PI * t) * 9); }
+  add(0.5, 0); add(0.78, 0);
+  for (let i = 0; i <= 6; i++) { const t = i / 6; add(0.8 + t * 0.09, Math.sin(Math.PI * t) * 4); }
+  add(0.94, 0); add(0.985, 0); add(0.99, -3); add(1, 0);
+  return p;
+}
+function drawGating() {
+  const svg = $("#gatingSvg");
+  const x0 = 70, w = 190, beats = 3;
+  let s = "";
+  const row = (y, label) => { s += `<text x="8" y="${y + 4}" font-size="12" class="t-muted" font-weight="600">${label}</text>`; };
+  // ECG
+  let pts = [];
+  for (let b = 0; b < beats; b++) pts = pts.concat(ecgPath(x0 + b * w, 52, w));
+  s += `<path d="M${pts.map(q => q[0].toFixed(1) + " " + q[1].toFixed(1)).join(" L")}" fill="none" class="s-ink" stroke-width="1.6"/>`;
+  row(52, "ECG");
+  for (let b = 0; b < beats; b++) {
+    const xr = x0 + b * w;
+    s += `<line x1="${xr}" x2="${xr}" y1="12" y2="280" class="s-line" stroke-dasharray="3 4"/>`;
+    s += `<text x="${xr + 3}" y="14" font-size="10" class="t-muted t-mono">R${b + 1}</text>`;
+  }
+  // cine segments
+  row(108, "Cine");
+  const ph = 10;
+  for (let b = 0; b < beats; b++) {
+    for (let k = 0; k < ph; k++) {
+      const x = x0 + b * w + k * (w / ph) + 1;
+      s += `<rect x="${x}" y="96" width="${w / ph - 2}" height="24" rx="2" fill="var(--c-myo)" opacity="${0.35 + 0.65 * (k % 2 ? 0.7 : 1)}"/>`;
+    }
+    s += `<text x="${x0 + b * w + w / 2}" y="138" text-anchor="middle" font-size="11" class="t-muted">beat ${b + 1}: segment ${b + 1} of each phase</text>`;
+  }
+  s += `<text x="${x0 + 2}" y="91" font-size="10" class="t-muted t-mono">phase 1 … phase 25–30</text>`;
+  // k-space filling inset
+  const kx = 686, ky = 96;
+  s += `<rect x="${kx - 22}" y="${ky}" width="44" height="44" fill="none" class="s-muted"/>`;
+  for (let i = 0; i < 11; i++) {
+    const col = i % 3 === 0 ? "var(--c-myo)" : (i % 3 === 1 ? "var(--c-blood)" : "var(--c-scar)");
+    s += `<line x1="${kx - 20}" x2="${kx + 20}" y1="${ky + 3 + i * 3.8}" y2="${ky + 3 + i * 3.8}" stroke="${col}" stroke-width="1.6"/>`;
+  }
+  s += `<text x="${kx}" y="${ky + 58}" text-anchor="middle" font-size="10" class="t-muted">k-space of</text><text x="${kx}" y="${ky + 70}" text-anchor="middle" font-size="10" class="t-muted">one phase</text>`;
+  // LGE
+  row(212, "LGE");
+  for (let b = 0; b < beats; b++) {
+    const xr = x0 + b * w;
+    if (b % 2 === 0) {
+      s += `<path d="M${xr + 6} 236 L${xr + 6} 190 L${xr + 12} 236" fill="var(--c-scar)" opacity="0.9"/>`;
+      s += `<line x1="${xr + 12}" x2="${xr + 112}" y1="226" y2="226" class="s-muted" stroke-width="1" marker-end="url(#arr)"/>`;
+      s += `<text x="${xr + 60}" y="220" text-anchor="middle" font-size="10" class="t-muted t-mono">TI</text>`;
+      s += `<rect x="${xr + 114}" y="200" width="44" height="30" rx="3" fill="var(--c-myo)"/>`;
+      s += `<text x="${xr + 136}" y="249" text-anchor="middle" font-size="10" class="t-muted">readout in</text><text x="${xr + 136}" y="261" text-anchor="middle" font-size="10" class="t-muted">mid-diastole</text>`;
+      s += `<text x="${xr + 9}" y="184" text-anchor="middle" font-size="10" class="t-muted">180°</text>`;
+    } else {
+      s += `<text x="${xr + w / 2}" y="218" text-anchor="middle" font-size="11" class="t-muted">recovery beat (no readout)</text>`;
+    }
+  }
+  s = `<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker></defs>` + s;
+  svg.innerHTML = s;
+}
+drawGating();
+
+/* --- sequences --- */
+const SEQS = [
+  {
+    id: "cine", name: "bSSFP cine", tag: "Balanced steady-state free precession",
+    intro: "The workhorse. Bright blood against darker myocardium, typically 25–30 frames per heartbeat, one slice per breath-hold.",
+    shows: [
+      "Volumes, EF, LV mass and regional wall motion: the reference standard.",
+      "Morphology: wall thickness, aneurysm, thrombus, pericardial effusion, valve motion and jets (qualitative).",
+      "Contrast comes from the T2/T1 ratio, so blood and fat are bright, myocardium is grey."
+    ],
+    params: [
+      "TR ≈ 3 ms, flip angle ≈ 50–70° at 1.5 T (lower at 3 T for SAR).",
+      "Temporal resolution ≤ 45 ms; retrospective gating to cover the full RR.",
+      "SAX slice 6–8 mm with 2–4 mm gap; in-plane ≈ 1.5–2 mm.",
+      "Parallel imaging to shorten breath-holds (~6–10 s)."
+    ],
+    artefacts: [
+      ["Dark off-resonance bands", "Shim over the heart, run a frequency scout and shift the frequency, shorten TR. Worse at 3 T; switch to spoiled gradient echo if needed."],
+      ["Blurring from arrhythmia", "Arrhythmia rejection, prospective triggering or real-time cine."],
+      ["Breathing ghosts", "Coach the breath-hold, end-expiration, fewer segments or more acceleration."],
+      ["Wrap-around (aliasing)", "Enlarge the field of view or add phase oversampling."],
+      ["Metal / device artefact", "Spoiled gradient echo (less susceptibility-sensitive), shorter TE, wider receiver bandwidth."]
+    ]
+  },
+  {
+    id: "lge", name: "LGE", tag: "Late gadolinium enhancement, inversion recovery",
+    intro: "Gadolinium is an extracellular agent. It accumulates where the extracellular space is expanded (acute necrosis with ruptured membranes, or chronic fibrosis) and washes out slowly there. The shorter T1 makes these areas bright once the inversion time nulls normal myocardium.",
+    shows: [
+      "Infarct presence, size and transmurality (viability).",
+      "Non-ischaemic fibrosis patterns: cardiomyopathies, myocarditis, infiltration.",
+      "Thrombus, with early gadolinium imaging at a long TI: avascular thrombus stays black."
+    ],
+    params: [
+      "Gadolinium 0.1–0.2 mmol/kg; image ≥ 10 min after injection.",
+      "Inversion pulse then segmented gradient-echo readout in mid-diastole, usually every other heartbeat.",
+      "TI chosen from a TI scout (Look-Locker) so normal myocardium is black. TI must lengthen as contrast washes out, so re-check during long studies.",
+      "PSIR (phase-sensitive) reconstruction keeps the sign of magnetisation and makes the image much less sensitive to TI.",
+      "Match slice positions to cine; confirm doubtful areas with a cross-cut or phase-swapped repeat."
+    ],
+    artefacts: [
+      ["TI too short", "Normal myocardium is grey with a dark 'etched' rim; scar may look dark or isointense. Lengthen TI or use PSIR."],
+      ["TI too long", "Myocardium grey, scar contrast reduced. Shorten TI."],
+      ["Bright blood obscures subendocardial scar", "Dark-blood LGE techniques, PSIR, or a phase-swapped repeat."],
+      ["Ghosting (breathing, arrhythmia)", "Single-shot bSSFP-readout LGE or motion-corrected averaged free-breathing LGE."],
+      ["Uneven nulling from coil sensitivity", "Surface-coil intensity correction; PSIR."],
+      ["Device artefact (ICD)", "Wideband inversion LGE."]
+    ],
+    widget: "ir"
+  },
+  {
+    id: "map", name: "T1/T2 mapping & ECV", tag: "Parametric mapping",
+    intro: "Mapping turns signal into a number (milliseconds) for every pixel, so you can detect diffuse disease that has no 'normal' myocardium to compare against.",
+    shows: [
+      "Native T1: rises with oedema, fibrosis and amyloid; falls with lipid (Fabry) and iron.",
+      "T2: oedema / active inflammation (acute MI, myocarditis, Takotsubo, sarcoid, transplant rejection).",
+      "ECV: the extracellular fraction (normal ≈ 25%). It quantifies diffuse fibrosis and amyloid burden."
+    ],
+    params: [
+      "T1: MOLLI or ShMOLLI (precise, slightly underestimates T1, heart-rate sensitive) or SASHA (more accurate, noisier). Single breath-hold, diastolic SAX base/mid/apex.",
+      "T2: T2-prepared bSSFP with several preparation times; more robust than T2-weighted STIR.",
+      "ECV = (1 − haematocrit) × ΔR1 myocardium / ΔR1 blood, with R1 = 1/T1 pre- and ~15 min post-contrast. Needs a same-day haematocrit (or a validated synthetic one).",
+      "ROI in the mid-wall, away from blood-pool edges; septum for 'global' values."
+    ],
+    artefacts: [
+      ["Partial volume with blood pool", "Draw the ROI in the middle third of the wall; check the source images."],
+      ["Motion between source images", "Motion correction; inspect the raw images and the fit-error / R² map."],
+      ["Off-resonance (3 T, lateral wall)", "Shim; prefer septal ROI; interpret lateral values cautiously."],
+      ["Values not comparable between sites", "Use local reference ranges for the same sequence, vendor and field."]
+    ]
+  },
+  {
+    id: "perf", name: "First-pass perfusion", tag: "Saturation-recovery dynamic imaging",
+    intro: "Images ≥ 3 SAX slices every heartbeat while a gadolinium bolus passes through the myocardium. Ischaemic myocardium enhances later and less, typically as a subendocardial dark band in a coronary territory.",
+    shows: [
+      "Inducible ischaemia under vasodilator stress; compare with rest and with LGE.",
+      "Stress defect with no LGE = ischaemia; defect matching LGE = infarct.",
+      "Microvascular dysfunction: diffuse circumferential subendocardial defect (quantitative perfusion helps)."
+    ],
+    params: [
+      "Adenosine 140 µg/kg/min for ≥ 3 min (up to 210 if inadequate response) or regadenoson 400 µg bolus.",
+      "Gadolinium 0.05–0.1 mmol/kg at 3–7 mL/s; imaging for ~60 heartbeats.",
+      "Basal, mid and apical SAX every beat; in-plane ≤ 3 mm; readout ≈ 100–150 ms per slice.",
+      "No caffeine for 12–24 h. Signs of adequate stress: HR rise ≥ 10 bpm, symptoms, splenic switch-off."
+    ],
+    artefacts: [
+      ["Dark-rim artefact", "Mimics ischaemia. It is transient at peak blood-pool enhancement, 1–2 pixels wide, present at rest too and not territorial. Higher spatial resolution and shorter readout reduce it."],
+      ["Inadequate stress (false negative)", "Check haemodynamic response and splenic switch-off; review caffeine intake; escalate dose."],
+      ["Breathing motion", "Shallow breathing guidance, motion correction."],
+      ["Arrhythmia / missed slices", "Accept fewer slices; check trigger."]
+    ]
+  },
+  {
+    id: "flow", name: "Phase-contrast flow", tag: "Velocity encoding",
+    intro: "A bipolar gradient makes the phase of the signal proportional to velocity. In a slice through a vessel each pixel's velocity times its area, summed over the cycle, gives flow.",
+    shows: [
+      "Forward, backward and net flow: stroke volume, aortic or pulmonary regurgitant fraction.",
+      "Shunt ratio Qp:Qs (pulmonary vs aortic flow).",
+      "Peak velocity, for an estimated gradient (4v²). It tends to underestimate vs Doppler."
+    ],
+    params: [
+      "VENC just above the expected peak velocity (e.g. ~150 cm/s for a normal aorta, 300–500 cm/s for aortic stenosis).",
+      "Plane perpendicular to flow: aorta at the sinotubular junction, MPA mid-trunk; for peak velocity, at the vena contracta.",
+      "Retrospective gating, temporal resolution ≈ 25–45 ms; through-plane encoding."
+    ],
+    artefacts: [
+      ["Aliasing (velocity > VENC)", "Velocities wrap to the opposite sign. Increase VENC and repeat, or unwrap."],
+      ["VENC far too high", "Noisy velocities, poor accuracy for low flows. Set VENC close to the peak."],
+      ["Background phase offset (eddy currents)", "Small errors become large regurgitant fraction errors. Phantom or stationary-tissue correction, position the vessel at isocentre."],
+      ["Plane not perpendicular / partial volume", "Re-plan on two orthogonal views; adequate pixel size (≥ 4 pixels across the vessel)."]
+    ],
+    widget: "venc"
+  },
+  {
+    id: "t2s", name: "T2*", tag: "Multi-echo gradient echo",
+    intro: "Iron is paramagnetic and makes the signal decay faster with each echo. A single breath-hold multi-echo acquisition gives an exponential fit and a T2* value in milliseconds.",
+    shows: [
+      "Myocardial iron loading (thalassaemia, sickle cell with transfusion, haemochromatosis).",
+      "> 20 ms normal; 10–20 ms mild–moderate loading; < 10 ms severe, high risk of heart failure.",
+      "Liver T2* in the same session for total body iron."
+    ],
+    params: [
+      "Mid-ventricular SAX, ~8 echoes from ~2 to ~18 ms; dark-blood preparation improves reproducibility.",
+      "ROI across the full thickness of the interventricular septum.",
+      "Validated at 1.5 T; values are not interchangeable with 3 T."
+    ],
+    artefacts: [
+      ["Susceptibility at lateral wall (lung, cardiac vein)", "Use the septal ROI only."],
+      ["Noise floor at late echoes in severe overload", "Truncate late echoes or fit with an offset model."],
+      ["Breathing between echoes", "It is single-shot per breath-hold; repeat the breath-hold."]
+    ]
+  }
+];
+
+function seqHTML(q) {
+  const li = a => a.map(x => `<li>${x}</li>`).join("");
+  const art = q.artefacts.map(a => `<tr><th>${a[0]}</th><td>${a[1]}</td></tr>`).join("");
+  let fig = "";
+  if (q.widget === "ir") fig = `<div class="seq-fig" id="irFig">
+      <div class="fig-title"><h4>Inversion recovery and TI selection</h4>
+        <div class="seg" role="group" aria-label="Reconstruction" id="irRecon"><button type="button" data-r="mag" aria-pressed="true">Magnitude</button><button type="button" data-r="psir" aria-pressed="false">PSIR</button></div></div>
+      <div class="controls">
+        <div class="ctl"><label for="tiSlider"><span>Inversion time (TI)</span><output id="tiOut" class="num">300 ms</output></label><input type="range" id="tiSlider" min="80" max="650" step="5" value="300"></div>
+        <div class="ctl"><label for="postSlider"><span>Time after contrast</span><output id="postOut" class="num">10 min</output></label><input type="range" id="postSlider" min="5" max="25" step="5" value="10"></div>
+      </div>
+      <div class="split">
+        <div class="svg-scroll"><svg id="irPlot" viewBox="0 0 460 270" role="img" aria-label="Inversion recovery curves"></svg></div>
+        <div><svg id="irImg" viewBox="0 0 200 200" role="img" aria-label="Simulated short-axis LGE image" style="width:100%;max-width:260px;display:block;margin:0 auto;border-radius:8px"></svg></div>
+      </div>
+      <div class="status" id="irStatus" aria-live="polite"></div>
+      <p class="fig-cap">Mz = 1 − 2e<sup>−TI/T1</sup> (illustrative post-contrast T1 values; real curves are modified by the readout and incomplete recovery). The null point is TI ≈ 0.69 × T1. The simulated short-axis slice has an inferior subendocardial infarct.</p>
+    </div>`;
+  if (q.widget === "venc") fig = `<div class="seq-fig" id="vencFig">
+      <div class="fig-title"><h4>Choosing the VENC</h4></div>
+      <div class="controls">
+        <div class="ctl"><label for="vpeak"><span>True peak velocity</span><output id="vpeakOut" class="num">300 cm/s</output></label><input type="range" id="vpeak" min="80" max="500" step="10" value="300"></div>
+        <div class="ctl"><label for="venc"><span>VENC setting</span><output id="vencOut" class="num">200 cm/s</output></label><input type="range" id="venc" min="50" max="600" step="10" value="200"></div>
+      </div>
+      <div class="svg-scroll"><svg id="vencPlot" viewBox="0 0 560 250" role="img" aria-label="Velocity curve with aliasing"></svg></div>
+      <div class="status" id="vencStatus" aria-live="polite"></div>
+      <p class="fig-cap">Aortic through-plane velocity over one cardiac cycle. Phase can only represent ±VENC, so faster flow wraps around. Noise in velocity scales with VENC.</p>
+    </div>`;
+  return `<div class="seq" style="margin-top:14px">
+    <div class="seq-head"><span class="tag">${q.tag}</span><h3>${q.name}</h3><p>${q.intro}</p></div>
+    <div class="seq-body">
+      <div class="seq-col"><h5>What it shows</h5><ul>${li(q.shows)}</ul></div>
+      <div class="seq-col"><h5>Key parameters</h5><ul>${li(q.params)}</ul></div>
+    </div>
+    ${fig}
+    <div class="artefacts"><h5>Artefacts → fixes</h5><table class="fix-table"><tbody>${art}</tbody></table></div>
+  </div>`;
+}
+function showSeq(id) {
+  const q = SEQS.find(s => s.id === id) || SEQS[0];
+  $$("#seqChips .chip").forEach(c => c.setAttribute("aria-pressed", String(c.dataset.id === q.id)));
+  $("#seqHost").innerHTML = seqHTML(q);
+  if (q.widget === "ir") initIR();
+  if (q.widget === "venc") initVenc();
+}
+$("#seqChips").innerHTML = SEQS.map(s => `<button type="button" class="chip" data-id="${s.id}" aria-pressed="false">${s.name}</button>`).join("");
+$$("#seqChips .chip").forEach(c => c.addEventListener("click", () => showSeq(c.dataset.id)));
+
+/* --- short-axis schematic (shared by IR widget, LGE gallery, diagnoses) --- */
+function sector(cx, cy, r1, r2, a1, a2) {
+  if (a2 - a1 >= 359.9) return sector(cx, cy, r1, r2, a1, a1 + 180) + " " + sector(cx, cy, r1, r2, a1 + 180, a1 + 360);
+  const lg = a2 - a1 > 180 ? 1 : 0;
+  const [x1, y1] = pt(cx, cy, r2, a1), [x2, y2] = pt(cx, cy, r2, a2), [x3, y3] = pt(cx, cy, r1, a2), [x4, y4] = pt(cx, cy, r1, a1);
+  return `M${x1.toFixed(2)} ${y1.toFixed(2)} A${r2} ${r2} 0 ${lg} 1 ${x2.toFixed(2)} ${y2.toFixed(2)} L${x3.toFixed(2)} ${y3.toFixed(2)} A${r1} ${r1} 0 ${lg} 0 ${x4.toFixed(2)} ${y4.toFixed(2)} Z`;
+}
+function sax(o) {
+  o = Object.assign({ wall: 13, rEndo: 30, blood: "#d4d4d4", rvBlood: "#c8c8c8", myo: "#151515", lesions: [], labels: true, rvWall: null, notes: [] }, o);
+  const id = "b" + (++uid), cx = 106, cy = 100, rE = o.rEndo, rO = o.rEndo + o.wall;
+  const [ax, ay] = pt(cx, cy, rO, -118), [bx, by] = pt(cx, cy, rO, 118);
+  const rvPath = `M${ax.toFixed(1)} ${ay.toFixed(1)} C${cx - rO - 62} ${cy - rO - 22} ${cx - rO - 62} ${cy + rO + 22} ${bx.toFixed(1)} ${by.toFixed(1)} A${rO} ${rO} 0 0 1 ${ax.toFixed(1)} ${ay.toFixed(1)} Z`;
+  const rvWallPath = `M${ax.toFixed(1)} ${ay.toFixed(1)} C${cx - rO - 62} ${cy - rO - 22} ${cx - rO - 62} ${cy + rO + 22} ${bx.toFixed(1)} ${by.toFixed(1)}`;
+  let s = `<defs><filter id="${id}" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="${o.blur == null ? 1.1 : o.blur}"/></filter></defs>`;
+  s += `<rect width="200" height="200" fill="var(--img-bg)"/>`;
+  s += `<path d="${rvPath}" fill="${o.rvBlood}"/>`;
+  s += `<path d="${rvWallPath}" fill="none" stroke="${o.rvWall || o.myo}" stroke-width="4"/>`;
+  s += `<path d="${sector(cx, cy, rE, rO, 0, 360)}" fill="${o.myo}" fill-rule="evenodd"/>`;
+  s += `<circle cx="${cx}" cy="${cy}" r="${rE}" fill="${o.blood}"/>`;
+  // papillary muscles
+  s += `<circle cx="${(pt(cx, cy, rE - 5, -40))[0]}" cy="${(pt(cx, cy, rE - 5, -40))[1]}" r="4.5" fill="${o.pap || o.myo}"/>`;
+  s += `<circle cx="${(pt(cx, cy, rE - 5, 60))[0]}" cy="${(pt(cx, cy, rE - 5, 60))[1]}" r="4.5" fill="${o.pap || o.myo}"/>`;
+  s += `<g filter="url(#${id})">`;
+  o.lesions.forEach(l => {
+    s += `<path d="${sector(cx, cy, rE + l.f1 * o.wall, rE + l.f2 * o.wall, l.a1, l.a2)}" fill="${l.c || "#f2f2f2"}" fill-rule="evenodd"/>`;
+  });
+  s += `</g>`;
+  if (o.extra) s += o.extra(cx, cy, rE, rO);
+  if (o.labels) {
+    s += `<g font-size="10" fill="var(--img-label)" font-family="var(--font-mono)" text-anchor="middle">
+      <text x="${cx}" y="${cy - rO - 8}">A</text><text x="${cx}" y="${cy + rO + 16}">I</text>
+      <text x="${cx + rO + 10}" y="${cy + 4}">L</text><text x="${cx - rO - 50}" y="${cy + 4}">RV</text></g>`;
+  }
+  o.notes.forEach(n => { s += `<text x="${n[0]}" y="${n[1]}" font-size="9.5" fill="#f0f0f0" text-anchor="${n[3] || "start"}" font-family="var(--font-body)">${n[2]}</text>`; });
+  return `<svg viewBox="0 0 200 200" role="img" aria-label="${o.aria || "Schematic short-axis slice"}">${s}</svg>`;
+}
+
+/* --- IR widget --- */
+const IR_T1 = { 5: { myo: 400, blood: 270, scar: 220 }, 10: { myo: 470, blood: 330, scar: 260 }, 15: { myo: 520, blood: 380, scar: 285 }, 20: { myo: 560, blood: 420, scar: 305 }, 25: { myo: 600, blood: 455, scar: 325 } };
+const irState = { ti: 300, post: 10, recon: "mag" };
+function initIR() {
+  $("#tiSlider").addEventListener("input", e => { irState.ti = +e.target.value; drawIR(); });
+  $("#postSlider").addEventListener("input", e => { irState.post = +e.target.value; drawIR(); });
+  $$("#irRecon button").forEach(b => b.addEventListener("click", () => {
+    irState.recon = b.dataset.r;
+    $$("#irRecon button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    drawIR();
+  }));
+  $("#tiSlider").value = irState.ti; $("#postSlider").value = irState.post;
+  $$("#irRecon button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.r === irState.recon)));
+  drawIR();
+}
+function drawIR() {
+  const T = IR_T1[irState.post], ti = irState.ti;
+  $("#tiOut").textContent = ti + " ms"; $("#postOut").textContent = irState.post + " min";
+  const L = 46, R = 444, Tp = 14, B = 226, xmax = 700;
+  const X = t => L + t / xmax * (R - L), Y = m => Tp + (1 - m) / 2 * (B - Tp);
+  let s = "";
+  [-1, -0.5, 0, 0.5, 1].forEach(m => { s += `<line x1="${L}" x2="${R}" y1="${Y(m)}" y2="${Y(m)}" class="${m === 0 ? "s-muted" : "s-line"}" stroke-width="1"/><text x="${L - 6}" y="${Y(m) + 4}" font-size="10" text-anchor="end" class="t-muted t-mono">${m}</text>`; });
+  [0, 100, 200, 300, 400, 500, 600, 700].forEach(t => { s += `<text x="${X(t)}" y="${B + 15}" font-size="10" text-anchor="middle" class="t-muted t-mono">${t}</text>`; });
+  s += `<text x="${(L + R) / 2}" y="${B + 32}" font-size="11.5" text-anchor="middle" class="t-muted">Time after inversion pulse (ms)</text>`;
+  s += `<text x="12" y="${(Tp + B) / 2}" font-size="11.5" text-anchor="middle" class="t-muted" transform="rotate(-90 12 ${(Tp + B) / 2})">Mz / M0</text>`;
+  const tis = { scar: ["Scar", "var(--c-scar)"], blood: ["Blood", "var(--c-blood)"], myo: ["Normal myocardium", "var(--c-myo)"] };
+  const mz = {};
+  Object.keys(tis).forEach(k => {
+    let p = "";
+    for (let i = 0; i <= 140; i++) { const t = xmax * i / 140; p += (i ? "L" : "M") + X(t).toFixed(1) + " " + Y(1 - 2 * Math.exp(-t / T[k])).toFixed(1); }
+    s += `<path d="${p}" fill="none" stroke="${tis[k][1]}" stroke-width="2.4"/>`;
+    const null_ = T[k] * Math.LN2;
+    s += `<circle cx="${X(null_)}" cy="${Y(0)}" r="3" fill="var(--surface)" stroke="${tis[k][1]}" stroke-width="1.5"/>`;
+    mz[k] = 1 - 2 * Math.exp(-ti / T[k]);
+  });
+  s += `<line x1="${X(ti)}" x2="${X(ti)}" y1="${Tp}" y2="${B}" class="s-ink" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+  s += `<text x="${X(ti) + 5}" y="${Tp + 10}" font-size="11" font-weight="600" class="t-ink t-mono">TI ${ti}</text>`;
+  Object.keys(tis).forEach(k => { s += `<circle cx="${X(ti)}" cy="${Y(mz[k])}" r="4.5" fill="${tis[k][1]}"/>`; });
+  // legend
+  let lx = L + 8;
+  Object.keys(tis).forEach(k => {
+    const nm = tis[k][0], nul = Math.round(T[k] * Math.LN2);
+    s += `<rect x="${lx}" y="${B - 22}" width="10" height="3" fill="${tis[k][1]}"/><text x="${lx + 14}" y="${B - 17}" font-size="10.5" class="t-muted">${nm} · null ${nul}</text>`;
+    lx += nm.length * 5.6 + 72;
+  });
+  $("#irPlot").innerHTML = s;
+  // simulated image
+  const gain = 1.5;
+  const lvl = m => irState.recon === "mag" ? clamp(Math.abs(m) * gain, 0, 1) : clamp(m * gain, 0, 1);
+  const g = v => { const c = Math.round(8 + v * 240); return `rgb(${c},${c},${c})`; };
+  $("#irImg").outerHTML = sax({
+    blood: g(lvl(mz.blood)), rvBlood: g(lvl(mz.blood)), myo: g(lvl(mz.myo)), pap: g(lvl(mz.myo)),
+    lesions: [{ a1: 55, a2: 125, f1: 0, f2: 0.6, c: g(lvl(mz.scar)) }], aria: "Simulated LGE short-axis slice"
+  }).replace("<svg ", '<svg id="irImg" style="width:100%;max-width:260px;display:block;margin:0 auto;border-radius:8px" ');
+  // status
+  const tn = T.myo * Math.LN2, st = $("#irStatus");
+  let msg, cls;
+  if (Math.abs(ti - tn) <= 20) { cls = "good"; msg = `<strong>Myocardium nulled.</strong> TI is at the normal-myocardium null point (~${Math.round(tn)} ms): healthy muscle is black and the infarct is bright.`; }
+  else if (ti < tn) {
+    cls = "bad";
+    msg = irState.recon === "mag"
+      ? `<strong>TI too short.</strong> Normal myocardium still has negative magnetisation, and magnitude images display it as grey. Scar is close to its own null, so the infarct looks dark or isointense and can be missed. Lengthen TI to ~${Math.round(tn)} ms, or switch to PSIR.`
+      : `<strong>TI too short, but PSIR rescues it.</strong> PSIR keeps the sign, so negative normal myocardium still displays dark and scar stays brighter. This is why PSIR is forgiving of TI.`;
+  } else {
+    cls = "bad";
+    msg = `<strong>TI too long.</strong> Normal myocardium has recovered past zero and looks grey, so scar-to-normal contrast falls and small subendocardial scars get lost. Shorten TI toward ~${Math.round(tn)} ms.`;
+  }
+  st.className = "status " + cls;
+  st.innerHTML = msg + ` <span class="muted">TI must lengthen as gadolinium washes out (try the time-after-contrast slider).</span>`;
+}
+
+/* --- VENC widget --- */
+function initVenc() {
+  ["vpeak", "venc"].forEach(id => $("#" + id).addEventListener("input", drawVenc));
+  drawVenc();
+}
+function drawVenc() {
+  const vp = +$("#vpeak").value, venc = +$("#venc").value;
+  $("#vpeakOut").textContent = vp + " cm/s"; $("#vencOut").textContent = venc + " cm/s";
+  const L = 52, R = 544, T = 16, B = 206, ymax = 520;
+  const X = t => L + t * (R - L), Y = v => (T + B) / 2 - v / ymax * (B - T) / 2;
+  const vel = t => {
+    if (t >= 0.06 && t <= 0.4) return vp * Math.pow(Math.sin(Math.PI * (t - 0.06) / 0.34), 1.3);
+    if (t > 0.4 && t < 0.52) return -0.08 * vp * Math.sin(Math.PI * (t - 0.4) / 0.12);
+    return 0;
+  };
+  const wrap = v => { const w = ((v + venc) % (2 * venc) + 2 * venc) % (2 * venc) - venc; return w; };
+  let seed = 7; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647 - 0.5; };
+  let s = "";
+  [-500, -250, 0, 250, 500].forEach(v => { s += `<line x1="${L}" x2="${R}" y1="${Y(v)}" y2="${Y(v)}" class="${v === 0 ? "s-muted" : "s-line"}"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="10" class="t-muted t-mono">${v}</text>`; });
+  s += `<rect x="${L}" y="${Y(venc)}" width="${R - L}" height="${Y(-venc) - Y(venc)}" fill="var(--accent)" opacity="0.08"/>`;
+  s += `<line x1="${L}" x2="${R}" y1="${Y(venc)}" y2="${Y(venc)}" stroke="var(--accent)" stroke-dasharray="5 4"/><line x1="${L}" x2="${R}" y1="${Y(-venc)}" y2="${Y(-venc)}" stroke="var(--accent)" stroke-dasharray="5 4"/>`;
+  s += `<text x="${R - 4}" y="${Y(venc) - 4}" text-anchor="end" font-size="10.5" fill="var(--accent)" class="t-mono">+VENC</text><text x="${R - 4}" y="${Y(-venc) + 13}" text-anchor="end" font-size="10.5" fill="var(--accent)" class="t-mono">−VENC</text>`;
+  let pt_ = "", pm = "";
+  for (let i = 0; i <= 200; i++) {
+    const t = i / 200, v = vel(t);
+    pt_ += (i ? "L" : "M") + X(t).toFixed(1) + " " + Y(v).toFixed(1);
+    const m = wrap(v + rnd() * 0.06 * venc);
+    pm += (i ? "L" : "M") + X(t).toFixed(1) + " " + Y(m).toFixed(1);
+  }
+  s += `<path d="${pt_}" fill="none" class="s-muted" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+  s += `<path d="${pm}" fill="none" stroke="var(--c-scar)" stroke-width="2"/>`;
+  s += `<text x="${(L + R) / 2}" y="${B + 30}" text-anchor="middle" font-size="11.5" class="t-muted">Cardiac cycle (systole → diastole)</text>`;
+  s += `<text x="14" y="${(T + B) / 2}" text-anchor="middle" font-size="11.5" class="t-muted" transform="rotate(-90 14 ${(T + B) / 2})">Velocity (cm/s)</text>`;
+  s += `<g font-size="10.5" class="t-muted"><line x1="${L + 8}" x2="${L + 28}" y1="${T + 6}" y2="${T + 6}" class="s-muted" stroke-dasharray="4 3"/><text x="${L + 32}" y="${T + 10}">true velocity</text>
+    <line x1="${L + 118}" x2="${L + 138}" y1="${T + 6}" y2="${T + 6}" stroke="var(--c-scar)" stroke-width="2"/><text x="${L + 142}" y="${T + 10}">measured</text></g>`;
+  $("#vencPlot").innerHTML = s;
+  const st = $("#vencStatus");
+  if (vp > venc) { st.className = "status bad"; st.innerHTML = `<strong>Aliasing.</strong> Peak ${vp} cm/s exceeds VENC ${venc} cm/s, so the systolic peak wraps to negative velocities and flow is badly underestimated. Repeat with VENC ≈ ${Math.ceil(vp * 1.1 / 10) * 10} cm/s.`; }
+  else if (venc > vp * 1.8) { st.className = "status bad"; st.innerHTML = `<strong>VENC too high.</strong> No aliasing, but velocity noise scales with VENC and low diastolic flows (regurgitation) become inaccurate. Bring VENC closer to ~${Math.ceil(vp * 1.1 / 10) * 10} cm/s.`; }
+  else { st.className = "status good"; st.innerHTML = `<strong>Good choice.</strong> VENC sits just above the peak velocity: no wrap, and the velocity range is used efficiently.`; }
+}
+
+showSeq("cine");
+
+/* =========================================================
+   2. VIEWS
+   ========================================================= */
+const IMG = { bg: "var(--img-bg)", blood: "#d9d9d9", myo: "#3b3f44", tissue: "#26292d", lung: "#0b0c0d", plane: "#ffb347", lab: "#c9cfd6" };
+function frame(inner, label) {
+  return `<svg viewBox="0 0 320 240" role="img" aria-label="${label}"><rect width="320" height="240" fill="${IMG.bg}"/>${inner}
+  <text x="10" y="18" font-size="11" fill="${IMG.lab}" font-family="var(--font-mono)">${label}</text></svg>`;
+}
+function plane(x1, y1, x2, y2, txt, tx, ty, anchor) {
+  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${IMG.plane}" stroke-width="2.2" stroke-dasharray="7 5"/>` +
+    (txt ? `<text x="${tx}" y="${ty}" font-size="11" font-weight="600" fill="${IMG.plane}" text-anchor="${anchor || "start"}">${txt}</text>` : "");
+}
+function ell(cx, cy, rx, ry, rot, fill, stroke, sw) {
+  return `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" transform="rotate(${rot} ${cx} ${cy})" fill="${fill}" ${stroke ? `stroke="${stroke}" stroke-width="${sw || 6}"` : ""}/>`;
+}
+const CART = {
+  axial: () =>
+    ell(160, 128, 140, 96, 0, IMG.tissue) + ell(82, 120, 46, 66, 0, IMG.lung) + ell(240, 120, 46, 66, 0, IMG.lung) +
+    ell(165, 200, 18, 16, 0, "#55595e") + ell(185, 176, 10, 10, 0, IMG.blood) +
+    ell(178, 158, 28, 16, -10, IMG.blood) /* LA */ +
+    ell(130, 112, 34, 22, -25, IMG.blood, IMG.myo, 3) /* RV */ +
+    ell(190, 122, 52, 28, -35, IMG.blood, IMG.myo, 8) /* LV */ +
+    `<text x="118" y="116" font-size="10" fill="#222">RV</text><text x="196" y="126" font-size="10" fill="#222">LV</text><text x="170" y="162" font-size="10" fill="#222">LA</text>`,
+  vla: () =>
+    ell(160, 120, 140, 100, 0, IMG.tissue) +
+    ell(200, 92, 34, 26, 15, IMG.blood, IMG.myo, 3) /* LA */ +
+    ell(140, 140, 62, 30, 35, IMG.blood, IMG.myo, 9) /* LV long axis */ +
+    `<text x="206" y="96" font-size="10" fill="#222">LA</text><text x="136" y="144" font-size="10" fill="#222">LV</text>`,
+  hla: () =>
+    ell(160, 120, 140, 100, 0, IMG.tissue) +
+    ell(118, 168, 30, 24, 0, IMG.blood, IMG.myo, 3) + ell(198, 172, 30, 22, 0, IMG.blood, IMG.myo, 3) +
+    `<path d="M150 150 Q120 140 112 100 Q118 64 150 54 Z" fill="${IMG.blood}" stroke="${IMG.myo}" stroke-width="4"/>` +
+    `<path d="M166 152 Q218 146 218 100 Q210 58 160 48 Q156 100 166 152 Z" fill="${IMG.blood}" stroke="${IMG.myo}" stroke-width="9"/>` +
+    `<text x="122" y="112" font-size="10" fill="#222">RV</text><text x="180" y="108" font-size="10" fill="#222">LV</text><text x="108" y="172" font-size="10" fill="#222">RA</text><text x="190" y="176" font-size="10" fill="#222">LA</text>`,
+  sax: () =>
+    ell(160, 120, 140, 100, 0, IMG.tissue) +
+    `<path d="M150 82 C 80 70 78 170 150 158 A 42 42 0 0 1 150 82 Z" fill="${IMG.blood}" stroke="${IMG.myo}" stroke-width="3"/>` +
+    `<circle cx="182" cy="120" r="34" fill="${IMG.blood}" stroke="${IMG.myo}" stroke-width="12"/>` +
+    `<circle cx="158" cy="74" r="13" fill="${IMG.blood}" stroke="${IMG.myo}" stroke-width="2"/>` +
+    `<text x="104" y="124" font-size="10" fill="#222">RV</text><text x="176" y="124" font-size="10" fill="#222">LV</text><text x="152" y="78" font-size="9" fill="#222">Ao</text>`
+};
+const PLAN = [
+  { title: "Localisers", sub: "Tri-plane + axial stack",
+    svg: () => frame(CART.axial(), "AXIAL"),
+    text: `<h4>Start with localisers</h4><p>Quick single-shot images in three body planes, then an axial bSSFP or HASTE stack through the chest. The axial stack is a useful survey of the great vessels, pericardium and extracardiac structures.</p>` },
+  { title: "Vertical long axis", sub: "Pseudo 2-chamber",
+    svg: () => frame(CART.axial() + plane(122, 172, 262, 74, "→ VLA", 262, 66, "end"), "AXIAL"),
+    text: `<h4>Plan the vertical long axis</h4><p>On an axial slice through the LV, place a plane from the <strong>centre of the mitral valve through the apex</strong>. It shows LV anterior and inferior walls with the LA: a first, approximate 2-chamber view.</p>` },
+  { title: "Horizontal long axis", sub: "Pseudo 4-chamber",
+    svg: () => frame(CART.vla() + plane(64, 196, 230, 74, "→ HLA", 232, 66, "end"), "VLA"),
+    text: `<h4>Plan the horizontal long axis</h4><p>On the vertical long axis, again place the plane <strong>through the mitral valve centre and the apex</strong>. The result is a pseudo 4-chamber view, which is the right base for planning short axes.</p>` },
+  { title: "Short-axis stack", sub: "Parallel to mitral annulus",
+    svg: () => frame(CART.hla() + [0, 1, 2, 3, 4, 5].map(i => plane(118 + i * 3, 150 - i * 18, 222 + i * 3, 158 - i * 18 + 8, "", 0, 0)).join("") + `<text x="232" y="150" font-size="11" font-weight="600" fill="${IMG.plane}">→ SAX</text>`, "PSEUDO 4CH"),
+    text: `<h4>Plan the short axis</h4><p>On the pseudo 4-chamber (cross-checked on the 2-chamber) at end-diastole, place planes <strong>perpendicular to the LV long axis</strong> with the first slice <strong>parallel to the mitral annulus</strong>. Cover base to apex: typically 6–8 mm slices with 2–4 mm gaps.</p>` },
+  { title: "True 4-chamber", sub: "From basal SAX",
+    svg: () => frame(CART.sax() + plane(60, 150, 290, 98, "→ 4CH", 290, 90, "end"), "BASAL SAX"),
+    text: `<h4>Plan the true 4-chamber</h4><p>On a basal short axis, place the plane through the <strong>LV centre and the acute margin of the RV</strong>, avoiding the LVOT. Check on the 2-chamber that it passes through the apex so the LV is not foreshortened.</p>` },
+  { title: "True 2-chamber", sub: "From basal SAX",
+    svg: () => frame(CART.sax() + plane(196, 30, 168, 212, "→ 2CH", 202, 34), "BASAL SAX"),
+    text: `<h4>Plan the true 2-chamber</h4><p>On the basal short axis, place a plane through the <strong>LV centre bisecting the anterior and inferior walls</strong>, roughly parallel to the septum and clear of the RV. Confirm on the 4-chamber that it hits the apex.</p>` },
+  { title: "3-chamber (LVOT)", sub: "From basal SAX",
+    svg: () => frame(CART.sax() + plane(140, 46, 222, 196, "→ 3CH", 226, 196), "BASAL SAX"),
+    text: `<h4>Plan the 3-chamber</h4><p>On a basal short axis showing the aortic root, place the plane through the <strong>LV centre and the aortic valve / LVOT</strong>. Check on the 2-chamber that it runs through the apex. It shows LVOT, aortic and mitral valves, anteroseptal and inferolateral walls.</p>` }
+];
+let planIdx = 0;
+function drawPlan() {
+  $("#planSteps").innerHTML = PLAN.map((p, i) => `<button type="button" class="${i === planIdx ? "on" : ""}" data-i="${i}" aria-current="${i === planIdx ? "step" : "false"}"><b>${i + 1}</b><span>${p.title}<small>${p.sub}</small></span></button>`).join("");
+  $$("#planSteps button").forEach(b => b.addEventListener("click", () => { planIdx = +b.dataset.i; drawPlan(); }));
+  $("#planSvg").innerHTML = PLAN[planIdx].svg();
+  $("#planText").innerHTML = PLAN[planIdx].text;
+  $("#planPrev").disabled = planIdx === 0;
+  $("#planNext").disabled = planIdx === PLAN.length - 1;
+}
+$("#planPrev").addEventListener("click", () => { if (planIdx > 0) { planIdx--; drawPlan(); } });
+$("#planNext").addEventListener("click", () => { if (planIdx < PLAN.length - 1) { planIdx++; drawPlan(); } });
+drawPlan();
+
+const VIEWCARDS = [
+  { name: "4-chamber", svg: frame(CART.hla(), "4CH"),
+    items: ["All four chambers, both AV valves.", "LV apex in plane (no foreshortening).", "No LVOT visible.", "Walls: septum, lateral; RV free wall; RA and LA size."] },
+  { name: "2-chamber", svg: frame(CART.vla(), "2CH"),
+    items: ["LV and LA only, no RV.", "Anterior and inferior walls, apex, mitral valve.", "LA appendage often seen.", "Useful for anterior and inferior infarcts."] },
+  { name: "3-chamber (LVOT)", svg: frame(ell(160, 120, 140, 100, 0, IMG.tissue) + ell(205, 150, 30, 22, 0, IMG.blood, IMG.myo, 3) + `<path d="M120 76 Q160 60 190 96 L200 132 Q150 140 110 132 Q96 100 120 76 Z" fill="${IMG.blood}" stroke="${IMG.myo}" stroke-width="9"/>` + `<rect x="170" y="62" width="28" height="22" rx="8" fill="${IMG.blood}" stroke="${IMG.myo}" stroke-width="2" transform="rotate(30 184 73)"/>` + `<text x="140" y="110" font-size="10" fill="#222">LV</text><text x="198" y="154" font-size="10" fill="#222">LA</text><text x="176" y="77" font-size="9" fill="#222">Ao</text>`, "3CH"),
+    items: ["LVOT, aortic valve and mitral valve together.", "Anteroseptal and inferolateral walls.", "SAM, LVOT obstruction, AR and MR jets.", "Basal septal thickness in HCM."] },
+  { name: "Short-axis stack", svg: frame(CART.sax(), "SAX"),
+    items: ["Contiguous coverage from mitral annulus to apex.", "Basis for volumes, EF and mass.", "Mid-ventricular slice shows both papillary muscles.", "Same positions for cine, LGE and mapping."] }
+];
+$("#viewCards").innerHTML = VIEWCARDS.map(v => `<div class="view-card">${v.svg}<div class="body"><h4>${v.name}</h4><ul>${v.items.map(i => `<li>${i}</li>`).join("")}</ul></div></div>`).join("");
+
+const PROTOCOL = [
+  { t: "0", name: "Localisers and axial stack", note: "Tri-plane scouts, axial survey; plan the long axes.", pills: [] },
+  { t: "5", name: "Long-axis cines", note: "2-, 3- and 4-chamber bSSFP cines (plus RV views or LVOT as indicated).", pills: [] },
+  { t: "10", name: "Native T1 and T2 mapping", note: "Base, mid and apical SAX (± 4-chamber). Must be done before any gadolinium.", pills: ["Pre-contrast"] },
+  { t: "14", name: "T2-weighted STIR", note: "Optional, for oedema; many centres rely on T2 mapping instead.", pills: ["Optional"], opt: true },
+  { t: "17", name: "Stress perfusion + gadolinium", note: "Adenosine or regadenoson; first-pass bolus. In a non-stress study, simply inject gadolinium here.", pills: ["Gadolinium"], contrast: true },
+  { t: "20", name: "Short-axis cine stack", note: "Acquired while gadolinium distributes; contrast does not degrade bSSFP cines meaningfully.", pills: [] },
+  { t: "28", name: "Rest perfusion and flow", note: "Rest perfusion is optional (≥ 10 min after stress). Phase-contrast flow and other indication-specific imaging.", pills: ["Optional"], opt: true },
+  { t: "30", name: "LGE", note: "≥ 10 min after contrast: TI scout, then SAX stack and long axes (PSIR). Early gadolinium imaging (1–3 min) if thrombus is a question.", pills: ["10–20 min post"], contrast: true },
+  { t: "40", name: "Post-contrast T1 mapping", note: "~15 min after contrast at the same positions as native maps; with haematocrit gives ECV.", pills: ["For ECV"], contrast: true }
+];
+$("#protocolList").innerHTML = PROTOCOL.map(p => `<li class="${p.contrast ? "contrast" : ""} ${p.opt ? "optional" : ""}"><div class="t">${p.t}′</div><div class="rail"></div><div class="box"><h4>${p.name}${p.pills.map(x => `<span class="pill ${p.contrast ? "gd" : (p.opt ? "" : "acc")}">${x}</span>`).join("")}</h4><p>${p.note}</p></div></li>`).join("");
+
+/* =========================================================
+   3. INTERPRETATION
+   ========================================================= */
+const W = "#f2f2f2";
+const LGE = [
+  { id: "subendo", kind: "isch", name: "Subendocardial", where: "Inferior wall (RCA territory)",
+    text: "Starts at the endocardium, follows a coronary territory. Ischaemic until proven otherwise; < 50% transmurality predicts recovery after revascularisation.",
+    o: { lesions: [{ a1: 52, a2: 128, f1: 0, f2: 0.42 }] } },
+  { id: "transmural", kind: "isch", name: "Transmural infarct", where: "Anteroseptal (LAD territory)",
+    text: "Enhancement through the whole wall, often with thinning. Little chance of functional recovery. Acute: look for a dark core of microvascular obstruction.",
+    o: { lesions: [{ a1: -160, a2: -70, f1: 0, f2: 1 }], extra: (cx, cy, rE, rO) => `<path d="${sector(cx, cy, rE + 1, rE + 5, -140, -95)}" fill="#151515"/>`, notes: [[24, 190, "dark core = MVO"]] } },
+  { id: "midwall", kind: "non", name: "Mid-wall septal stripe", where: "Septum, spares endo- and epicardium",
+    text: "Linear mid-myocardial septal stripe. Classic for DCM (~30%) where it predicts death and sudden death; also seen in myocarditis, sarcoid, Fabry and hypertensive disease.",
+    o: { lesions: [{ a1: 135, a2: 225, f1: 0.38, f2: 0.62 }] } },
+  { id: "subepi", kind: "non", name: "Subepicardial", where: "Inferolateral and lateral wall",
+    text: "Outer-wall enhancement sparing the subendocardium, typically basal-mid inferolateral. Classic for viral myocarditis; also sarcoid, and the left-dominant arrhythmogenic forms.",
+    o: { lesions: [{ a1: 10, a2: 80, f1: 0.55, f2: 1 }, { a1: -35, a2: 5, f1: 0.7, f2: 1 }] } },
+  { id: "rvip", kind: "non", name: "RV insertion points", where: "Anterior and inferior junctions",
+    text: "Small foci where the RV free wall meets the septum. Non-specific: pulmonary hypertension, HCM, pressure/volume-loaded RV. Usually not significant by itself.",
+    o: { lesions: [{ a1: -128, a2: -110, f1: 0.15, f2: 1 }, { a1: 108, a2: 128, f1: 0.15, f2: 1 }] } },
+  { id: "hcm", kind: "non", name: "Patchy in hypertrophy", where: "Thickened septum and junctions",
+    text: "Patchy, mid-wall, within the most hypertrophied segments and at the RV insertion points. Extent ≥ 15% of LV mass is a marker of sudden-death risk.",
+    o: { wall: 24, rEndo: 22, lesions: [{ a1: 150, a2: 175, f1: 0.3, f2: 0.75 }, { a1: 190, a2: 215, f1: 0.45, f2: 0.85 }, { a1: -125, a2: -108, f1: 0.2, f2: 0.95 }, { a1: 112, a2: 128, f1: 0.2, f2: 0.9 }] } },
+  { id: "amyloid", kind: "non", name: "Diffuse subendocardial", where: "Global, non-territorial",
+    text: "Circumferential subendocardial or transmural enhancement with a dark blood pool and myocardium that will not null. Classic for cardiac amyloidosis.",
+    o: { wall: 18, rEndo: 24, myo: "#474747", blood: "#5a5a5a", rvBlood: "#555", pap: "#9a9a9a", lesions: [{ a1: 0, a2: 360, f1: 0, f2: 0.55, c: "#cdcdcd" }], rvWall: "#bdbdbd" } },
+  { id: "sarcoid", kind: "non", name: "Patchy multifocal", where: "Basal septum (RV side), lateral wall",
+    text: "Patchy mid-wall and subepicardial foci in a non-coronary distribution; septal lesions often extend to the RV side. Classic for cardiac sarcoidosis; can be transmural.",
+    o: { lesions: [{ a1: 150, a2: 205, f1: 0.45, f2: 1 }, { a1: -122, a2: -100, f1: 0.3, f2: 1 }, { a1: -30, a2: 0, f1: 0.3, f2: 0.8 }, { a1: 60, a2: 78, f1: 0.5, f2: 1 }], rvWall: "#d0d0d0" } },
+  { id: "fabry", kind: "non", name: "Basal inferolateral mid-wall", where: "Inferolateral wall in LVH",
+    text: "Mid-wall inferolateral enhancement in a hypertrophied ventricle. With low native T1 elsewhere, this points to Anderson–Fabry disease.",
+    o: { wall: 19, rEndo: 25, lesions: [{ a1: 25, a2: 80, f1: 0.3, f2: 0.72 }] } }
+];
+$("#lgeGrid").innerHTML = LGE.map(p => `<div class="lge-card">${sax(Object.assign({ aria: p.name + " LGE pattern" }, p.o))}
+  <div><span class="kind ${p.kind}">${p.kind === "isch" ? "Ischaemic" : "Non-ischaemic"}</span><h4>${p.name}</h4></div>
+  <p><strong style="color:var(--ink);font-weight:600">${p.where}.</strong> ${p.text}</p></div>`).join("");
+
+const DX = [
+  { id: "mi", name: "Myocardial infarction", pattern: "subendo",
+    rows: [
+      ["Cine", "Regional wall-motion abnormality in a coronary territory; chronic transmural infarcts are thinned; aneurysm; LV thrombus at the apex."],
+      ["LGE", "Subendocardial to transmural, territorial. Acute: microvascular obstruction as a dark core. Transmurality guides viability: < 25% likely to recover, > 50% unlikely (Kim, NEJM 2000)."],
+      ["Mapping", "Acute: raised T2 (oedema, the area at risk); low-T2/T2* core suggests intramyocardial haemorrhage. ECV high in infarct."],
+      ["Pearls", "LGE detects small subendocardial infarcts that SPECT misses. Look for thrombus on early gadolinium imaging with a long TI (~500–600 ms)."]
+    ] },
+  { id: "myocarditis", name: "Myocarditis", pattern: "subepi",
+    rows: [
+      ["Cine", "Often normal or mildly reduced EF; regional hypokinesia; pericardial effusion."],
+      ["LGE", "Subepicardial or mid-wall, patchy, typically basal-mid inferolateral and lateral; non-territorial."],
+      ["Mapping", "Raised T2 (oedema) plus raised native T1 / ECV. Lake Louise 2018: ≥ 1 T2-based criterion and ≥ 1 T1-based criterion (T1, ECV or LGE)."],
+      ["Pearls", "Scan early (within ~2–3 weeks): oedema resolves. Persistent LGE without oedema suggests healed myocarditis. Pericardial LGE suggests myopericarditis."]
+    ] },
+  { id: "hcm", name: "Hypertrophic cardiomyopathy", pattern: "hcm",
+    rows: [
+      ["Cine", "Maximal wall thickness ≥ 15 mm (≥ 13 mm with a family history or positive genotype), most often asymmetric septal; apical variant; SAM, LVOT obstruction jet, papillary muscle anomalies, crypts, apical aneurysm."],
+      ["LGE", "Patchy mid-wall in hypertrophied segments and at the RV insertion points. LGE ≥ 15% of LV mass marks increased sudden-death risk (Chan, Circulation 2014)."],
+      ["Mapping", "Raised native T1 and ECV in fibrotic segments."],
+      ["Pearls", "CMR finds anterolateral and apical hypertrophy that echo misses. Measure on SAX end-diastolic cine, excluding RV trabeculae and the moderator band."]
+    ] },
+  { id: "dcm", name: "Dilated cardiomyopathy", pattern: "midwall",
+    rows: [
+      ["Cine", "Dilated LV with global hypokinesia and reduced EF; ± RV involvement; functional mitral regurgitation."],
+      ["LGE", "Absent in about two thirds. Mid-wall septal stripe in ~30%, which independently predicts mortality and sudden death (Gulati, JAMA 2013). Subendocardial LGE implies an ischaemic cause."],
+      ["Mapping", "Diffusely raised native T1 and ECV."],
+      ["Pearls", "Genotype matters: LMNA, FLNC and desmoplakin carry high arrhythmic risk. Desmoplakin often shows a ring-like subepicardial LGE pattern."]
+    ] },
+  { id: "amyloid", name: "Cardiac amyloidosis", pattern: "amyloid",
+    rows: [
+      ["Cine", "Concentric thickening with small cavity, thickened RV wall, interatrial septum and valves; biatrial dilatation; reduced long-axis function; pericardial and pleural effusions."],
+      ["LGE", "Diffuse subendocardial → transmural; atrial wall LGE. The TI scout shows myocardium nulling before or with the blood pool, and the blood pool is dark. PSIR avoids misleading images."],
+      ["Mapping", "Markedly raised native T1 and very high ECV (often > 40%), which tracks amyloid burden."],
+      ["Pearls", "CMR cannot reliably type amyloid. Bone scintigraphy plus serum and urine light chains distinguish ATTR from AL (Maceira, Circulation 2005)."]
+    ] },
+  { id: "sarcoid", name: "Cardiac sarcoidosis", pattern: "sarcoid",
+    rows: [
+      ["Cine", "Regional wall-motion abnormality not matching a coronary territory; basal septal thinning; aneurysm; RV involvement."],
+      ["LGE", "Patchy, multifocal, mid-wall and subepicardial; basal septum (often extending to the RV side) and lateral wall. Can be transmural and mimic infarction."],
+      ["Mapping", "Raised T2 in active inflammation; FDG-PET complements CMR for activity."],
+      ["Pearls", "Think of it in younger patients with AV block or VT. The extent of LGE carries prognostic weight."]
+    ] },
+  { id: "arvc", name: "ARVC", pattern: "subepi",
+    rows: [
+      ["Cine", "RV dilatation, regional RV akinesia, dyskinesia or dyssynchronous contraction, focal bulging ('accordion' sign), RVOT dilatation."],
+      ["Criteria", "2010 Task Force, major: regional RV akinesia/dyskinesia/dyssynchrony AND RVEDV/BSA ≥ 110 mL/m² (M) / ≥ 100 (F) or RVEF ≤ 40%. Minor: the same wall-motion finding with RVEDV/BSA 100–110 (M) / 90–100 (F) or RVEF 41–45%."],
+      ["LGE", "RV LGE is hard to see in the thin wall. LV involvement shows as subepicardial inferolateral LGE (left-dominant and biventricular forms)."],
+      ["Pearls", "Fat on black-blood imaging is unreliable and is not a Task Force criterion. Use axial and RV-dedicated cines."]
+    ] },
+  { id: "fabry", name: "Anderson–Fabry disease", pattern: "fabry",
+    rows: [
+      ["Cine", "Concentric LVH (sometimes asymmetric), prominent papillary muscles."],
+      ["LGE", "Basal inferolateral mid-wall."],
+      ["Mapping", "Low native T1 from sphingolipid storage, often before LVH (Sado, Circ CV Imaging 2013). T1 pseudo-normalises or rises in the fibrotic inferolateral wall; raised T2 there suggests active inflammation."],
+      ["Pearls", "LVH with low native T1 is Fabry until proven otherwise. Other causes of LVH (hypertension, HCM, amyloid) have normal or high T1."]
+    ] },
+  { id: "iron", name: "Iron overload", pattern: null,
+    rows: [
+      ["Cine", "Normal for a long time; later a dilated cardiomyopathy or restrictive picture."],
+      ["T2*", "Septal T2* > 20 ms normal; < 20 ms myocardial iron; < 10 ms severe, with high risk of heart failure (Kirk, Circulation 2009). Liver T2* in the same scan."],
+      ["Mapping", "Native T1 and T2 are also low."],
+      ["Pearls", "Usually no contrast needed. Serial T2* guides chelation; cardiac T2* predicts heart failure better than ferritin or liver iron."]
+    ] }
+];
+function ironSvg() {
+  return sax({ myo: "#060606", blood: "#cfcfcf", aria: "Short-axis T2* image with dark myocardium",
+    notes: [[100, 192, "dark myocardium on late echo", "middle"]] });
+}
+function showDx(id) {
+  const d = DX.find(x => x.id === id) || DX[0];
+  $$("#dxChips .chip").forEach(c => c.setAttribute("aria-pressed", String(c.dataset.id === d.id)));
+  const p = LGE.find(l => l.id === d.pattern);
+  const pic = p ? sax(Object.assign({ aria: d.name + " schematic" }, p.o)) : ironSvg();
+  const cap = p ? `Typical LGE pattern: ${p.name.toLowerCase()} (${p.where.toLowerCase()}).` : "Iron shortens T2*: myocardium darkens quickly across echoes, so no LGE pattern is shown.";
+  $("#dxHost").innerHTML = `<div class="dx" style="margin-top:14px">
+    <div class="dx-side">${pic}<p>${cap}</p></div>
+    <div class="dx-main"><h3>${d.name}</h3><div class="dx-rows">${d.rows.map(r => `<div class="dx-row"><h5>${r[0]}</h5><div>${r[1]}</div></div>`).join("")}</div></div>
+  </div>`;
+}
+$("#dxChips").innerHTML = DX.map(d => `<button type="button" class="chip" data-id="${d.id}" aria-pressed="false">${d.name}</button>`).join("");
+$$("#dxChips .chip").forEach(c => c.addEventListener("click", () => showDx(c.dataset.id)));
+showDx("mi");
+
+/* =========================================================
+   4. PAPERS
+   Only DOIs/PMIDs individually confirmed are linked directly; the rest
+   use a PubMed title search so no identifier is guessed.
+   ========================================================= */
+const pmSearch = t => "https://pubmed.ncbi.nlm.nih.gov/?term=" + encodeURIComponent('"' + t + '"[Title]');
+const PAPERS = [
+  { group: "LGE and viability", id: "p-lge", items: [
+    { y: 1999, a: "Kim RJ, Fieno DS, Parrish TB, et al.", t: "Relationship of MRI delayed contrast enhancement to irreversible injury, infarct age, and contractile function.", j: "Circulation", v: "1999;100(19):1992–2002", doi: "10.1161/01.CIR.100.19.1992",
+      why: "Animal validation that delayed hyperenhancement corresponds to irreversible injury, regardless of infarct age or wall motion." },
+    { y: 2000, a: "Kim RJ, Wu E, Rafael A, et al.", t: "The use of contrast-enhanced magnetic resonance imaging to identify reversible myocardial dysfunction.", j: "N Engl J Med", v: "2000;343(20):1445–1453", doi: "10.1056/NEJM200011163432003",
+      why: "Transmural extent of LGE predicted recovery of dysfunctional segments after revascularisation: the foundation of CMR viability." },
+    { y: 2001, a: "Simonetti OP, Kim RJ, Fieno DS, et al.", t: "An improved MR imaging technique for the visualization of myocardial infarction.", j: "Radiology", v: "2001;218(1):215–223", doi: "10.1148/radiology.218.1.r01ja50215",
+      why: "Described the segmented inversion-recovery gradient-echo sequence with TI set to null normal myocardium, still the basis of LGE." },
+    { y: 2002, a: "Kellman P, Arai AE, McVeigh ER, Aletras AH.", t: "Phase-sensitive inversion recovery for detecting myocardial infarction using gadolinium-delayed hyperenhancement.", j: "Magn Reson Med", v: "2002;47(2):372–383", doi: "10.1002/mrm.10051",
+      why: "Introduced PSIR, which keeps the sign of magnetisation and makes LGE contrast robust to the choice of TI." },
+    { y: 2003, a: "Wagner A, Mahrholdt H, Holly TA, et al.", t: "Contrast-enhanced MRI and routine single photon emission computed tomography (SPECT) perfusion imaging for detection of subendocardial myocardial infarcts: an imaging study.", j: "Lancet", v: "2003;361(9355):374–379", search: true,
+      why: "LGE detected subendocardial infarcts that SPECT missed, establishing its higher sensitivity for small infarcts." }
+  ] },
+  { group: "Standardised protocols, analysis and reference values", id: "p-std", items: [
+    { y: 2002, a: "Cerqueira MD, Weissman NJ, Dilsizian V, et al.", t: "Standardized myocardial segmentation and nomenclature for tomographic imaging of the heart.", j: "Circulation", v: "2002;105(4):539–542", search: true,
+      why: "The AHA 17-segment model used to report regional function, LGE and perfusion across all imaging modalities." },
+    { y: 2013, a: "Ferreira PF, Gatehouse PD, Mohiaddin RH, Firmin DN.", t: "Cardiovascular magnetic resonance artefacts.", j: "J Cardiovasc Magn Reson", v: "2013;15:41", doi: "10.1186/1532-429X-15-41",
+      why: "Clinician-oriented review of common CMR artefacts, their causes and remedies." },
+    { y: 2020, a: "Kramer CM, Barkhausen J, Bucciarelli-Ducci C, Flamm SD, Kim RJ, Nagel E.", t: "Standardized cardiovascular magnetic resonance imaging (CMR) protocols: 2020 update.", j: "J Cardiovasc Magn Reson", v: "2020;22:17", doi: "10.1186/s12968-020-00607-1",
+      why: "SCMR's recommended sequences and protocols by indication; the reference for building a clinical protocol." },
+    { y: 2020, a: "Schulz-Menger J, Bluemke DA, Bremerich J, et al.", t: "Standardized image interpretation and post-processing in cardiovascular magnetic resonance – 2020 update.", j: "J Cardiovasc Magn Reson", v: "2020;22:19", doi: "10.1186/s12968-020-00610-6",
+      why: "How to contour, quantify and report: volumes, LGE, mapping, flow, and common pitfalls." },
+    { y: 2020, a: "Kawel-Boehm N, Hetzel SJ, Ambale-Venkatesh B, et al.", t: "Reference ranges (\"normal values\") for cardiovascular magnetic resonance (CMR) in adults and children: 2020 update.", j: "J Cardiovasc Magn Reson", v: "2020;22:87", doi: "10.1186/s12968-020-00683-3",
+      why: "Sex- and age-specific normal values for volumes, function, mass and more; use these for reporting." }
+  ] },
+  { group: "Myocarditis and inflammation", id: "p-myo", items: [
+    { y: 2004, a: "Mahrholdt H, Goedecke C, Wagner A, et al.", t: "Cardiovascular magnetic resonance assessment of human myocarditis: a comparison to histology and molecular pathology.", j: "Circulation", v: "2004;109(10):1250–1258", search: true,
+      why: "Linked the typical subepicardial lateral LGE pattern to biopsy-proven myocarditis and guided targeted biopsy." },
+    { y: 2009, a: "Friedrich MG, Sechtem U, Schulz-Menger J, et al.", t: "Cardiovascular magnetic resonance in myocarditis: a JACC white paper.", j: "J Am Coll Cardiol", v: "2009;53(17):1475–1487", doi: "10.1016/j.jacc.2009.02.007",
+      why: "The original Lake Louise criteria (oedema, hyperaemia, LGE: 2 of 3)." },
+    { y: 2018, a: "Ferreira VM, Schulz-Menger J, Holmvang G, et al.", t: "Cardiovascular magnetic resonance in nonischemic myocardial inflammation: expert recommendations.", j: "J Am Coll Cardiol", v: "2018;72(24):3158–3176", doi: "10.1016/j.jacc.2018.09.072",
+      why: "Updated Lake Louise criteria incorporating T1 and T2 mapping: one T2-based plus one T1-based criterion." }
+  ] },
+  { group: "Mapping and ECV", id: "p-map", items: [
+    { y: 2004, a: "Messroghli DR, Radjenovic A, Kozerke S, Higgins DM, Sivananthan MU, Ridgway JP.", t: "Modified Look-Locker inversion recovery (MOLLI) for high-resolution T1 mapping of the heart.", j: "Magn Reson Med", v: "2004;52(1):141–146", doi: "10.1002/mrm.20110",
+      why: "Described MOLLI, the most widely used myocardial T1 mapping sequence." },
+    { y: 2013, a: "Moon JC, Messroghli DR, Kellman P, et al.", t: "Myocardial T1 mapping and extracellular volume quantification: a Society for Cardiovascular Magnetic Resonance (SCMR) and CMR Working Group of the European Society of Cardiology consensus statement.", j: "J Cardiovasc Magn Reson", v: "2013;15:92", doi: "10.1186/1532-429X-15-92",
+      why: "First consensus on how to acquire, analyse and report native T1 and ECV." },
+    { y: 2017, a: "Messroghli DR, Moon JC, Ferreira VM, et al.", t: "Clinical recommendations for cardiovascular magnetic resonance mapping of T1, T2, T2* and extracellular volume: a consensus statement by the Society for Cardiovascular Magnetic Resonance (SCMR) endorsed by the European Association for Cardiovascular Imaging (EACVI).", j: "J Cardiovasc Magn Reson", v: "2017;19:75", doi: "10.1186/s12968-017-0389-8",
+      why: "Practical clinical guidance for all mapping techniques, including local reference ranges and quality control." }
+  ] },
+  { group: "Cardiomyopathies", id: "p-cm", items: [
+    { y: 2003, a: "McCrohon JA, Moon JCC, Prasad SK, et al.", t: "Differentiation of heart failure related to dilated cardiomyopathy and coronary artery disease using gadolinium-enhanced cardiovascular magnetic resonance.", j: "Circulation", v: "2003;108(1):54–59", search: true,
+      why: "Showed LGE patterns separate ischaemic from non-ischaemic heart failure, describing mid-wall LGE in DCM." },
+    { y: 2005, a: "Maceira AM, Joshi J, Prasad SK, et al.", t: "Cardiovascular magnetic resonance in cardiac amyloidosis.", j: "Circulation", v: "2005;111(2):186–193", pmid: "15630027",
+      why: "Described the global subendocardial LGE and abnormal gadolinium kinetics characteristic of cardiac amyloid." },
+    { y: 2010, a: "Marcus FI, McKenna WJ, Sherrill D, et al.", t: "Diagnosis of arrhythmogenic right ventricular cardiomyopathy/dysplasia: proposed modification of the Task Force Criteria.", j: "Circulation", v: "2010;121(13):1533–1541", doi: "10.1161/CIRCULATIONAHA.108.840827",
+      why: "Revised ARVC Task Force Criteria with quantitative CMR RV volume and EF thresholds." },
+    { y: 2013, a: "Gulati A, Jabbour A, Ismail TF, et al.", t: "Association of fibrosis with mortality and sudden cardiac death in patients with nonischemic dilated cardiomyopathy.", j: "JAMA", v: "2013;309(9):896–908", doi: "10.1001/jama.2013.1363",
+      why: "Mid-wall LGE in DCM independently predicted death and sudden cardiac death beyond LVEF." },
+    { y: 2013, a: "Sado DM, White SK, Piechnik SK, et al.", t: "Identification and assessment of Anderson-Fabry disease by cardiovascular magnetic resonance noncontrast myocardial T1 mapping.", j: "Circ Cardiovasc Imaging", v: "2013;6(3):392–398", doi: "10.1161/CIRCIMAGING.112.000070",
+      why: "Low native T1 distinguishes Fabry disease from other causes of LVH." },
+    { y: 2014, a: "Chan RH, Maron BJ, Olivotto I, et al.", t: "Prognostic value of quantitative contrast-enhanced cardiovascular magnetic resonance for the evaluation of sudden death risk in patients with hypertrophic cardiomyopathy.", j: "Circulation", v: "2014;130(6):484–495", doi: "10.1161/CIRCULATIONAHA.113.007094",
+      why: "Extensive LGE (≥ 15% of LV mass) marked increased sudden-death risk in HCM, including in otherwise low-risk patients." }
+  ] },
+  { group: "Iron overload", id: "p-iron", items: [
+    { y: 2001, a: "Anderson LJ, Holden S, Davis B, et al.", t: "Cardiovascular T2-star (T2*) magnetic resonance for the early diagnosis of myocardial iron overload.", j: "Eur Heart J", v: "2001;22(23):2171–2179", doi: "10.1053/euhj.2001.2822",
+      why: "Introduced cardiac T2* and showed falling EF below ~20 ms; transformed thalassaemia care." },
+    { y: 2009, a: "Kirk P, Roughton M, Porter JB, et al.", t: "Cardiac T2* magnetic resonance for prediction of cardiac complications in thalassemia major.", j: "Circulation", v: "2009;120(20):1961–1968", doi: "10.1161/CIRCULATIONAHA.109.874487",
+      why: "T2* < 10 ms strongly predicted heart failure and arrhythmia, outperforming ferritin and liver iron." }
+  ] },
+  { group: "Ischaemia and perfusion", id: "p-isch", items: [
+    { y: 2012, a: "Greenwood JP, Maredia N, Younger JF, et al.", t: "Cardiovascular magnetic resonance and single-photon emission computed tomography for diagnosis of coronary heart disease (CE-MARC): a prospective trial.", j: "Lancet", v: "2012;379(9814):453–460", doi: "10.1016/S0140-6736(11)61335-4",
+      why: "Multiparametric CMR had higher sensitivity than SPECT for significant coronary disease." },
+    { y: 2019, a: "Nagel E, Greenwood JP, McCann GP, et al.", t: "Magnetic resonance perfusion or fractional flow reserve in coronary disease.", j: "N Engl J Med", v: "2019;380(25):2418–2428", doi: "10.1056/NEJMoa1716734",
+      why: "MR-INFORM: a CMR perfusion-guided strategy was non-inferior to FFR-guided care, with fewer revascularisations." }
+  ] },
+  { group: "Flow", id: "p-flow", items: [
+    { y: 2010, a: "Gatehouse PD, Rolf MP, Graves MJ, et al.", t: "Flow measurement by cardiovascular magnetic resonance: a multi-centre multi-vendor study of background phase offset errors that can compromise the accuracy of derived regurgitant or shunt flow measurements.", j: "J Cardiovasc Magn Reson", v: "2010;12:5", doi: "10.1186/1532-429X-12-5",
+      why: "Showed background phase offsets on clinical scanners are large enough to distort regurgitant and shunt calculations." }
+  ] }
+];
+$("#paperHost").innerHTML = PAPERS.map(g => `<article class="section paper-group" id="${g.id}" data-title="${g.group}"><h3>${g.group}</h3>
+  ${g.items.map(p => {
+    let link;
+    if (p.doi) link = `<a href="https://doi.org/${p.doi}" target="_blank" rel="noopener">doi:${p.doi}</a>`;
+    else if (p.pmid) link = `<a href="https://pubmed.ncbi.nlm.nih.gov/${p.pmid}/" target="_blank" rel="noopener">PubMed ${p.pmid}</a>`;
+    else link = `<a href="${pmSearch(p.t.replace(/\.$/, ""))}" target="_blank" rel="noopener">Find on PubMed</a> <span class="note">(title search)</span>`;
+    return `<div class="paper"><div class="yr">${p.y}</div><div><div class="cite">${p.a} ${p.t} <em>${p.j}</em> ${p.v}.</div><div class="why">${p.why}</div><div class="link">${link}</div></div></div>`;
+  }).join("")}</article>`).join("");
+
+/* =========================================================
+   5. QUIZ
+   ========================================================= */
+const Q = [
+  { tp: "Physics", q: "Gadolinium-based contrast agents make scar bright on LGE images mainly because they:", o: ["Lengthen T1 of surrounding water", "Shorten T1 of surrounding water", "Lengthen T2*", "Increase proton density"], a: 1,
+    e: "Gadolinium is paramagnetic and shortens T1 (and T2). Tissue with more gadolinium (expanded extracellular space) recovers faster after the inversion pulse, so it is bright when normal myocardium is nulled." },
+  { tp: "Physics", q: "Which part of k-space mainly determines image contrast?", o: ["The periphery", "The centre", "The corners only", "Every point equally"], a: 1,
+    e: "Low spatial frequencies at the centre carry the bulk signal and contrast; the periphery carries edges and fine detail. That is why the timing of the k-space centre relative to the inversion pulse sets the LGE contrast." },
+  { tp: "Physics", q: "Why is T2* always shorter than or equal to T2?", o: ["T2* excludes spin–spin interactions", "T2* adds dephasing from local field inhomogeneity", "T2* is measured at higher field", "T2* reflects longitudinal recovery"], a: 1,
+    e: "T2* includes both intrinsic spin–spin (T2) dephasing and extra dephasing from field inhomogeneities, such as iron deposits or susceptibility interfaces." },
+  { tp: "Physics", q: "In an inversion-recovery sequence, a tissue with T1 = 400 ms is nulled at a TI of approximately:", o: ["140 ms", "280 ms", "400 ms", "550 ms"], a: 1,
+    e: "With full recovery between pulses, Mz = 1 − 2e^(−TI/T1) is zero when TI = T1 × ln2 ≈ 0.69 × 400 ≈ 277 ms." },
+  { tp: "Physics", q: "A tall T wave appears on the ECG only once the patient is inside the magnet. The most likely cause is:", o: ["Hyperkalaemia from contrast", "The magnetohydrodynamic effect of flowing blood", "RF heating of electrodes", "Gradient coil failure"], a: 1,
+    e: "Conductive blood flowing in B0 induces a voltage that is superimposed mostly on the ST segment and T wave. Vectorcardiographic gating separates this from the true R wave." },
+  { tp: "Physics", q: "Acquiring only every second phase-encode line, with no parallel-imaging reconstruction, produces:", o: ["Blurring of edges", "Loss of image contrast", "Fold-over (wrap-around) of the image", "Dark bands"], a: 2,
+    e: "Halving the line density halves the field of view in the phase-encode direction, so the image wraps onto itself. SENSE and GRAPPA use coil sensitivities to unfold it." },
+  { tp: "Physics", q: "Compared with 1.5 T, a 3 T bSSFP cine is more likely to show:", o: ["Lower SNR", "Dark off-resonance banding artefacts", "Shorter myocardial T1", "Less RF heating"], a: 1,
+    e: "bSSFP is sensitive to off-resonance, which scales with field strength. Shimming, frequency scouts and short TR help. 3 T has higher SNR, longer T1 and higher SAR." },
+  { tp: "Physics", q: "Why does a standard cine need a breath-hold over several heartbeats?", o: ["Gadolinium must wash in", "k-space is filled in segments over multiple beats", "The ECG needs time to settle", "To allow T2 recovery"], a: 1,
+    e: "Each beat contributes a segment of k-space lines for every cardiac phase. Breathing between beats would make segments inconsistent and cause ghosting." },
+  { tp: "Sequences", q: "On magnitude-reconstructed LGE, the TI is set clearly shorter than the myocardial null point. A likely result is:", o: ["Perfectly black myocardium", "Normal myocardium appears grey and the infarct may look dark or isointense", "Blood pool becomes black", "No effect on contrast"], a: 1,
+    e: "Normal myocardium still has negative Mz, displayed as grey on magnitude images, while scar is near its own null. Infarcts can be missed or appear with a dark 'etched' border. PSIR preserves the sign and avoids this." },
+  { tp: "Sequences", q: "During a long LGE acquisition, the optimal TI:", o: ["Shortens over time", "Stays constant", "Lengthens over time", "Depends only on heart rate"], a: 2,
+    e: "As gadolinium washes out, myocardial T1 lengthens, so the null point moves later. Repeat the TI scout or use PSIR." },
+  { tp: "Sequences", q: "The main reason to use PSIR for LGE is that it:", o: ["Shortens the breath-hold", "Is insensitive to arrhythmia", "Keeps the sign of magnetisation, making contrast robust to TI choice", "Eliminates the need for contrast"], a: 2,
+    e: "Phase-sensitive reconstruction distinguishes negative from positive magnetisation, so scar stays brighter than normal myocardium across a wide range of TI values." },
+  { tp: "Sequences", q: "Through-plane aortic flow: peak velocity 3.2 m/s with VENC set at 150 cm/s. What happens?", o: ["Flow is measured accurately", "Velocity noise is excessive", "Systolic velocities alias (wrap) to the opposite direction", "The image becomes dark"], a: 2,
+    e: "Velocities above VENC wrap around to the opposite sign, corrupting peak velocity and flow. Repeat with VENC just above the expected peak, e.g. ~350 cm/s." },
+  { tp: "Sequences", q: "Which feature favours a dark-rim artefact over a true perfusion defect?", o: ["Follows a coronary territory", "Persists for many heartbeats after peak myocardial enhancement", "Appears at peak blood-pool contrast, is 1–2 pixels wide and is also present at rest", "Matches subendocardial LGE"], a: 2,
+    e: "Dark-rim artefacts (Gibbs ringing, motion) are transient, thin, coincide with peak blood-pool enhancement and appear at rest too. True defects persist and are territorial." },
+  { tp: "Sequences", q: "Calculating ECV requires native and post-contrast T1 of myocardium and blood plus:", o: ["Heart rate", "Haematocrit", "Body surface area", "Creatinine"], a: 1,
+    e: "ECV = (1 − haematocrit) × ΔR1 myocardium / ΔR1 blood. A same-day haematocrit is needed, or a validated synthetic haematocrit derived from blood T1." },
+  { tp: "Sequences", q: "Early gadolinium imaging (1–3 min after injection) with a long TI is mainly used to detect:", o: ["Myocardial oedema", "LV thrombus", "Iron overload", "Coronary stenosis"], a: 1,
+    e: "Thrombus is avascular and takes up no gadolinium, so it stays black against enhancing blood and myocardium at a long TI." },
+  { tp: "Sequences", q: "For cardiac T2*, the region of interest should be drawn in:", o: ["The lateral wall", "The full-thickness interventricular septum", "The apex", "The blood pool"], a: 1,
+    e: "The septum is away from the lung–heart interface and cardiac veins, which cause susceptibility artefacts that falsely shorten T2* in the lateral wall." },
+  { tp: "Sequences", q: "Which finding suggests an adequate vasodilator stress response during adenosine perfusion?", o: ["Heart rate rise of ≥ 10 bpm and splenic switch-off", "Unchanged heart rate", "A rise in blood pressure of 30 mmHg", "Bright spleen at stress compared with rest"], a: 0,
+    e: "Adequate adenosine stress usually raises heart rate by ≥ 10 bpm. The spleen enhances less at stress than at rest (splenic switch-off). Absent response risks a false-negative study." },
+  { tp: "Interpretation", q: "According to Kim et al. (NEJM 2000), a dysfunctional segment is unlikely to recover after revascularisation when LGE transmurality exceeds:", o: ["10%", "25%", "50%", "There is no relation"], a: 2,
+    e: "Segments with > 50% transmural LGE rarely improved, whereas those with no LGE usually did. Transmurality is the basis of CMR viability assessment." },
+  { tp: "Interpretation", q: "Which LGE pattern argues most strongly against an ischaemic cause?", o: ["Subendocardial LGE in the LAD territory", "Transmural inferior LGE", "Mid-wall LGE that spares the subendocardium", "Subendocardial LGE with microvascular obstruction"], a: 2,
+    e: "Infarction always involves the subendocardium (wavefront phenomenon). Enhancement that spares the subendocardium is non-ischaemic." },
+  { tp: "Interpretation", q: "A 24-year-old with chest pain, raised troponin and unobstructed coronaries has subepicardial inferolateral LGE and raised T2. The most likely diagnosis is:", o: ["Acute myocardial infarction", "Acute myocarditis", "Hypertrophic cardiomyopathy", "Cardiac amyloidosis"], a: 1,
+    e: "Subepicardial lateral/inferolateral LGE with oedema meets the 2018 Lake Louise criteria (one T2-based and one T1-based marker) in the right clinical context." },
+  { tp: "Interpretation", q: "Diffuse subendocardial LGE, difficulty nulling the myocardium, a dark blood pool and ECV of 55% suggest:", o: ["Fabry disease", "Cardiac amyloidosis", "Iron overload", "Dilated cardiomyopathy"], a: 1,
+    e: "Amyloid expands the extracellular space massively, so ECV is very high and gadolinium kinetics are altered. The myocardium nulls with or before blood." },
+  { tp: "Interpretation", q: "LVH with low native T1 and basal inferolateral mid-wall LGE is most consistent with:", o: ["Hypertensive heart disease", "Anderson–Fabry disease", "Cardiac amyloidosis", "Athlete's heart"], a: 1,
+    e: "Sphingolipid storage lowers native T1. Other causes of LVH have normal or raised T1. Basal inferolateral LGE is typical of Fabry." },
+  { tp: "Interpretation", q: "A patient with thalassaemia has a septal T2* of 8 ms. This indicates:", o: ["Normal iron", "Mild loading, no action needed", "Severe myocardial iron with high heart-failure risk", "Technical artefact only"], a: 2,
+    e: "T2* < 10 ms indicates severe cardiac iron and strongly predicts heart failure (Kirk et al. 2009), prompting intensified chelation." },
+  { tp: "Interpretation", q: "Under the 2010 ARVC Task Force Criteria, a major CMR criterion in a man requires regional RV akinesia/dyskinesia plus:", o: ["RVEDV/BSA ≥ 110 mL/m² or RVEF ≤ 40%", "Any RV fat on black-blood imaging", "RVEF ≤ 55%", "LV LGE"], a: 0,
+    e: "Major: regional wall-motion abnormality plus RVEDV/BSA ≥ 110 mL/m² (male; ≥ 100 female) or RVEF ≤ 40%. Fat infiltration is not a criterion." },
+  { tp: "Interpretation", q: "In HCM, which CMR finding was associated with increased sudden-death risk (Chan et al. 2014)?", o: ["LGE ≥ 15% of LV mass", "RV insertion point LGE alone", "Normal native T1", "Mild SAM"], a: 0,
+    e: "Extensive LGE (≥ 15% of LV mass) roughly doubled sudden-death event risk, even in patients otherwise considered low risk." },
+  { tp: "Interpretation", q: "Mid-wall septal LGE in non-ischaemic DCM (Gulati et al. 2013) was associated with:", o: ["Better response to therapy", "Higher mortality and sudden cardiac death, independent of EF", "Only cosmetic significance", "Acute myocarditis"], a: 1,
+    e: "Mid-wall fibrosis independently predicted all-cause mortality and sudden cardiac death beyond LVEF, informing ICD decisions." },
+  { tp: "Interpretation", q: "A young man with complete heart block has patchy mid-wall and subepicardial LGE in the basal septum extending to the RV side, plus lateral wall foci. Consider first:", o: ["Cardiac sarcoidosis", "Old inferior infarct", "Takotsubo", "Iron overload"], a: 0,
+    e: "Multifocal non-territorial LGE involving the basal septum (often on the RV side) with conduction disease is typical of cardiac sarcoid. FDG-PET assesses activity." },
+  { tp: "Interpretation", q: "Under the 2018 Lake Louise criteria, a CMR diagnosis of myocardial inflammation requires:", o: ["LGE alone", "At least one T2-based and at least one T1-based criterion", "Pericardial effusion plus LGE", "Raised ECV alone"], a: 1,
+    e: "T2-based (T2 map or T2-weighted signal) plus T1-based (native T1, ECV or LGE). One marker alone may still support the diagnosis in the right context, with lower specificity." }
+];
+const qState = { filter: "All", ans: {} };
+try { const sv = JSON.parse(store.get("cmr-quiz") || "{}"); if (sv && typeof sv === "object") qState.ans = sv; } catch (e) { /* ignore */ }
+const TOPICS = ["All", "Physics", "Sequences", "Interpretation"];
+function saveQuiz() { store.set("cmr-quiz", JSON.stringify(qState.ans)); }
+function renderQuizFilter() {
+  $("#quizFilter").innerHTML = TOPICS.map(t => {
+    const n = t === "All" ? Q.length : Q.filter(q => q.tp === t).length;
+    return `<button type="button" class="chip" data-t="${t}" aria-pressed="${qState.filter === t}">${t} <span class="muted num">${n}</span></button>`;
+  }).join("");
+  $$("#quizFilter .chip").forEach(c => c.addEventListener("click", () => { qState.filter = c.dataset.t; renderQuizFilter(); renderQuiz(); }));
+}
+function renderScore() {
+  const vis = Q.map((q, i) => i).filter(i => qState.filter === "All" || Q[i].tp === qState.filter);
+  const answered = vis.filter(i => qState.ans[i] != null), right = answered.filter(i => qState.ans[i] === Q[i].a);
+  $("#scoreNum").textContent = `${right.length} / ${answered.length}`;
+  $("#scoreSub").textContent = `correct · answered ${answered.length} of ${vis.length}${qState.filter === "All" ? "" : " " + qState.filter.toLowerCase()}`;
+  $("#meterOk").style.width = (vis.length ? right.length / vis.length * 100 : 0) + "%";
+  $("#meterNo").style.width = (vis.length ? (answered.length - right.length) / vis.length * 100 : 0) + "%";
+  $("#topicScores").innerHTML = TOPICS.slice(1).map(t => {
+    const ids = Q.map((q, i) => i).filter(i => Q[i].tp === t);
+    const an = ids.filter(i => qState.ans[i] != null), r = an.filter(i => qState.ans[i] === Q[i].a);
+    return `<span>${t}: <b>${r.length}/${an.length}</b> of ${ids.length}</span>`;
+  }).join("");
+}
+function renderQuiz() {
+  const L = ["A", "B", "C", "D"];
+  const html = Q.map((q, i) => {
+    if (qState.filter !== "All" && q.tp !== qState.filter) return "";
+    const ch = qState.ans[i], done = ch != null, ok = ch === q.a;
+    const opts = q.o.map((o, j) => {
+      let cls = "opt";
+      if (done && j === q.a) cls += " correct";
+      if (done && j === ch && !ok) cls += " chosen-wrong";
+      return `<button type="button" class="${cls}" data-q="${i}" data-o="${j}" ${done ? "disabled" : ""}><b>${L[j]}</b><span>${o}</span></button>`;
+    }).join("");
+    return `<div class="q ${done ? (ok ? "right" : "wrong") : ""}" id="q${i}">
+      <div class="q-head"><span class="qn">Q${i + 1}</span><span class="pill ${q.tp === "Physics" ? "" : (q.tp === "Sequences" ? "acc" : "gd")}">${q.tp}</span></div>
+      <div class="q-text">${q.q}</div><div class="opts">${opts}</div>
+      ${done ? `<div class="explain" aria-live="polite"><strong>${ok ? "Correct." : "Not quite. The answer is " + L[q.a] + "."}</strong>${q.e}</div>` : ""}
+    </div>`;
+  }).join("");
+  $("#qlist").innerHTML = html;
+  $$("#qlist .opt:not(:disabled)").forEach(b => b.addEventListener("click", () => {
+    const i = +b.dataset.q; qState.ans[i] = +b.dataset.o; saveQuiz();
+    const y = window.scrollY; renderQuiz(); window.scrollTo({ top: y });
+  }));
+  renderScore();
+}
+$("#quizReset").addEventListener("click", () => { qState.ans = {}; saveQuiz(); renderQuiz(); });
+renderQuizFilter();
+renderQuiz();
+
+/* build contents lists last (papers inject sections dynamically) */
+$$("[data-toc]").forEach(buildToc);
+
+})();
+</script>
+</body>
+</html>
