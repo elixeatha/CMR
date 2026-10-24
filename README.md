@@ -10,9 +10,8 @@ Tabs:
 4. **Research techniques**: myocardial energetics and 31P spectroscopy (interactive spectrum), 1H spectroscopy of myocardial lipid, hyperpolarised 13C, diffusion tensor CMR, and a horizon scan of other emerging methods.
 5. **Seminal papers**: a curated reading list with DOI or PubMed links.
 6. **Quiz**: 45 multiple-choice questions with topic filter, score tracker and explanations.
+7. **About**: credits, disclaimer and a feedback form that opens a pre-filled email to Jennie.han@nhs.net.
 
 Numbers are rounded teaching values. Use local reference ranges and current guidelines for clinical reporting.
-
-7. **About**: credits, disclaimer and a feedback form that opens a pre-filled email to Jennie.han@nhs.net.
 
 Created by Dr Jennie Han for educational purposes only.
