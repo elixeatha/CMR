@@ -373,6 +373,14 @@ ol.approach p { font-size: 0.96rem; color: var(--muted); }
 textarea.field { resize: vertical; min-height: 130px; }
 a.btn { display: inline-flex; align-items: center; text-decoration: none; }
 .card ol { padding-left: 1.3em; display: grid; gap: 6px; } .card ol li + li { margin-top: 0; } .card ol ul { margin-top: 4px; }
+.be-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.be-cell { margin: 0; display: grid; gap: 4px; justify-items: center; }
+.be-cell svg { width: 100%; max-width: 240px; height: auto; display: block; }
+.be-cell figcaption { font: 600 0.72rem/1.2 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.be-seg { cursor: pointer; } .be-seg:hover { opacity: 0.85; } .be-seg:focus-visible { outline: none; stroke: var(--accent); stroke-width: 3; }
+.be-legend svg { width: 100%; max-width: 460px; height: auto; display: block; }
+@media (max-width: 640px) { .be-row { grid-template-columns: repeat(2, minmax(0, 1fr)); } .be-row .be-cell:last-child { grid-column: 1 / -1; } .be-row .be-cell:last-child svg { max-width: 50%; } }
+#beFig .two-col { align-items: start; }
 footer.site { border-top: 1px solid var(--line); padding-block: 22px 40px; color: var(--muted); font-size: var(--step--1); }
 footer.site .wrap { display: grid; gap: 6px; }
 
@@ -790,13 +798,47 @@ footer.site .wrap { display: grid; gap: 6px; }
         </div>
         <div class="callout"><strong>What the differences mean in practice.</strong> MBF values and cut-offs are <strong>not interchangeable</strong> between pipelines. The 1.94 and 1.82 mL/g/min thresholds above come from Kellman-method studies and should not be applied to dual-bolus Fermi maps, or to a different field strength, without local validation. Ratios travel better than absolute numbers: MPR agreed more closely with PET than absolute MBF in the dual-bolus data. The best metric also depends on the question. In Kellman-method data, stress MBF separated FFR-positive disease. In the King's high-resolution data on microvascular dysfunction, MPR and endocardial MPR outperformed stress MBF. Report which method was used alongside the numbers.</div>
 
-        <div class="fig">
+        <div class="fig" id="beFig">
+          <div class="fig-title"><h4>Perfusion bull's-eye: territories, endo vs epi, and viability</h4>
+            <div class="seg" role="group" aria-label="Perfusion state" id="bePhase"><button type="button" data-p="stress" aria-pressed="true">Stress</button><button type="button" data-p="rest" aria-pressed="false">Rest</button></div></div>
+          <div class="dx-tabs" id="beScen" role="group" aria-label="Choose scenario"></div>
+          <div class="be-row">
+            <figure class="be-cell"><svg id="beEndo" viewBox="0 0 220 220" role="img" aria-label="Endocardial MBF bull's-eye"></svg><figcaption>Endocardial MBF</figcaption></figure>
+            <figure class="be-cell"><svg id="beEpi" viewBox="0 0 220 220" role="img" aria-label="Epicardial MBF bull's-eye"></svg><figcaption>Epicardial MBF</figcaption></figure>
+            <figure class="be-cell"><svg id="beLge" viewBox="0 0 220 220" role="img" aria-label="LGE transmurality bull's-eye"></svg><figcaption>LGE transmurality</figcaption></figure>
+          </div>
+          <div class="be-legend"><svg id="beScale" viewBox="0 0 460 44" role="img" aria-label="Colour scales"></svg></div>
+          <div class="two-col">
+            <div class="status" id="beScenText" aria-live="polite"></div>
+            <div class="card" id="beSeg" style="padding:14px 16px"></div>
+          </div>
+          <p class="fig-cap">AHA 17-segment model: base on the outer ring, apex in the centre, anterior at the top, septum on the left. Click any segment to inspect it; its transmural stress and rest MBF are sent to the interpreter below. Territories use the standard assignment: LAD 1, 2, 7, 8, 13, 14, 17; RCA 3, 4, 9, 10, 15; LCx 5, 6, 11, 12, 16. The inferior and inferolateral walls vary with coronary dominance. Values are simulated for teaching.</p>
+        </div>
+        <div class="cards-2">
+          <div class="card"><h4>How ischaemia shows on perfusion maps</h4>
+            <ul style="margin-top:8px">
+              <li><strong>Territorial:</strong> the defect follows a coronary distribution, unlike artefact or microvascular disease.</li>
+              <li><strong>Subendocardium first:</strong> it has the highest wall stress and systolic compression, so endocardial MBF falls before epicardial MBF. An endo:epi ratio below ~1 at stress is an early sign.</li>
+              <li><strong>Stress only:</strong> rest MBF is normal in ischaemia; a defect present at rest and at stress that matches LGE is scar.</li>
+              <li><strong>Global patterns:</strong> balanced three-vessel disease and microvascular dysfunction both lower MBF everywhere. Absolute values and MPR (not visual contrast between territories) reveal them.</li>
+            </ul></div>
+          <div class="card"><h4>Combining perfusion with LGE</h4>
+            <ul style="margin-top:8px">
+              <li><strong>Stress defect, no LGE:</strong> ischaemic and viable. Revascularisation can relieve ischaemia.</li>
+              <li><strong>Stress defect larger than subendocardial LGE (&lt; 50%):</strong> viable myocardium with peri-infarct ischaemia.</li>
+              <li><strong>Matched rest and stress defect with transmural LGE (&gt; 50%):</strong> non-viable scar; function unlikely to recover.</li>
+              <li><strong>Normal MBF, no LGE:</strong> normal myocardium.</li>
+            </ul></div>
+        </div>
+
+        <div class="fig" id="mbfFig">
           <div class="fig-title"><h4>Try it: interpret an MBF result</h4>
             <div class="seg" role="group" aria-label="Distribution" id="mbfMode"><button type="button" data-m="regional" aria-pressed="true">One territory</button><button type="button" data-m="global" aria-pressed="false">Whole LV, no regional defect</button></div></div>
           <div class="controls">
             <div class="ctl"><label for="mbfStress"><span>Stress MBF</span><output id="mbfStressOut" class="num">1.6 mL/g/min</output></label><input type="range" id="mbfStress" min="0.5" max="4" step="0.05" value="1.6"></div>
             <div class="ctl"><label for="mbfRest"><span>Rest MBF</span><output id="mbfRestOut" class="num">0.7 mL/g/min</output></label><input type="range" id="mbfRest" min="0.3" max="1.6" step="0.05" value="0.7"></div>
           </div>
+          <p class="fig-cap" id="mbfSource" style="max-width:none"></p>
           <div class="readout" id="mbfRead"></div>
           <div class="svg-scroll"><svg id="mbfPlot" viewBox="0 0 600 120" role="img" aria-label="Stress MBF scale with reference values" style="min-width:480px"></svg></div>
           <div class="status" id="mbfStatus" aria-live="polite"></div>
@@ -2216,7 +2258,7 @@ function drawMBF() {
     else { cls = "good"; msg = `<strong>Not in the ischaemic range.</strong> Stress MBF is above the 1.94 regional threshold.`; }
   } else {
     if (st < 1.82) msg = `<strong>Globally very low stress MBF without a regional defect.</strong> Below 1.82 mL/g/min favoured balanced three-vessel disease over microvascular dysfunction (Kotecha 2019). Check the coronary anatomy.`;
-    else if (st < 2.24 - 0.53 + 0.2) msg = `<strong>Globally reduced stress MBF.</strong> Above 1.82, so microvascular dysfunction is more likely than three-vessel disease if the epicardial arteries are unobstructed.`;
+    else if (st < 2.24 - 0.53 || mpr < 2.7) msg = `<strong>Globally reduced perfusion.</strong> Stress MBF or MPR is below the healthy range (stress 2.24 ± 0.53 mL/g/min, MPR 3.7 ± 1.0), but stress MBF is above 1.82, so microvascular dysfunction is more likely than three-vessel disease if the epicardial arteries are unobstructed.`;
     else { cls = "good"; msg = `<strong>Global stress MBF within the healthy range</strong> (allow for age and sex).`; }
   }
   if (rs > 1.1) msg += ` <span class="muted">Rest MBF is high (tachycardia, hypertension, anaemia?), which depresses MPR; lean on stress MBF.</span>`;
@@ -2229,6 +2271,149 @@ $$("#mbfMode button").forEach(b => b.addEventListener("click", () => {
   mbfMode = b.dataset.m; $$("#mbfMode button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); drawMBF();
 }));
 drawMBF();
+
+/* --- perfusion bull's-eye (17-segment), linked to the MBF interpreter --- */
+const SEG_NAMES = ["", "Basal anterior", "Basal anteroseptal", "Basal inferoseptal", "Basal inferior", "Basal inferolateral", "Basal anterolateral",
+  "Mid anterior", "Mid anteroseptal", "Mid inferoseptal", "Mid inferior", "Mid inferolateral", "Mid anterolateral",
+  "Apical anterior", "Apical septal", "Apical inferior", "Apical lateral", "Apex"];
+const SEG_TERR = n => [1, 2, 7, 8, 13, 14, 17].includes(n) ? "LAD" : [3, 4, 9, 10, 15].includes(n) ? "RCA" : "LCx";
+const SEG_GEOM = (() => {
+  const g = [null], six = [[-120, -60], [-180, -120], [120, 180], [60, 120], [0, 60], [-60, 0]];
+  six.forEach(a => g.push({ r1: 70, r2: 98, a }));
+  six.forEach(a => g.push({ r1: 44, r2: 70, a }));
+  [[-135, -45], [135, 225], [45, 135], [-45, 45]].forEach(a => g.push({ r1: 20, r2: 44, a }));
+  g.push({ r1: 0, r2: 20 });
+  return g;
+})();
+const jit = n => (((n * 37) % 11) - 5) / 100;
+function beSegs(f) {
+  const out = [null];
+  for (let n = 1; n <= 17; n++) {
+    const v = { se: 2.55 + jit(n), sp: 2.35 + jit(n), re: 0.72 + jit(n) / 3, rp: 0.66 + jit(n) / 3, lge: 0 };
+    f(n, v); out.push(v);
+  }
+  return out;
+}
+const inT = (n, t) => SEG_TERR(n) === t;
+const BE_SCEN = {
+  normal: { name: "Normal", global: false, segs: beSegs(() => {}),
+    text: "<strong>Normal.</strong> Homogeneous stress MBF well above the ischaemic range, endocardial values similar to or slightly above epicardial, normal rest flow and no LGE." },
+  lad: { name: "LAD ischaemia", sel: 8, segs: beSegs((n, v) => { if (inT(n, "LAD")) { const mild = n <= 2; v.se = mild ? 1.55 : 1.1; v.sp = mild ? 1.95 : 1.7; } }),
+    text: "<strong>LAD ischaemia.</strong> Stress defect in the anterior wall, anterior septum and apex. It is worst in the endocardium (endo:epi &lt; 1) and absent at rest, with no LGE: <strong>ischaemic but viable</strong>." },
+  rca: { name: "RCA ischaemia", sel: 10, segs: beSegs((n, v) => { if (inT(n, "RCA")) { v.se = 1.15; v.sp = 1.75; } }),
+    text: "<strong>RCA ischaemia.</strong> Inferior and inferoseptal stress defect, endocardium worst, normal at rest, no LGE. In left-dominant circulations the inferior wall may be LCx territory." },
+  lcx: { name: "LCx ischaemia", sel: 11, segs: beSegs((n, v) => { if (inT(n, "LCx")) { v.se = 1.2; v.sp = 1.8; } }),
+    text: "<strong>LCx ischaemia.</strong> Lateral and inferolateral stress defect. The lateral wall is the territory most often missed on visual reading and echo, and maps make it explicit." },
+  tvd: { name: "Three-vessel disease", global: true, sel: 9, segs: beSegs((n, v) => { const lad = inT(n, "LAD"); v.se = lad ? 1.05 : 1.25; v.sp = lad ? 1.45 : 1.65; }),
+    text: "<strong>Balanced three-vessel disease.</strong> Stress MBF is low everywhere, so visual reading may look 'normal' because nothing is darker than anything else. The global average is below 1.82 mL/g/min, which favoured three-vessel disease over microvascular dysfunction (Kotecha 2019). Mild heterogeneity (LAD worst) is a clue." },
+  cmd: { name: "Microvascular dysfunction", global: true, sel: 9, segs: beSegs((n, v) => { v.se = 1.72 + jit(n) / 2; v.sp = 2.05 + jit(n) / 2; v.re = 0.8; v.rp = 0.76; }),
+    text: "<strong>Coronary microvascular dysfunction.</strong> Diffuse, non-territorial reduction with a circumferential endocardial gradient and low MPR. The global average is above 1.82 mL/g/min, and the epicardial arteries are unobstructed." },
+  viable: { name: "LAD infarct, viable", sel: 7, segs: beSegs((n, v) => {
+      if ([7, 8, 13, 14].includes(n)) { v.lge = 30; v.se = 0.85; v.sp = 1.5; v.re = 0.52; v.rp = 0.64; }
+      else if ([1, 2, 17].includes(n)) { v.lge = 15; v.se = 1.1; v.sp = 1.75; v.re = 0.6; v.rp = 0.66; } }),
+    text: "<strong>LAD infarct, viable.</strong> Subendocardial LGE (&lt; 50% transmural). The stress defect is deeper and wider than the scar, so there is <strong>peri-infarct ischaemia</strong>, while the epicardium is preserved. Rest endocardial MBF is only mildly reduced. These segments are likely to recover if revascularised." },
+  nonviable: { name: "LAD infarct, non-viable", sel: 13, segs: beSegs((n, v) => {
+      if ([7, 8, 13, 14, 17].includes(n)) { v.lge = 85; v.se = 0.5; v.sp = 0.7; v.re = 0.35; v.rp = 0.45; }
+      else if ([1, 2].includes(n)) { v.lge = 60; v.se = 0.7; v.sp = 0.95; v.re = 0.45; v.rp = 0.55; } }),
+    text: "<strong>LAD infarct, non-viable.</strong> Transmural LGE (&gt; 50%) with a <strong>matched defect at rest and stress</strong> through the full wall thickness. This is scar, not inducible ischaemia, so revascularisation is unlikely to restore function here." }
+};
+const beState = { scen: "lad", phase: "stress", sel: 8 };
+function mbfColor(v) {
+  const stops = [[0, [42, 10, 61]], [1, [122, 31, 107]], [1.75, [210, 70, 75]], [2.5, [246, 163, 51]], [3.5, [252, 242, 168]]];
+  v = clamp(v, 0, 3.5);
+  for (let i = 1; i < stops.length; i++) if (v <= stops[i][0]) {
+    const [a, ca] = stops[i - 1], [b, cb] = stops[i], t = (v - a) / (b - a);
+    const c = ca.map((x, k) => Math.round(x + (cb[k] - x) * t)); return [`rgb(${c})`, (0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]) > 140];
+  }
+  return ["rgb(252,242,168)", true];
+}
+function lgeColor(p) { const c = Math.round(26 + p / 100 * 216); return [`rgb(${c},${c},${c})`, c > 140]; }
+function beDraw(svgId, valFn, colFn, fmt) {
+  const cx = 110, cy = 110; let s = "";
+  for (let n = 1; n <= 17; n++) {
+    const g = SEG_GEOM[n], val = valFn(n), [col, light] = colFn(val);
+    const d = n === 17 ? `M${cx - g.r2} ${cy} a${g.r2} ${g.r2} 0 1 0 ${g.r2 * 2} 0 a${g.r2} ${g.r2} 0 1 0 ${-g.r2 * 2} 0` : sector(cx, cy, g.r1, g.r2, g.a[0], g.a[1]);
+    s += `<path d="${d}" fill="${col}" stroke="var(--surface)" stroke-width="1.5" data-n="${n}" class="be-seg" tabindex="0" role="button" aria-label="Segment ${n}, ${SEG_NAMES[n]}, ${fmt(val)}"/>`;
+    const am = n === 17 ? 0 : (g.a[0] + g.a[1]) / 2, rm = n === 17 ? 0 : (g.r1 + g.r2) / 2, [tx, ty] = n === 17 ? [cx, cy] : pt(cx, cy, rm, am);
+    s += `<text x="${tx.toFixed(1)}" y="${(ty + 3.5).toFixed(1)}" font-size="9.5" text-anchor="middle" fill="${light ? "#1a1a1a" : "#f5f5f5"}" pointer-events="none" class="t-mono">${fmt(val)}</text>`;
+  }
+  const g = SEG_GEOM[beState.sel];
+  const selD = beState.sel === 17 ? `M${cx - 20} ${cy} a20 20 0 1 0 40 0 a20 20 0 1 0 -40 0` : sector(cx, cy, g.r1, g.r2, g.a[0], g.a[1]);
+  s += `<path d="${selD}" fill="none" stroke="var(--surface)" stroke-width="5" pointer-events="none"/><path d="${selD}" fill="none" stroke="var(--accent)" stroke-width="2.5" pointer-events="none"/>`;
+  s += `<g font-size="9" class="t-muted t-mono" text-anchor="middle"><text x="${cx}" y="8">ANT</text><text x="${cx}" y="219">INF</text><text x="6" y="${cy + 3}" text-anchor="start">S</text><text x="214" y="${cy + 3}" text-anchor="end">L</text></g>`;
+  const el = $("#" + svgId); el.innerHTML = s;
+  $$(".be-seg", el).forEach(p => {
+    const pick = () => { beState.sel = +p.dataset.n; beRender(true); };
+    p.addEventListener("click", pick);
+    p.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+  });
+}
+function beSendToInterpreter(sc, segs) {
+  const v = segs[beState.sel];
+  let st, rs, src;
+  if (sc.global) {
+    let a = 0, b = 0; for (let n = 1; n <= 17; n++) { a += (segs[n].se + segs[n].sp) / 2; b += (segs[n].re + segs[n].rp) / 2; }
+    st = a / 17; rs = b / 17; src = `${sc.name}: global average of 17 segments`;
+    mbfMode = "global";
+  } else {
+    st = (v.se + v.sp) / 2; rs = (v.re + v.rp) / 2; src = `${sc.name}: segment ${beState.sel} (${SEG_NAMES[beState.sel].toLowerCase()}), transmural`;
+    mbfMode = "regional";
+  }
+  $("#mbfStress").value = (Math.round(st * 20) / 20).toFixed(2);
+  $("#mbfRest").value = (Math.round(rs * 20) / 20).toFixed(2);
+  $$("#mbfMode button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.m === mbfMode)));
+  $("#mbfSource").innerHTML = `From the bull's-eye: <strong>${src}</strong>. Move the sliders to try your own values.`;
+  drawMBF();
+  if (!sc.global && v.lge > 50) $("#mbfStatus").innerHTML += ` <strong>But this segment has ${v.lge}% transmural LGE and a matched rest defect:</strong> the low flow reflects scar, not inducible ischaemia, so revascularisation is unlikely to help it.`;
+  else if (!sc.global && v.lge > 0) $("#mbfStatus").innerHTML += ` <strong>This segment also has ${v.lge}% subendocardial LGE:</strong> it is viable, and the stress defect extending beyond the scar indicates peri-infarct ischaemia.`;
+}
+function beRender(send) {
+  const sc = BE_SCEN[beState.scen], segs = sc.segs, ph = beState.phase;
+  $$("#beScen .chip").forEach(c => c.setAttribute("aria-pressed", String(c.dataset.s === beState.scen)));
+  const f2 = v => v.toFixed(1);
+  beDraw("beEndo", n => ph === "stress" ? segs[n].se : segs[n].re, mbfColor, f2);
+  beDraw("beEpi", n => ph === "stress" ? segs[n].sp : segs[n].rp, mbfColor, f2);
+  beDraw("beLge", n => segs[n].lge, lgeColor, v => v ? v + "%" : "0");
+  $("#beScenText").innerHTML = sc.text;
+  $("#beScenText").className = "status " + (beState.scen === "normal" ? "good" : "bad");
+  const v = segs[beState.sel], stT = (v.se + v.sp) / 2, rsT = (v.re + v.rp) / 2, mpr = stT / rsT, ee = v.se / v.sp;
+  let call;
+  if (v.lge > 50) call = `<span class="pill early">Non-viable</span> Transmural scar (${v.lge}%) with a matched rest–stress defect.`;
+  else if (v.lge > 0) call = `<span class="pill clin">Viable</span> Subendocardial scar (${v.lge}%)${stT <= 1.94 ? " with peri-infarct ischaemia" : ""}.`;
+  else if (stT <= 1.94) call = `<span class="pill clin">Viable</span> Ischaemic (stress MBF ≤ 1.94), no scar.`;
+  else if (sc.global && mpr < 2.7) call = `<span class="pill res">Diffuse</span> Reduced MPR without a territorial defect.`;
+  else call = `<span class="pill clin">Normal</span> Normal flow, no scar.`;
+  $("#beSeg").innerHTML = `<div style="display:grid;gap:8px">
+    <div><span class="eyebrow">Segment ${beState.sel} · ${SEG_TERR(beState.sel)}</span><h4 style="font-size:1.05rem">${SEG_NAMES[beState.sel]}</h4></div>
+    <div class="readout"><div><span>Stress endo / epi</span><b style="font-size:1.15rem">${v.se.toFixed(2)} / ${v.sp.toFixed(2)}</b></div><div><span>Rest endo / epi</span><b style="font-size:1.15rem">${v.re.toFixed(2)} / ${v.rp.toFixed(2)}</b></div>
+    <div><span>Endo:epi (stress)</span><b style="font-size:1.15rem">${ee.toFixed(2)}</b></div><div><span>MPR</span><b style="font-size:1.15rem">${mpr.toFixed(2)}</b></div><div><span>LGE</span><b style="font-size:1.15rem">${v.lge}%</b></div></div>
+    <p style="font-size:0.94rem">${call}${ee < 0.85 && v.lge <= 50 ? " Subendocardial gradient (endo:epi &lt; 0.85)." : ""}</p>
+    <button class="btn" type="button" id="beGo">Open in interpreter ↓</button></div>`;
+  $("#beGo").addEventListener("click", () => {
+    const t = $("#mbfFig"); if (t) t.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  });
+  if (send) beSendToInterpreter(sc, segs);
+}
+function beScale() {
+  let s = `<text x="0" y="11" font-size="10.5" class="t-muted">MBF (mL/g/min)</text>`;
+  for (let i = 0; i < 100; i++) s += `<rect x="${i * 2.6}" y="16" width="2.7" height="12" fill="${mbfColor(i / 100 * 3.5)[0]}"/>`;
+  [0, 1, 2, 3].forEach(v => { s += `<text x="${v / 3.5 * 260}" y="40" font-size="9.5" text-anchor="${v ? "middle" : "start"}" class="t-muted t-mono">${v}</text>`; });
+  s += `<line x1="${1.94 / 3.5 * 260}" x2="${1.94 / 3.5 * 260}" y1="13" y2="31" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="2 2"/>`;
+  s += `<text x="300" y="11" font-size="10.5" class="t-muted">LGE transmurality</text>`;
+  for (let i = 0; i < 40; i++) s += `<rect x="${300 + i * 4}" y="16" width="4.1" height="12" fill="${lgeColor(i / 40 * 100)[0]}"/>`;
+  s += `<text x="300" y="40" font-size="9.5" class="t-muted t-mono">0%</text><text x="460" y="40" font-size="9.5" text-anchor="end" class="t-muted t-mono">100%</text>`;
+  $("#beScale").innerHTML = s;
+}
+$("#beScen").innerHTML = Object.keys(BE_SCEN).map(k => `<button type="button" class="chip" data-s="${k}" aria-pressed="false">${BE_SCEN[k].name}</button>`).join("");
+$$("#beScen .chip").forEach(c => c.addEventListener("click", () => { beState.scen = c.dataset.s; beState.sel = BE_SCEN[c.dataset.s].sel || beState.sel; beRender(true); }));
+$$("#bePhase button").forEach(b => b.addEventListener("click", () => {
+  beState.phase = b.dataset.p; $$("#bePhase button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); beRender(false);
+}));
+["mbfStress", "mbfRest"].forEach(id => $("#" + id).addEventListener("input", () => { $("#mbfSource").textContent = "Manual values. Pick a segment on the bull's-eye above to load its values."; }));
+$$("#mbfMode button").forEach(b => b.addEventListener("click", () => { $("#mbfSource").textContent = "Manual values. Pick a segment on the bull's-eye above to load its values."; }));
+beScale();
+beRender(true);
+
 
 /* =========================================================
    5. PAPERS
