@@ -664,6 +664,29 @@ footer.site .wrap { display: grid; gap: 6px; }
           </ul>
         </div>
 
+        <header style="display:grid;gap:6px;margin-top:8px"><h4>Two approaches to perfusion mapping: Kellman vs Chiribiri</h4>
+          <p class="muted" style="max-width:72ch">Most quantitative CMR perfusion data come from two pipelines. Both give MBF in mL/g/min, but they solve the arterial-input problem differently, use different tissue models, and have been validated against different reference standards.</p></header>
+        <div class="fig">
+          <div class="fig-title"><h4>How each method gets a linear arterial input</h4></div>
+          <div class="svg-scroll"><svg id="qpSvg" viewBox="0 0 720 260" role="img" aria-label="Dual-sequence versus dual-bolus acquisition schematic" style="min-width:600px"></svg></div>
+          <p class="fig-cap">Left: in every heartbeat, the dual-sequence method acquires a fast, low-resolution AIF image with a short saturation delay (signal stays near-linear even at peak blood gadolinium), then the high-resolution myocardial slices, all from one bolus. Right: the dual-bolus method injects a dilute pre-bolus (~1/10 concentration) whose blood-pool curve is unsaturated, scales it up to estimate the AIF, then gives the full bolus for the myocardial curves.</p>
+        </div>
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th></th><th>Kellman / NIH inline mapping</th><th>Chiribiri / King's College London</th></tr></thead>
+            <tbody>
+              <tr><th>AIF strategy</th><td>Dual-sequence, single bolus: interleaved low-resolution AIF image each heartbeat, with dual-echo T2* correction (Kellman 2017)</td><td>Dual-bolus: dilute pre-bolus then full bolus, using a universal injection scheme designed to work across injectors, agents and scanners (Ishida 2011). AI-derived AIFs are being developed to remove the pre-bolus.</td></tr>
+              <tr><th>Tissue model</th><td>Compartmental blood–tissue exchange (BTEX) model fitted pixel by pixel</td><td>Fermi-constrained deconvolution; newer Bayesian approaches give per-pixel uncertainty</td></tr>
+              <tr><th>Acquisition</th><td>Free-breathing with motion correction; proton-density images correct surface-coil shading; 1.5 T and 3 T</td><td>Emphasis on high spatial resolution (accelerated 3 T perfusion), allowing separate endocardial and epicardial values (MPR<sub>endo</sub>)</td></tr>
+              <tr><th>Processing</th><td>Fully automated on the scanner (Gadgetron); MBF maps appear within minutes with no user input (Xue 2020). Vendor-specific deployment.</td><td>Offline, now largely automated with deep-learning motion correction and segmentation; vendor-neutral</td></tr>
+              <tr><th>Key validation</th><td>¹³N-ammonia PET: close agreement of global MBF, r = 0.92 (Engblom 2017). Angiography (Hsu 2018). FFR and IMR thresholds (Kotecha 2019). Normal values (Brown et al.). Prognosis in > 1,000 patients (Knott 2020).</td><td>¹³N-ammonia PET: MPR agreed well (r = 0.75) but absolute MBF only weakly (r ≈ 0.3–0.4) (Morton 2012). Microvascular dysfunction vs invasive physiology: MPR and MPR<sub>endo</sub> AUC 0.88–0.90, stress MBF 0.64, visual reading 58% accuracy (Rahman 2021).</td></tr>
+              <tr><th>Strengths</th><td>Zero-click, reproducible, scalable; the largest diagnostic and prognostic datasets</td><td>Works on any vendor; transmural (endo vs epi) analysis suited to microvascular disease</td></tr>
+              <tr><th>Limitations</th><td>Tied to one vendor's implementation; model assumptions are hidden from the reader</td><td>Dual-bolus adds set-up complexity; offline workflow; absolute MBF less consistent with PET than MPR</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout"><strong>What the differences mean in practice.</strong> MBF values and cut-offs are <strong>not interchangeable</strong> between pipelines. The 1.94 and 1.82 mL/g/min thresholds above come from Kellman-method studies and should not be applied to dual-bolus Fermi maps, or to a different field strength, without local validation. Ratios travel better than absolute numbers: MPR agreed more closely with PET than absolute MBF in the dual-bolus data. The best metric also depends on the question. In Kellman-method data, stress MBF separated FFR-positive disease. In the King's high-resolution data on microvascular dysfunction, MPR and endocardial MPR outperformed stress MBF. Report which method was used alongside the numbers.</div>
+
         <div class="fig">
           <div class="fig-title"><h4>Try it: interpret an MBF result</h4>
             <div class="seg" role="group" aria-label="Distribution" id="mbfMode"><button type="button" data-m="regional" aria-pressed="true">One territory</button><button type="button" data-m="global" aria-pressed="false">Whole LV, no regional defect</button></div></div>
@@ -674,7 +697,7 @@ footer.site .wrap { display: grid; gap: 6px; }
           <div class="readout" id="mbfRead"></div>
           <div class="svg-scroll"><svg id="mbfPlot" viewBox="0 0 600 120" role="img" aria-label="Stress MBF scale with reference values" style="min-width:480px"></svg></div>
           <div class="status" id="mbfStatus" aria-live="polite"></div>
-          <p class="fig-cap">Thresholds are from single studies with one method and field strength (Kotecha 2019; Brown et al.) and are shown for teaching. Always read MBF together with visual perfusion, LGE, the haemodynamic response to stress and the coronary anatomy.</p>
+          <p class="fig-cap">Thresholds are from single studies using the Kellman inline method (Kotecha 2019; Brown et al.) and are shown for teaching. They do not transfer to dual-bolus or Fermi-based maps. Always read MBF together with visual perfusion, LGE, the haemodynamic response to stress and the coronary anatomy.</p>
         </div>
 
         <div class="table-wrap">
@@ -1864,6 +1887,67 @@ function drawTrans() {
 $("#transSlider").addEventListener("input", drawTrans);
 drawTrans();
 
+/* --- quantitative perfusion: dual-sequence vs dual-bolus schematic --- */
+function drawQP() {
+  let s = "";
+  // left panel: one heartbeat
+  const lx = 20, lw = 320, ty = 40;
+  s += `<text x="${lx}" y="18" font-size="12.5" font-weight="600" class="t-ink">Dual-sequence, single bolus (Kellman)</text>`;
+  s += `<text x="${lx}" y="${ty - 6}" font-size="10.5" class="t-muted">One RR interval, repeated every beat for ~60 beats</text>`;
+  s += `<rect x="${lx}" y="${ty}" width="${lw}" height="36" rx="4" fill="var(--surface-2)" stroke="var(--line)"/>`;
+  const blocks = [[6, 46, "AIF", "var(--c-scar)", "low-res, short delay"], [64, 78, "Slice 1", "var(--c-myo)"], [150, 78, "Slice 2", "var(--c-myo)"], [236, 78, "Slice 3", "var(--c-myo)"]];
+  blocks.forEach(b => {
+    s += `<rect x="${lx + b[0]}" y="${ty + 5}" width="${b[1]}" height="26" rx="3" fill="${b[3]}" opacity="0.9"/>`;
+    s += `<text x="${lx + b[0] + b[1] / 2}" y="${ty + 22}" font-size="10.5" text-anchor="middle" fill="var(--surface)" font-weight="600">${b[2]}</text>`;
+  });
+  s += `<text x="${lx + 6}" y="${ty + 52}" font-size="10" class="t-muted">↑ saturation pulse + fast readout</text>`;
+  // single bolus curves
+  const cy = 236, ch = 120, cw = lw;
+  const X = (t, x0, w) => x0 + t / 60 * w, Y = v => cy - v * ch;
+  s += `<line x1="${lx}" x2="${lx + cw}" y1="${cy}" y2="${cy}" class="s-muted"/>`;
+  let pa = "", pm = "";
+  for (let i = 0; i <= 120; i++) {
+    const t = i / 2, b = t > 8 ? Math.pow((t - 8) / 6, 2) * Math.exp(-(t - 8) / 3) / 0.1353 : 0, m = t > 10 ? 0.28 * (1 - Math.exp(-(t - 10) / 6)) * Math.exp(-(t - 10) / 70) : 0;
+    pa += (i ? "L" : "M") + X(t, lx, cw).toFixed(1) + " " + Y(Math.min(b, 1) * 0.92).toFixed(1);
+    pm += (i ? "L" : "M") + X(t, lx, cw).toFixed(1) + " " + Y(m).toFixed(1);
+  }
+  s += `<path d="${pa}" fill="none" stroke="var(--c-scar)" stroke-width="2.2"/><path d="${pm}" fill="none" stroke="var(--c-myo)" stroke-width="2.2"/>`;
+  s += `<text x="${X(17, lx, cw)}" y="${Y(0.98)}" font-size="10.5" fill="var(--c-scar)">AIF (linear, from AIF image)</text>`;
+  s += `<text x="${X(30, lx, cw)}" y="${Y(0.33)}" font-size="10.5" fill="var(--c-myo)">myocardium</text>`;
+  s += `<text x="${lx}" y="${cy + 16}" font-size="10" class="t-muted">one injection, ~0.05 mmol/kg</text>`;
+  // right panel: dual bolus
+  const rx = 380, rw = 320;
+  s += `<text x="${rx}" y="18" font-size="12.5" font-weight="600" class="t-ink">Dual-bolus (Chiribiri / Ishida scheme)</text>`;
+  s += `<text x="${rx}" y="${ty - 6}" font-size="10.5" class="t-muted">Two injections, same high-resolution sequence</text>`;
+  s += `<rect x="${rx}" y="${ty}" width="${rw}" height="36" rx="4" fill="var(--surface-2)" stroke="var(--line)"/>`;
+  s += `<rect x="${rx + 8}" y="${ty + 5}" width="110" height="26" rx="3" fill="var(--c-blood)" opacity="0.7"/><text x="${rx + 63}" y="${ty + 22}" font-size="10.5" text-anchor="middle" fill="var(--surface)" font-weight="600">Dilute pre-bolus</text>`;
+  s += `<rect x="${rx + 170}" y="${ty + 5}" width="140" height="26" rx="3" fill="var(--c-scar)" opacity="0.9"/><text x="${rx + 240}" y="${ty + 22}" font-size="10.5" text-anchor="middle" fill="var(--surface)" font-weight="600">Full bolus</text>`;
+  s += `<text x="${rx + 120}" y="${ty + 52}" font-size="10" class="t-muted">~1/10 dose, then full dose</text>`;
+  s += `<line x1="${rx}" x2="${rx + rw}" y1="${cy}" y2="${cy}" class="s-muted"/>`;
+  const RX = t => rx + t / 100 * rw;
+  let pre = "", preScaled = "", sat = "", myo = "";
+  for (let i = 0; i <= 200; i++) {
+    const t = i / 2;
+    const g = (t0) => t > t0 ? Math.pow((t - t0) / 6, 2) * Math.exp(-(t - t0) / 3) / 0.1353 : 0;
+    const p = 0.09 * g(5), full = g(50), satv = 1 - Math.exp(-full * 1.8);
+    pre += (i ? "L" : "M") + RX(t).toFixed(1) + " " + Y(t < 48 ? p : 0).toFixed(1);
+    if (t < 48) preScaled += (preScaled ? "L" : "M") + RX(t).toFixed(1) + " " + Y(Math.min(p * 10 * 0.92, 1)).toFixed(1);
+    sat += (i ? "L" : "M") + RX(t).toFixed(1) + " " + Y(t >= 48 ? satv * 0.62 : 0).toFixed(1);
+    const m = t > 52 ? 0.24 * (1 - Math.exp(-(t - 52) / 6)) : 0;
+    myo += (i ? "L" : "M") + RX(t).toFixed(1) + " " + Y(m).toFixed(1);
+  }
+  s += `<path d="${preScaled}" fill="none" stroke="var(--c-blood)" stroke-width="1.6" stroke-dasharray="5 4"/>`;
+  s += `<path d="${pre}" fill="none" stroke="var(--c-blood)" stroke-width="2.2"/>`;
+  s += `<path d="${sat}" fill="none" stroke="var(--c-scar)" stroke-width="2.2"/>`;
+  s += `<path d="${myo}" fill="none" stroke="var(--c-myo)" stroke-width="2.2"/>`;
+  s += `<text x="${RX(18)}" y="${Y(0.95)}" font-size="10.5" fill="var(--c-blood)">pre-bolus × 10 = AIF</text>`;
+  s += `<text x="${RX(62)}" y="${Y(0.7)}" font-size="10.5" fill="var(--c-scar)">full-bolus blood signal</text><text x="${RX(62)}" y="${Y(0.7) + 13}" font-size="10.5" fill="var(--c-scar)">(saturated, flattened)</text>`;
+  s += `<text x="${RX(70)}" y="${Y(0.3)}" font-size="10.5" fill="var(--c-myo)">myocardium</text>`;
+  s += `<text x="${rx}" y="${cy + 16}" font-size="10" class="t-muted">time →</text>`;
+  $("#qpSvg").innerHTML = s;
+}
+drawQP();
+
 /* --- viability: MBF --- */
 let mbfMode = "regional";
 function drawMBF() {
@@ -1982,16 +2066,26 @@ const PAPERS = [
       why: "After reperfused acute MI, the transmural extent of LGE predicted which segments would recover function." },
     { y: 2004, a: "Wellnhofer E, Olariu A, Klein C, et al.", t: "Magnetic resonance low-dose dobutamine test is superior to scar quantification for the prediction of functional recovery.", j: "Circulation", v: "2004;109(18):2172–2174", doi: "10.1161/01.CIR.0000128862.34201.74",
       why: "Contractile reserve on low-dose dobutamine CMR outperformed LGE alone, especially in segments with intermediate transmurality." },
+    { y: 2011, a: "Ishida M, Schuster A, Morton G, et al.", t: "Development of a universal dual-bolus injection scheme for the quantitative assessment of myocardial perfusion cardiovascular magnetic resonance.", j: "J Cardiovasc Magn Reson", v: "2011;13:28", doi: "10.1186/1532-429X-13-28",
+      why: "A practical dual-bolus protocol that works across injectors, contrast agents and scanners; the basis of the King's quantitative perfusion workflow." },
     { y: 2011, a: "Bonow RO, Maurer G, Lee KL, et al.", t: "Myocardial viability and survival in ischemic left ventricular dysfunction.", j: "N Engl J Med", v: "2011;364(17):1617–1625", doi: "10.1056/NEJMoa1100358",
       why: "STICH viability substudy: viability (SPECT/dobutamine echo) did not identify patients who benefited from CABG over medical therapy." },
+    { y: 2012, a: "Morton G, Chiribiri A, Ishida M, et al.", t: "Quantification of absolute myocardial perfusion in patients with coronary artery disease: comparison between cardiovascular magnetic resonance and positron emission tomography.", j: "J Am Coll Cardiol", v: "2012;60(16):1546–1555", doi: "10.1016/j.jacc.2012.05.052",
+      why: "Dual-bolus CMR vs ¹³N-ammonia PET: MPR agreed well, absolute MBF only weakly, showing why ratios travel better than absolute values." },
     { y: 2017, a: "Kellman P, Hansen MS, Nielles-Vallespin S, et al.", t: "Myocardial perfusion cardiovascular magnetic resonance: optimized dual sequence and reconstruction for quantification.", j: "J Cardiovasc Magn Reson", v: "2017;19:43", doi: "10.1186/s12968-017-0355-5",
       why: "The dual-sequence approach and inline reconstruction that made automated pixel-wise MBF mapping practical." },
+    { y: 2017, a: "Engblom H, Xue H, Akil S, et al.", t: "Fully quantitative cardiovascular magnetic resonance myocardial perfusion ready for clinical use: a comparison between cardiovascular magnetic resonance imaging and positron emission tomography.", j: "J Cardiovasc Magn Reson", v: "2017;19:78", doi: "10.1186/s12968-017-0388-9",
+      why: "Validated the Kellman dual-sequence method against ¹³N-ammonia PET, with close agreement of global MBF at stress and rest." },
     { y: 2018, a: "Hsu LY, Jacobs M, Benovoy M, et al.", t: "Diagnostic performance of fully automated pixel-wise quantitative myocardial perfusion imaging by cardiovascular magnetic resonance.", j: "JACC Cardiovasc Imaging", v: "2018;11(5):697–707", doi: "10.1016/j.jcmg.2018.01.005",
       why: "Validated automated MBF maps against angiography for detecting coronary artery disease." },
     { y: 2019, a: "Kotecha T, Martinez-Naharro A, Boldrini M, et al.", t: "Automated pixel-wise quantitative myocardial perfusion mapping by CMR to detect obstructive coronary artery disease and coronary microvascular dysfunction: validation against invasive coronary physiology.", j: "JACC Cardiovasc Imaging", v: "2019;12(10):1958–1969", doi: "10.1016/j.jcmg.2018.12.022",
       why: "Stress MBF thresholds against FFR and IMR; separated three-vessel disease from microvascular dysfunction." },
+    { y: 2020, a: "Xue H, Brown LAE, Nielles-Vallespin S, Plein S, Kellman P.", t: "Automatic in-line quantitative myocardial perfusion mapping: processing algorithm and implementation.", j: "Magn Reson Med", v: "2020;83(2):712–730", doi: "10.1002/mrm.27954",
+      why: "Describes the fully automated inline pipeline (motion correction, AIF T2* and coil correction, pixel-wise BTEX fitting) behind Kellman perfusion maps." },
     { y: 2020, a: "Knott KD, Seraphim A, Augusto JB, et al.", t: "The prognostic significance of quantitative myocardial perfusion: an artificial intelligence-based approach using perfusion mapping.", j: "Circulation", v: "2020;141(16):1282–1291", doi: "10.1161/CIRCULATIONAHA.119.044666",
       why: "Reduced stress MBF and MPR independently predicted death and MACE in over 1,000 patients." },
+    { y: 2021, a: "Rahman H, Scannell CM, Demir OM, et al.", t: "High-resolution cardiac magnetic resonance imaging techniques for the identification of coronary microvascular dysfunction.", j: "JACC Cardiovasc Imaging", v: "2021;14(5):978–986", doi: "10.1016/j.jcmg.2020.10.015",
+      why: "King's high-resolution quantitative perfusion: MPR and endocardial MPR detected microvascular dysfunction far better than visual reading or stress MBF." },
     { y: 2022, a: "Perera D, Clayton T, O'Kane PD, et al.", t: "Percutaneous revascularization for ischemic left ventricular dysfunction.", j: "N Engl J Med", v: "2022;387(15):1351–1360", doi: "10.1056/NEJMoa2206606",
       why: "REVIVED-BCIS2: PCI added to optimal medical therapy did not reduce death or heart-failure hospitalisation in ischaemic LV dysfunction with viability." }
   ] },
@@ -2099,6 +2193,10 @@ const Q = [
     e: "Rest MBF rises with heart rate × blood pressure, which lowers MPR even when stress MBF is normal. Interpret stress MBF, or correct rest MBF for rate–pressure product." },
   { tp: "Viability & perfusion", q: "Globally reduced stress MBF without a regional defect in a patient with unobstructed coronary arteries suggests:", o: ["Coronary microvascular dysfunction", "Normal study", "Single-vessel disease", "Myocarditis"], a: 0,
     e: "Visual reading can miss global hypoperfusion. Quantitative MBF detects it; with unobstructed epicardial arteries the likely cause is microvascular dysfunction. Very low values favour balanced three-vessel disease (Kotecha 2019)." },
+  { tp: "Viability & perfusion", q: "The Kellman inline method and the King's (Chiribiri) method differ mainly in how they obtain an unsaturated arterial input function. Which pairing is correct?", o: ["Kellman: dual-bolus; King's: dual-sequence", "Kellman: dual-sequence with a single bolus; King's: dilute pre-bolus then full bolus", "Both use a single bolus with no correction", "Both rely on PET-derived input functions"], a: 1,
+    e: "Kellman interleaves a fast low-resolution AIF image each heartbeat (dual-sequence, one bolus). The King's workflow uses a dilute pre-bolus whose unsaturated blood curve is scaled up to give the AIF (Ishida 2011 universal scheme)." },
+  { tp: "Viability & perfusion", q: "A department switches from Kellman inline maps to a dual-bolus Fermi pipeline. Which statement is most appropriate?", o: ["Keep using a 1.94 mL/g/min stress MBF cut-off", "Absolute MBF thresholds should be re-validated; MPR tends to be more comparable between methods", "MPR cannot be calculated with dual-bolus", "Perfusion maps no longer need visual review"], a: 1,
+    e: "Absolute MBF depends on the AIF method, tissue model, resolution and field strength, so cut-offs are method-specific. In dual-bolus vs PET data, MPR agreed better than absolute MBF (Morton 2012)." },
   { tp: "Research", q: "A reduced myocardial PCr/ATP ratio on ³¹P spectroscopy indicates:", o: ["Myocardial iron loading", "Impaired energetic reserve", "Expanded extracellular volume", "Myocyte disarray"], a: 1,
     e: "Phosphocreatine buffers ATP via creatine kinase and falls first when energy supply is limited. PCr/ATP is reduced in heart failure and predicted mortality in DCM (Neubauer 1997)." },
   { tp: "Research", q: "Blood within a cardiac ³¹P spectroscopy voxel will, without correction:", o: ["Raise the apparent PCr/ATP", "Lower the apparent PCr/ATP", "Have no effect", "Abolish the PCr peak"], a: 1,
