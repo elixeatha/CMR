@@ -153,6 +153,7 @@ main { padding-block: 28px 64px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; min-width: 0; }
 .cards-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
 .concepts { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.concepts.four { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
 .concept { padding: 16px 18px 16px 0; border-bottom: 1px solid var(--line); display: grid; gap: 6px; align-content: start; }
 .concept h4 { font-size: 1.05rem; }
 .concept p { font-size: 0.95rem; }
@@ -348,6 +349,25 @@ ol.approach p { font-size: 0.96rem; color: var(--muted); }
 .q.wrong .explain { border-left-color: var(--bad); }
 .explain strong { display: block; margin-bottom: 2px; }
 
+/* Research + viability additions */
+.pill.res { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.pill.early { background: var(--signal-soft); color: var(--signal); border-color: transparent; }
+.pill.clin { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+.tech { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 8px; align-content: start; }
+.tech h4 { font-size: 1.05rem; }
+.tech p { font-size: 0.94rem; color: var(--muted); }
+.tech .meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.kv div { padding: 10px 14px 10px 0; border-bottom: 1px solid var(--line); display: grid; gap: 2px; }
+.kv dt { font: 600 0.72rem/1.3 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.kv dd { margin: 0; font-size: 0.95rem; }
+.readout { display: flex; flex-wrap: wrap; gap: 10px 26px; }
+.readout div { display: grid; gap: 2px; }
+.readout span { font: 600 0.7rem/1.2 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.readout b { font: 700 1.5rem/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+.two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
+@media (max-width: 720px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
 footer.site { border-top: 1px solid var(--line); padding-block: 22px 40px; color: var(--muted); font-size: var(--step--1); }
 footer.site .wrap { display: grid; gap: 6px; }
 
@@ -384,8 +404,9 @@ footer.site .wrap { display: grid; gap: 6px; }
       <button class="tab" role="tab" id="tab-acquisition" aria-controls="acquisition" data-tab="acquisition"><span class="n">1</span>Acquisition</button>
       <button class="tab" role="tab" id="tab-views" aria-controls="views" data-tab="views"><span class="n">2</span>Views &amp; protocol</button>
       <button class="tab" role="tab" id="tab-interpretation" aria-controls="interpretation" data-tab="interpretation"><span class="n">3</span>Interpretation</button>
-      <button class="tab" role="tab" id="tab-papers" aria-controls="papers" data-tab="papers"><span class="n">4</span>Seminal papers</button>
-      <button class="tab" role="tab" id="tab-quiz" aria-controls="quiz" data-tab="quiz"><span class="n">5</span>Quiz</button>
+      <button class="tab" role="tab" id="tab-research" aria-controls="research" data-tab="research"><span class="n">4</span>Research techniques</button>
+      <button class="tab" role="tab" id="tab-papers" aria-controls="papers" data-tab="papers"><span class="n">5</span>Seminal papers</button>
+      <button class="tab" role="tab" id="tab-quiz" aria-controls="quiz" data-tab="quiz"><span class="n">6</span>Quiz</button>
     </nav>
   </div>
 </header>
@@ -607,6 +628,69 @@ footer.site .wrap { display: grid; gap: 6px; }
         <p class="fig-cap">Schematic mid-ventricular short-axis views as displayed on the scanner: anterior (A) at the top, septum (S) on the left beside the RV, lateral (L) on the right, inferior (I) at the bottom. White = enhancement; nulled normal myocardium is black.</p>
       </article>
 
+      <article class="section" id="int-viability" data-title="Viability & quantitative perfusion">
+        <header><span class="eyebrow">Ischaemic heart disease</span><h3>Viability and quantitative perfusion</h3>
+          <p class="lede">In ischaemic LV dysfunction the questions are how much myocardium is scar, how much is alive but dysfunctional, and how much blood flow reaches it under stress.</p></header>
+        <div class="concepts four">
+          <div class="concept"><h4>Hibernating myocardium</h4><p>Viable but chronically underperfused, with down-regulated contraction. Function may recover after revascularisation, over weeks to months.</p></div>
+          <div class="concept"><h4>Stunned myocardium</h4><p>Viable, with perfusion restored (e.g. after primary PCI) but function still depressed. It recovers spontaneously over days to weeks.</p></div>
+          <div class="concept"><h4>Scar</h4><p>Replacement fibrosis. It is bright on LGE and does not recover. Transmural extent sets the ceiling on recovery.</p></div>
+          <div class="concept"><h4>Contractile reserve</h4><p>Low-dose dobutamine (5–10 µg/kg/min) cine shows whether a dysfunctional segment can thicken. It is most useful when LGE transmurality is intermediate (Wellnhofer 2004).</p></div>
+        </div>
+
+        <div class="fig">
+          <div class="fig-title"><h4>LGE transmurality and likelihood of recovery</h4></div>
+          <div class="controls">
+            <div class="ctl"><label for="transSlider"><span>Transmural extent of LGE in a dysfunctional segment</span><output id="transOut" class="num">40%</output></label><input type="range" id="transSlider" min="0" max="100" step="5" value="40"></div>
+          </div>
+          <div class="split">
+            <div id="transText" style="display:grid;gap:10px"></div>
+            <div id="transImg" style="max-width:240px;width:100%;margin:0 auto"></div>
+          </div>
+          <p class="fig-cap">Categories follow Kim et al. (NEJM 2000): the likelihood that a dysfunctional segment improves after revascularisation falls progressively with transmural extent, with 50% the usual dividing line. Choi et al. (2001) showed the same after acute infarction. A thinned segment with only a thin rim of scar can still recover, so wall thickness alone should not be used to call a segment non-viable.</p>
+        </div>
+
+        <div class="callout warn"><strong>What the trials say.</strong> In STICH (Bonow 2011, SPECT/dobutamine echo) and REVIVED-BCIS2 (Perera 2022, PCI vs optimal medical therapy), viability testing did not identify patients who gained a survival benefit from revascularisation. CMR viability now informs, rather than decides, revascularisation. Scar burden on LGE remains a strong marker of prognosis and of arrhythmic risk.</div>
+
+        <header style="display:grid;gap:6px;margin-top:8px"><h4>Quantitative perfusion: MBF and MPR</h4></header>
+        <div class="prose">
+          <p>Visual perfusion reading compares one territory with another, so it can miss disease that reduces flow everywhere (balanced three-vessel disease or microvascular dysfunction). Quantitative perfusion converts the first-pass signal into absolute <strong>myocardial blood flow (MBF, mL/g/min)</strong> for each pixel.</p>
+          <ul>
+            <li><strong>How:</strong> the arterial input function (blood-pool signal) saturates at high gadolinium concentration. A dual-bolus or dual-sequence method keeps it linear. The myocardial curve is then deconvolved with a tissue model. Inline pixel-wise MBF maps are now automatic on some scanners (Kellman 2017; Hsu 2018).</li>
+            <li><strong>Myocardial perfusion reserve (MPR)</strong> = stress MBF ÷ rest MBF. Rest MBF rises with the rate–pressure product, so tachycardia, hypertension, anaemia or anxiety lower MPR even when stress MBF is normal.</li>
+            <li><strong>Reference values:</strong> in a two-centre healthy-volunteer study using inline mapping (Brown et al.), stress MBF averaged 2.24 ± 0.53 and rest MBF 0.62 ± 0.13 mL/g/min, with MPR 3.74 ± 1.00. Stress MBF was higher in women, and both stress MBF and MPR fell with age. Values also depend on method and field strength, so there is no single universal MPR cut-off.</li>
+            <li><strong>Thresholds against invasive physiology</strong> (Kotecha 2019, 1.5 T adenosine). Regional stress MBF ≤ 1.94 mL/g/min detected FFR-positive (≤ 0.80) disease. Mean stress MBF was 1.47 ± 0.48 in FFR-positive regions, 2.10 ± 0.35 in microvascular-dysfunction regions (IMR ≥ 25) and 2.47 ± 0.50 in normal regions. In patients without a regional defect, global stress MBF &lt; 1.82 separated three-vessel disease from microvascular dysfunction.</li>
+            <li><strong>Prognosis:</strong> lower stress MBF and MPR were independently associated with death and MACE in over 1,000 patients (Knott 2020).</li>
+          </ul>
+        </div>
+
+        <div class="fig">
+          <div class="fig-title"><h4>Try it: interpret an MBF result</h4>
+            <div class="seg" role="group" aria-label="Distribution" id="mbfMode"><button type="button" data-m="regional" aria-pressed="true">One territory</button><button type="button" data-m="global" aria-pressed="false">Whole LV, no regional defect</button></div></div>
+          <div class="controls">
+            <div class="ctl"><label for="mbfStress"><span>Stress MBF</span><output id="mbfStressOut" class="num">1.6 mL/g/min</output></label><input type="range" id="mbfStress" min="0.5" max="4" step="0.05" value="1.6"></div>
+            <div class="ctl"><label for="mbfRest"><span>Rest MBF</span><output id="mbfRestOut" class="num">0.7 mL/g/min</output></label><input type="range" id="mbfRest" min="0.3" max="1.6" step="0.05" value="0.7"></div>
+          </div>
+          <div class="readout" id="mbfRead"></div>
+          <div class="svg-scroll"><svg id="mbfPlot" viewBox="0 0 600 120" role="img" aria-label="Stress MBF scale with reference values" style="min-width:480px"></svg></div>
+          <div class="status" id="mbfStatus" aria-live="polite"></div>
+          <p class="fig-cap">Thresholds are from single studies with one method and field strength (Kotecha 2019; Brown et al.) and are shown for teaching. Always read MBF together with visual perfusion, LGE, the haemodynamic response to stress and the coronary anatomy.</p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Pattern</th><th>Likely meaning</th><th>Next step / caveat</th></tr></thead>
+            <tbody>
+              <tr><td>Low stress MBF in one territory, normal elsewhere; no LGE</td><td>Flow-limiting epicardial stenosis (inducible ischaemia)</td><td>Extent (number of segments) guides revascularisation decisions, as in MR-INFORM.</td></tr>
+              <tr><td>Low stress MBF with matching subendocardial LGE</td><td>Infarct ± peri-infarct ischaemia</td><td>Compare defect size with LGE extent; a defect larger than the scar suggests residual ischaemia.</td></tr>
+              <tr><td>Globally low stress MBF and MPR, no regional defect</td><td>Balanced multivessel disease or coronary microvascular dysfunction</td><td>A very low global value favours three-vessel disease. Check CT or invasive angiography; transmural gradient (endo &lt; epi) is typical of both.</td></tr>
+              <tr><td>Normal stress MBF, low MPR</td><td>High rest MBF (tachycardia, hypertension, anaemia)</td><td>Rely on stress MBF; consider correcting rest MBF for rate–pressure product.</td></tr>
+              <tr><td>Globally low stress MBF, no HR rise, no splenic switch-off</td><td>Inadequate vasodilator stress (e.g. caffeine)</td><td>Non-diagnostic; repeat with confirmed abstinence or a higher dose.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
       <article class="section" id="int-mapping" data-title="Mapping values">
         <header><span class="eyebrow">Tissue</span><h3>Mapping values</h3></header>
         <div class="table-wrap">
@@ -632,10 +716,114 @@ footer.site .wrap { display: grid; gap: 6px; }
   </div>
 </section>
 
-<!-- ============ 4. PAPERS ============ -->
+<!-- ============ 4. RESEARCH ============ -->
+<section class="panel" id="research" role="tabpanel" aria-labelledby="tab-research" hidden>
+  <div class="panel-head">
+    <span class="eyebrow">Tab 4 · Research techniques</span>
+    <h2>Beyond the clinical protocol</h2>
+    <p>Methods that measure metabolism, energetics and microstructure. Most are confined to specialist centres and research studies, but they explain a lot of the physiology behind what you see on routine scans.</p>
+  </div>
+  <div class="grid">
+    <nav class="toc" aria-label="Research contents" data-toc>
+      <div class="toc-title">On this tab</div>
+    </nav>
+    <div class="content">
+
+      <article class="section" id="res-31p" data-title="Energetics: 31P spectroscopy">
+        <header><span class="eyebrow">Energetics · <span class="pill res">Research, specialist centres</span></span><h3>Myocardial energetics and ³¹P spectroscopy</h3>
+          <p class="lede">The heart turns over its entire ATP pool every few seconds. Phosphocreatine (PCr) is the energy buffer: creatine kinase (CK) shuttles high-energy phosphate from PCr to ADP to keep ATP constant. When energy supply falls, PCr drops first, so <strong>the PCr/ATP ratio is a sensitive index of the heart's energetic reserve</strong>.</p></header>
+        <div class="concepts four">
+          <div class="concept"><h4>What is measured</h4><p>Phosphorus-31 nuclei resonate at a different frequency from protons, so a dedicated ³¹P coil collects a spectrum. Each phosphorus compound appears as a peak at its own chemical shift (ppm). Peak areas give PCr/ATP; saturation-transfer methods add CK flux.</p></div>
+          <div class="concept"><h4>Clinical findings</h4><p>PCr/ATP is reduced in heart failure of most causes, DCM, HCM (including genotype-positive, phenotype-negative carriers), aortic stenosis, diabetes and obesity. In DCM a reduced ratio predicted total and cardiovascular mortality (Neubauer 1997).</p></div>
+          <div class="concept"><h4>Stress energetics</h4><p>Ischaemia during handgrip or dobutamine stress transiently lowers PCr/ATP in the affected myocardium. This gives a metabolic, not perfusion-based, marker of ischaemia.</p></div>
+          <div class="concept"><h4>Limitations</h4><p>Low signal means large voxels (several mL, usually the septum), 10–30 min acquisitions, contamination from chest-wall muscle and blood, and method-dependent normal values. Field strength of 3 T or 7 T helps.</p></div>
+        </div>
+        <div class="fig">
+          <div class="fig-title"><h4>Try it: a cardiac ³¹P spectrum</h4></div>
+          <div class="controls">
+            <div class="ctl"><label for="pcrSlider"><span>True PCr/ATP</span><output id="pcrOut" class="num">2.0</output></label><input type="range" id="pcrSlider" min="0.8" max="2.6" step="0.05" value="2.0"></div>
+            <div class="ctl"><label for="bloodSlider"><span>Blood contamination of voxel</span><output id="bloodOut" class="num">15%</output></label><input type="range" id="bloodSlider" min="0" max="40" step="5" value="15"></div>
+          </div>
+          <div class="svg-scroll"><svg id="p31Plot" viewBox="0 0 640 260" role="img" aria-label="Simulated phosphorus spectrum" style="min-width:520px"></svg></div>
+          <div class="readout" id="p31Read"></div>
+          <div class="status" id="p31Status" aria-live="polite"></div>
+          <p class="fig-cap">Stylised spectrum (ppm axis runs right to left by convention; ATP multiplets drawn as single peaks). Blood contains ATP and 2,3-DPG but almost no PCr, so blood in the voxel inflates the ATP peaks and lowers the apparent ratio. The 2,3-DPG signal (which also hides inorganic phosphate) is used to correct for it.</p>
+        </div>
+      </article>
+
+      <article class="section" id="res-1h" data-title="¹H spectroscopy: lipids">
+        <header><span class="eyebrow">Metabolism · <span class="pill res">Research</span></span><h3>Proton (¹H) spectroscopy and myocardial lipid</h3></header>
+        <div class="prose">
+          <p>With the large water signal suppressed or used as a reference, a single-voxel proton spectrum in the septum shows <strong>triglyceride methylene at ~1.3 ppm</strong>, creatine at ~3.0 ppm and water at ~4.7 ppm. The lipid-to-water ratio quantifies intramyocardial triglyceride ("cardiac steatosis").</p>
+          <ul>
+            <li>Myocardial triglyceride is raised in obesity, impaired glucose tolerance and type 2 diabetes, before systolic dysfunction appears (McGavock 2007). It falls with weight loss and caloric restriction.</li>
+            <li>Lipotoxicity is one proposed link between metabolic disease and diastolic dysfunction / HFpEF.</li>
+            <li>Technique: PRESS or STEAM voxel (~6–8 mL) in the septum, ECG-triggered, with breath-holds or a respiratory navigator. Avoid epicardial fat, which contaminates the lipid peak.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="section" id="res-13c" data-title="Hyperpolarised ¹³C">
+        <header><span class="eyebrow">Metabolism · <span class="pill early">Early clinical research</span></span><h3>Hyperpolarised ¹³C metabolic imaging</h3></header>
+        <div class="prose">
+          <p>Dynamic nuclear polarisation boosts the MR signal of a <sup>13</sup>C-labelled substrate, usually [1-<sup>13</sup>C]pyruvate, more than 10,000-fold. After intravenous injection, its conversion to downstream metabolites can be watched in real time, but only for about a minute before the polarisation decays.</p>
+          <ul>
+            <li><strong>Bicarbonate</strong> production reflects flux through pyruvate dehydrogenase (PDH), the gatekeeper of glucose oxidation.</li>
+            <li><strong>Lactate</strong> and <strong>alanine</strong> reflect glycolytic exchange and the cytosolic redox state.</li>
+            <li>First human cardiac study in 2016 (Cunningham). In type 2 diabetes, cardiac PDH flux was reduced and rose after a glucose challenge (Rider 2020).</li>
+            <li>Needs an on-site polariser, a sterile fluid path and a timed injection; it is available at only a handful of centres.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="section" id="res-dti" data-title="Diffusion tensor CMR">
+        <header><span class="eyebrow">Microstructure · <span class="pill res">Research, specialist centres</span></span><h3>Diffusion tensor CMR (DT-CMR)</h3>
+          <p class="lede">Water diffuses more easily along cardiomyocytes than across them. Measuring diffusion in at least six directions gives a tensor in each voxel. Its main axis shows the local myocyte orientation, and its shape shows how organised the tissue is.</p></header>
+        <div class="two-col">
+          <dl class="kv" style="margin:0">
+            <div><dt>Mean diffusivity (MD)</dt><dd>Overall water mobility; rises with expanded extracellular space (fibrosis, oedema, infarction).</dd></div>
+            <div><dt>Fractional anisotropy (FA)</dt><dd>0 = random, 1 = fully directional. Falls with myocyte disarray or loss; low diastolic FA in HCM was linked to ventricular arrhythmia, independent of LGE and ECV (Ariga 2019).</dd></div>
+            <div><dt>Helix angle (HA)</dt><dd>Myocyte inclination relative to the short-axis plane. It rotates smoothly from about +60° at the endocardium to about −60° at the epicardium.</dd></div>
+            <div><dt>Sheetlet angle (E2A)</dt><dd>Orientation of the laminar "sheetlets" that slide and reorient to thicken the wall. Normally low in diastole and steeper in systole.</dd></div>
+          </dl>
+          <div class="fig" style="padding:14px">
+            <div class="fig-title"><h4>Helix angle and sheetlets</h4>
+              <div class="seg" role="group" aria-label="Cardiac phase" id="dtiPhase"><button type="button" data-p="d" aria-pressed="true">Diastole</button><button type="button" data-p="s" aria-pressed="false">Systole</button></div></div>
+            <svg id="dtiSvg" viewBox="0 0 420 250" role="img" aria-label="Transmural helix angle and sheetlet diagram" style="width:100%;height:auto"></svg>
+            <p class="fig-cap" id="dtiCap"></p>
+          </div>
+        </div>
+        <div class="cards-2">
+          <div class="card"><h4>Disease signatures</h4>
+            <ul style="margin-top:8px">
+              <li><strong>HCM:</strong> low FA (disarray); sheetlets stay in a systolic-like configuration in diastole (impaired relaxation).</li>
+              <li><strong>DCM:</strong> sheetlets fail to reorient in systole (reduced E2A mobility).</li>
+              <li><strong>Infarction:</strong> high MD and low FA, with a loss of the normal helix-angle gradient.</li>
+              <li>The microstructural dynamics in HCM and DCM were described in vivo by Nielles-Vallespin (2017).</li>
+            </ul></div>
+          <div class="card"><h4>Why it is hard</h4>
+            <ul style="margin-top:8px">
+              <li>Diffusion displacements are microns; cardiac motion is millimetres. It needs motion-compensated spin echo (M2) or stimulated-echo (STEAM) sequences spanning two heartbeats.</li>
+              <li>Low SNR, so many breath-holds and averages and only a few slices.</li>
+              <li>Strong gradients (3 T research systems) and careful quality control of each image.</li>
+            </ul></div>
+        </div>
+      </article>
+
+      <article class="section" id="res-other" data-title="Other emerging techniques">
+        <header><span class="eyebrow">Horizon scan</span><h3>Other research-based techniques</h3>
+          <p class="lede">The labels show how close each method is to routine use. Green: used clinically in expert centres. Blue: research, specialist centres. Orange: early research.</p></header>
+        <div class="tech-grid" id="techGrid"></div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. PAPERS ============ -->
 <section class="panel" id="papers" role="tabpanel" aria-labelledby="tab-papers" hidden>
   <div class="panel-head">
-    <span class="eyebrow">Tab 4 · Seminal papers</span>
+    <span class="eyebrow">Tab 5 · Seminal papers</span>
     <h2>A reading list</h2>
     <p>Papers that changed practice or set the standards, grouped by topic. Each DOI link goes to the publisher's record.</p>
   </div>
@@ -647,10 +835,10 @@ footer.site .wrap { display: grid; gap: 6px; }
   </div>
 </section>
 
-<!-- ============ 5. QUIZ ============ -->
+<!-- ============ 6. QUIZ ============ -->
 <section class="panel" id="quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
   <div class="panel-head">
-    <span class="eyebrow">Tab 5 · Quiz</span>
+    <span class="eyebrow">Tab 6 · Quiz</span>
     <h2>Test yourself</h2>
     <p>Answer to see the explanation immediately. Filter by topic; your score updates as you go.</p>
   </div>
@@ -714,7 +902,7 @@ if (window.matchMedia) {
 }
 
 /* ---------- tabs ---------- */
-const TABS = ["acquisition", "views", "interpretation", "papers", "quiz"];
+const TABS = ["acquisition", "views", "interpretation", "research", "papers", "quiz"];
 function showTab(id, push) {
   if (!TABS.includes(id)) id = "acquisition";
   $$(".tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === id)));
@@ -1557,7 +1745,167 @@ $$("#dxChips .chip").forEach(c => c.addEventListener("click", () => showDx(c.dat
 showDx("mi");
 
 /* =========================================================
-   4. PAPERS
+   4. RESEARCH TECHNIQUES
+   ========================================================= */
+function lorentz(x, x0, w) { return 1 / (1 + ((x - x0) / w) ** 2); }
+function drawP31() {
+  const ratio = +$("#pcrSlider").value, blood = +$("#bloodSlider").value / 100;
+  $("#pcrOut").textContent = ratio.toFixed(2); $("#bloodOut").textContent = Math.round(blood * 100) + "%";
+  const atpMyo = 1, atpBlood = blood * 1.2, dpg = blood * 2.6;
+  const peaks = [
+    { ppm: 0, h: ratio * atpMyo, w: 0.45, name: "PCr" },
+    { ppm: -2.5, h: atpMyo + atpBlood, w: 0.7, name: "γ-ATP" },
+    { ppm: -7.6, h: atpMyo + atpBlood, w: 0.7, name: "α-ATP" },
+    { ppm: -16.2, h: atpMyo + atpBlood, w: 0.8, name: "β-ATP" },
+    { ppm: 2.8, h: 0.25, w: 0.8, name: "PDE" },
+    { ppm: 5.0, h: 0.12, w: 0.5, name: "" },
+    { ppm: 5.4, h: dpg * 0.55, w: 0.45, name: "" },
+    { ppm: 6.3, h: dpg * 0.5, w: 0.45, name: "2,3-DPG" }
+  ];
+  const L = 30, R = 620, T = 18, B = 210, xmin = -20, xmax = 10, ymax = 2.9;
+  const X = p => L + (xmax - p) / (xmax - xmin) * (R - L), Y = v => B - v / ymax * (B - T);
+  let s = "";
+  [10, 5, 0, -5, -10, -15, -20].forEach(p => { s += `<line x1="${X(p)}" x2="${X(p)}" y1="${B}" y2="${B + 5}" class="s-muted"/><text x="${X(p)}" y="${B + 18}" font-size="10.5" text-anchor="middle" class="t-muted t-mono">${p}</text>`; });
+  s += `<line x1="${L}" x2="${R}" y1="${B}" y2="${B}" class="s-muted"/>`;
+  s += `<text x="${(L + R) / 2}" y="${B + 36}" font-size="11.5" text-anchor="middle" class="t-muted">Chemical shift (ppm, relative to PCr)</text>`;
+  let d = "", db = "";
+  for (let i = 0; i <= 600; i++) {
+    const p = xmax - (xmax - xmin) * i / 600;
+    let v = 0, vb = 0;
+    peaks.forEach(k => { v += k.h * lorentz(p, k.ppm, k.w); });
+    if (blood > 0) { vb = atpBlood * (lorentz(p, -2.5, 0.7) + lorentz(p, -7.6, 0.7) + lorentz(p, -16.2, 0.8)) + dpg * (0.55 * lorentz(p, 5.4, 0.45) + 0.5 * lorentz(p, 6.3, 0.45)); }
+    d += (i ? "L" : "M") + X(p).toFixed(1) + " " + Y(Math.min(v, ymax)).toFixed(1);
+    db += (i ? "L" : "M") + X(p).toFixed(1) + " " + Y(Math.min(vb, ymax)).toFixed(1);
+  }
+  if (blood > 0) s += `<path d="${db} L${X(xmin)} ${B} L${X(xmax)} ${B} Z" fill="var(--c-blood)" opacity="0.22"/>`;
+  s += `<path d="${d}" fill="none" stroke="var(--c-myo)" stroke-width="2"/>`;
+  peaks.filter(k => k.name).forEach(k => {
+    const top = Math.min(k.h + (k.name === "PDE" ? 0 : 0), ymax);
+    s += `<text x="${X(k.ppm)}" y="${Math.max(Y(top) - 8, T + 6)}" font-size="11" font-weight="600" text-anchor="middle" class="t-ink">${k.name}</text>`;
+  });
+  if (blood > 0) s += `<text x="${X(9.5)}" y="${T + 10}" font-size="10.5" class="t-muted"><tspan fill="var(--c-blood)">■</tspan> blood contribution</text>`;
+  $("#p31Plot").innerHTML = s;
+  const measured = ratio * atpMyo / (atpMyo + atpBlood);
+  $("#p31Read").innerHTML = `<div><span>Measured, uncorrected</span><b>${measured.toFixed(2)}</b></div><div><span>After blood correction</span><b>${ratio.toFixed(2)}</b></div>`;
+  const st = $("#p31Status");
+  if (ratio >= 1.8) { st.className = "status good"; st.innerHTML = `<strong>Within the range typical of healthy hearts</strong> (roughly 1.8–2.2 with blood correction; exact values depend on field strength and method).`; }
+  else if (ratio >= 1.5) { st.className = "status bad"; st.innerHTML = `<strong>Mildly reduced energetics</strong>, as seen in HCM, aortic stenosis, diabetes or obesity.`; }
+  else { st.className = "status bad"; st.innerHTML = `<strong>Markedly reduced energetics</strong>, typical of advanced heart failure; in DCM a reduced ratio predicted mortality.`; }
+  if (blood >= 15) st.innerHTML += ` <span class="muted">With ${Math.round(blood * 100)}% blood in the voxel the uncorrected ratio understates the true value by ${Math.round((1 - measured / ratio) * 100)}%.</span>`;
+}
+["pcrSlider", "bloodSlider"].forEach(id => $("#" + id).addEventListener("input", drawP31));
+drawP31();
+
+let dtiPhase = "d";
+function drawDTI() {
+  let s = "";
+  const x0 = 30, x1 = 230, yEpi = 40, yEndo = 210, layers = 7;
+  s += `<rect x="${x0}" y="${yEpi}" width="${x1 - x0}" height="${yEndo - yEpi}" rx="6" fill="var(--surface-2)" stroke="var(--line)"/>`;
+  s += `<text x="${x0}" y="${yEpi - 10}" font-size="11" class="t-muted">Epicardium</text><text x="${x0}" y="${yEndo + 20}" font-size="11" class="t-muted">Endocardium</text>`;
+  for (let i = 0; i < layers; i++) {
+    const frac = i / (layers - 1), y = yEpi + 12 + frac * (yEndo - yEpi - 24);
+    const ha = -60 + 120 * frac, col = frac < 0.5 ? "var(--c-scar)" : "var(--c-myo)";
+    for (let k = 0; k < 4; k++) {
+      const cx = x0 + 30 + k * 47, len = 18, a = rad(-ha);
+      s += `<line x1="${(cx - len * Math.cos(a)).toFixed(1)}" y1="${(y - len * Math.sin(a) * 0.35).toFixed(1)}" x2="${(cx + len * Math.cos(a)).toFixed(1)}" y2="${(y + len * Math.sin(a) * 0.35).toFixed(1)}" stroke="${col}" stroke-width="3" stroke-linecap="round"/>`;
+    }
+    if (i % 3 === 0) s += `<text x="${x1 + 8}" y="${y + 4}" font-size="11" class="t-ink t-mono">${ha > 0 ? "+" : ""}${Math.round(ha)}°</text>`;
+  }
+  s += `<text x="${x1 + 8}" y="${yEpi - 10}" font-size="11" class="t-muted">Helix angle</text>`;
+  // sheetlets
+  const sx = 300, sy = 60, sw = 100, sh = 140, ang = dtiPhase === "d" ? 18 : 58;
+  s += `<rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" rx="6" fill="var(--surface-2)" stroke="var(--line)"/>`;
+  s += `<clipPath id="shc"><rect x="${sx}" y="${sy}" width="${sw}" height="${sh}" rx="6"/></clipPath><g clip-path="url(#shc)">`;
+  for (let k = -6; k < 12; k++) {
+    const by = sy + k * 18, a = rad(ang);
+    s += `<line x1="${sx - 20}" y1="${by + 60 * Math.tan(a) * 0 }" x2="${sx + sw + 20}" y2="${(by - (sw + 40) * Math.tan(a)).toFixed(1)}" stroke="var(--c-blood)" stroke-width="5" stroke-linecap="round" opacity="0.75"/>`;
+  }
+  s += `</g><text x="${sx + sw / 2}" y="${sy - 10}" font-size="11" text-anchor="middle" class="t-muted">Sheetlets</text>`;
+  s += `<text x="${sx + sw / 2}" y="${sy + sh + 20}" font-size="11" text-anchor="middle" class="t-ink t-mono">E2A ≈ ${ang}°</text>`;
+  $("#dtiSvg").innerHTML = s;
+  $("#dtiCap").textContent = dtiPhase === "d"
+    ? "Diastole: sheetlets lie nearly flat (low E2A). In HCM they stay steep in diastole, a sign of impaired relaxation. Angles are illustrative."
+    : "Systole: sheetlets tilt steeply (high E2A), and their sliding and reorientation account for much of wall thickening. In DCM this systolic reorientation is reduced. Angles are illustrative.";
+}
+$$("#dtiPhase button").forEach(b => b.addEventListener("click", () => {
+  dtiPhase = b.dataset.p; $$("#dtiPhase button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); drawDTI();
+}));
+drawDTI();
+
+const TECH = [
+  { name: "Quantitative perfusion mapping", m: "clin", ml: "Expert centres", t: "Automated pixel-wise MBF and MPR from first-pass perfusion. Detects multivessel disease and microvascular dysfunction (see Interpretation → Viability & quantitative perfusion)." },
+  { name: "Strain and feature tracking", m: "clin", ml: "Expert centres", t: "Global longitudinal and circumferential strain from routine cines (feature tracking) or tagging/DENSE/SENC. GLS adds prognostic information beyond EF; values are vendor-dependent." },
+  { name: "4D flow", m: "res", ml: "Research / expert", t: "Time-resolved 3D velocity in all three directions from one acquisition. Flow through any plane is chosen retrospectively, with wall shear stress, kinetic energy and vortex analysis. Most mature in congenital and aortic disease (Dyverfeldt 2015 consensus)." },
+  { name: "Oxygenation-sensitive (BOLD) CMR", m: "res", ml: "Research", t: "Deoxyhaemoglobin lowers T2*-weighted signal. The change in myocardial signal from rest to stress (vasodilator or breathing manoeuvres) is a contrast-free marker of oxygenation and ischaemia." },
+  { name: "MR fingerprinting / multiparametric", m: "res", ml: "Research", t: "One scan with varying acquisition settings, matched to a dictionary of simulated signals, gives co-registered T1, T2 (± fat fraction) maps. Aims to shorten protocols and standardise values." },
+  { name: "Free-breathing and AI reconstruction", m: "clin", ml: "Entering clinical use", t: "Compressed sensing, motion-corrected and deep-learning reconstructions allow free-breathing cines, LGE and whole-heart 3D imaging in a few minutes. Automated contouring is widely used." },
+  { name: "Manganese-enhanced MRI", m: "early", ml: "Early research", t: "Manganese enters viable cardiomyocytes via calcium channels, giving an intracellular (not extracellular) contrast. It marks viable myocardium and calcium handling." },
+  { name: "Sodium (²³Na) imaging", m: "early", ml: "Early research", t: "Tissue sodium concentration rises when membrane integrity fails (acute infarction, oedema). Very low signal, so resolution is coarse; needs dedicated coils." },
+  { name: "Molecular and targeted probes", m: "early", ml: "Early research", t: "Gadolinium probes that bind elastin, collagen, fibrin or inflammatory cells, and iron-oxide particles taken up by macrophages. They target specific biology rather than extracellular volume." }
+];
+$("#techGrid").innerHTML = TECH.map(x => `<div class="tech"><div class="meta"><span class="pill ${x.m}">${x.ml}</span></div><h4>${x.name}</h4><p>${x.t}</p></div>`).join("");
+
+/* --- viability: transmurality --- */
+const TRANS = [
+  [0, 0, "No LGE", "good", "High likelihood of recovery if the segment is hibernating (in Kim 2000 most dysfunctional segments without LGE improved)."],
+  [1, 25, "1–25%", "good", "Likely to recover. Most of the wall is viable."],
+  [26, 50, "26–50%", "bad", "Intermediate: about half of segments recover. Low-dose dobutamine contractile reserve helps decide."],
+  [51, 75, "51–75%", "bad", "Unlikely to recover. Only a thin outer layer is viable."],
+  [76, 100, "76–100%", "bad", "Very unlikely to recover; essentially transmural scar."]
+];
+function drawTrans() {
+  const v = +$("#transSlider").value;
+  $("#transOut").textContent = v + "%";
+  const c = TRANS.find(t => v >= t[0] && v <= t[1]);
+  $("#transText").innerHTML = `<div class="readout"><div><span>Category</span><b>${c[2]}</b></div><div><span>Viable wall</span><b>${100 - v}%</b></div></div><div class="status ${c[3]}">${c[4]}</div>`;
+  $("#transImg").innerHTML = sax({ lesions: v ? [{ a1: -160, a2: -70, f1: 0, f2: v / 100 }] : [], aria: "Anteroseptal segment with " + v + "% transmural LGE",
+    notes: [[100, 192, v + "% transmural", "middle"]] });
+}
+$("#transSlider").addEventListener("input", drawTrans);
+drawTrans();
+
+/* --- viability: MBF --- */
+let mbfMode = "regional";
+function drawMBF() {
+  const st = +$("#mbfStress").value, rs = +$("#mbfRest").value, mpr = st / rs;
+  $("#mbfStressOut").textContent = st.toFixed(2) + " mL/g/min"; $("#mbfRestOut").textContent = rs.toFixed(2) + " mL/g/min";
+  $("#mbfRead").innerHTML = `<div><span>Stress MBF</span><b>${st.toFixed(2)}</b></div><div><span>Rest MBF</span><b>${rs.toFixed(2)}</b></div><div><span>MPR</span><b>${mpr.toFixed(2)}</b></div>`;
+  const L = 20, R = 580, y = 56, xmax = 4;
+  const X = v => L + v / xmax * (R - L);
+  let s = `<rect x="${L}" y="${y - 6}" width="${R - L}" height="12" rx="6" fill="var(--surface-2)"/>`;
+  s += `<rect x="${X(2.24 - 0.53)}" y="${y - 6}" width="${X(2.24 + 0.53) - X(2.24 - 0.53)}" height="12" fill="var(--good)" opacity="0.35"/>`;
+  s += `<text x="${X(2.24)}" y="${y + 26}" font-size="10.5" text-anchor="middle" class="t-muted">healthy volunteers 2.24 ± 0.53</text>`;
+  [[1.94, "1.94 regional (FFR+)"], [1.82, "1.82 global"]].forEach(([v, lab], i) => {
+    s += `<line x1="${X(v)}" x2="${X(v)}" y1="${y - 16}" y2="${y + 8}" stroke="var(--signal)" stroke-width="1.5" stroke-dasharray="3 2"/>`;
+    s += `<text x="${X(v) + (i ? -4 : 4)}" y="${y - 20}" font-size="10.5" text-anchor="${i ? "end" : "start"}" fill="var(--signal)">${lab}</text>`;
+  });
+  [0, 1, 2, 3, 4].forEach(v => { s += `<text x="${X(v)}" y="${y + 46}" font-size="10" text-anchor="middle" class="t-muted t-mono">${v}</text>`; });
+  s += `<circle cx="${X(Math.min(st, xmax))}" cy="${y}" r="8" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>`;
+  s += `<text x="${L}" y="14" font-size="10.5" class="t-muted">Stress MBF (mL/g/min)</text>`;
+  $("#mbfPlot").innerHTML = s;
+  let msg, cls = "bad";
+  if (mbfMode === "regional") {
+    if (st <= 1.94) msg = `<strong>Ischaemic range for this territory.</strong> Stress MBF ≤ 1.94 mL/g/min matched FFR ≤ 0.80 in Kotecha 2019 (FFR-positive regions averaged 1.47).`;
+    else if (st < 2.24 - 0.53) msg = `<strong>Borderline.</strong> Above the regional ischaemic threshold but below the healthy range; microvascular dysfunction regions averaged 2.10.`;
+    else { cls = "good"; msg = `<strong>Not in the ischaemic range.</strong> Stress MBF is above the 1.94 regional threshold.`; }
+  } else {
+    if (st < 1.82) msg = `<strong>Globally very low stress MBF without a regional defect.</strong> Below 1.82 mL/g/min favoured balanced three-vessel disease over microvascular dysfunction (Kotecha 2019). Check the coronary anatomy.`;
+    else if (st < 2.24 - 0.53 + 0.2) msg = `<strong>Globally reduced stress MBF.</strong> Above 1.82, so microvascular dysfunction is more likely than three-vessel disease if the epicardial arteries are unobstructed.`;
+    else { cls = "good"; msg = `<strong>Global stress MBF within the healthy range</strong> (allow for age and sex).`; }
+  }
+  if (rs > 1.1) msg += ` <span class="muted">Rest MBF is high (tachycardia, hypertension, anaemia?), which depresses MPR; lean on stress MBF.</span>`;
+  else if (mpr < 2) msg += ` <span class="muted">MPR ${mpr.toFixed(1)} is well below healthy volunteers (3.7 ± 1.0).</span>`;
+  if (st < 1.1 && mbfMode === "global") msg += ` <span class="muted">Check the stress response (heart-rate rise, splenic switch-off): very low global values can mean inadequate stress.</span>`;
+  const el = $("#mbfStatus"); el.className = "status " + cls; el.innerHTML = msg;
+}
+["mbfStress", "mbfRest"].forEach(id => $("#" + id).addEventListener("input", drawMBF));
+$$("#mbfMode button").forEach(b => b.addEventListener("click", () => {
+  mbfMode = b.dataset.m; $$("#mbfMode button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); drawMBF();
+}));
+drawMBF();
+
+/* =========================================================
+   5. PAPERS
    Only DOIs/PMIDs individually confirmed are linked directly; the rest
    use a PubMed title search so no identifier is guessed.
    ========================================================= */
@@ -1629,6 +1977,42 @@ const PAPERS = [
     { y: 2019, a: "Nagel E, Greenwood JP, McCann GP, et al.", t: "Magnetic resonance perfusion or fractional flow reserve in coronary disease.", j: "N Engl J Med", v: "2019;380(25):2418–2428", doi: "10.1056/NEJMoa1716734",
       why: "MR-INFORM: a CMR perfusion-guided strategy was non-inferior to FFR-guided care, with fewer revascularisations." }
   ] },
+  { group: "Viability and quantitative perfusion", id: "p-via", items: [
+    { y: 2001, a: "Choi KM, Kim RJ, Gubernikoff G, Vargas JD, Parker M, Judd RM.", t: "Transmural extent of acute myocardial infarction predicts long-term improvement in contractile function.", j: "Circulation", v: "2001;104(10):1101–1107", doi: "10.1161/hc3501.096798",
+      why: "After reperfused acute MI, the transmural extent of LGE predicted which segments would recover function." },
+    { y: 2004, a: "Wellnhofer E, Olariu A, Klein C, et al.", t: "Magnetic resonance low-dose dobutamine test is superior to scar quantification for the prediction of functional recovery.", j: "Circulation", v: "2004;109(18):2172–2174", doi: "10.1161/01.CIR.0000128862.34201.74",
+      why: "Contractile reserve on low-dose dobutamine CMR outperformed LGE alone, especially in segments with intermediate transmurality." },
+    { y: 2011, a: "Bonow RO, Maurer G, Lee KL, et al.", t: "Myocardial viability and survival in ischemic left ventricular dysfunction.", j: "N Engl J Med", v: "2011;364(17):1617–1625", doi: "10.1056/NEJMoa1100358",
+      why: "STICH viability substudy: viability (SPECT/dobutamine echo) did not identify patients who benefited from CABG over medical therapy." },
+    { y: 2017, a: "Kellman P, Hansen MS, Nielles-Vallespin S, et al.", t: "Myocardial perfusion cardiovascular magnetic resonance: optimized dual sequence and reconstruction for quantification.", j: "J Cardiovasc Magn Reson", v: "2017;19:43", doi: "10.1186/s12968-017-0355-5",
+      why: "The dual-sequence approach and inline reconstruction that made automated pixel-wise MBF mapping practical." },
+    { y: 2018, a: "Hsu LY, Jacobs M, Benovoy M, et al.", t: "Diagnostic performance of fully automated pixel-wise quantitative myocardial perfusion imaging by cardiovascular magnetic resonance.", j: "JACC Cardiovasc Imaging", v: "2018;11(5):697–707", doi: "10.1016/j.jcmg.2018.01.005",
+      why: "Validated automated MBF maps against angiography for detecting coronary artery disease." },
+    { y: 2019, a: "Kotecha T, Martinez-Naharro A, Boldrini M, et al.", t: "Automated pixel-wise quantitative myocardial perfusion mapping by CMR to detect obstructive coronary artery disease and coronary microvascular dysfunction: validation against invasive coronary physiology.", j: "JACC Cardiovasc Imaging", v: "2019;12(10):1958–1969", doi: "10.1016/j.jcmg.2018.12.022",
+      why: "Stress MBF thresholds against FFR and IMR; separated three-vessel disease from microvascular dysfunction." },
+    { y: 2020, a: "Knott KD, Seraphim A, Augusto JB, et al.", t: "The prognostic significance of quantitative myocardial perfusion: an artificial intelligence-based approach using perfusion mapping.", j: "Circulation", v: "2020;141(16):1282–1291", doi: "10.1161/CIRCULATIONAHA.119.044666",
+      why: "Reduced stress MBF and MPR independently predicted death and MACE in over 1,000 patients." },
+    { y: 2022, a: "Perera D, Clayton T, O'Kane PD, et al.", t: "Percutaneous revascularization for ischemic left ventricular dysfunction.", j: "N Engl J Med", v: "2022;387(15):1351–1360", doi: "10.1056/NEJMoa2206606",
+      why: "REVIVED-BCIS2: PCI added to optimal medical therapy did not reduce death or heart-failure hospitalisation in ischaemic LV dysfunction with viability." }
+  ] },
+  { group: "Research techniques", id: "p-res", items: [
+    { y: 1997, a: "Neubauer S, Horn M, Cramer M, et al.", t: "Myocardial phosphocreatine-to-ATP ratio is a predictor of mortality in patients with dilated cardiomyopathy.", j: "Circulation", v: "1997;96(7):2190–2196", doi: "10.1161/01.CIR.96.7.2190",
+      why: "³¹P spectroscopy showed that impaired energetics carries prognostic weight in heart failure." },
+    { y: 2007, a: "Neubauer S.", t: "The failing heart — an engine out of fuel.", j: "N Engl J Med", v: "2007;356(11):1140–1151", search: "The failing heart--an engine out of fuel",
+      why: "Influential review of energy starvation as a mechanism of heart failure." },
+    { y: 2007, a: "McGavock JM, Lingvay I, Zib I, et al.", t: "Cardiac steatosis in diabetes mellitus: a 1H-magnetic resonance spectroscopy study.", j: "Circulation", v: "2007;116(10):1170–1175", search: true,
+      why: "Proton MRS showed myocardial triglyceride accumulation before diabetes and before systolic dysfunction." },
+    { y: 2015, a: "Dyverfeldt P, Bissell M, Barker AJ, et al.", t: "4D flow cardiovascular magnetic resonance consensus statement.", j: "J Cardiovasc Magn Reson", v: "2015;17:72", doi: "10.1186/s12968-015-0174-5",
+      why: "Consensus on acquisition, analysis and clinical applications of 4D flow." },
+    { y: 2016, a: "Cunningham CH, Lau JYC, Chen AP, et al.", t: "Hyperpolarized 13C metabolic MRI of the human heart: initial experience.", j: "Circ Res", v: "2016;119(11):1177–1182", doi: "10.1161/CIRCRESAHA.116.309769",
+      why: "First human cardiac hyperpolarised [1-¹³C]pyruvate study." },
+    { y: 2017, a: "Nielles-Vallespin S, Khalique Z, Ferreira PF, et al.", t: "Assessment of myocardial microstructural dynamics by in vivo diffusion tensor cardiac magnetic resonance.", j: "J Am Coll Cardiol", v: "2017;69(6):661–676", doi: "10.1016/j.jacc.2016.11.051",
+      why: "Showed sheetlet reorientation between diastole and systole in vivo, and its failure in HCM and DCM." },
+    { y: 2019, a: "Ariga R, Tunnicliffe EM, Manohar SG, et al.", t: "Identification of myocardial disarray in patients with hypertrophic cardiomyopathy and ventricular arrhythmias.", j: "J Am Coll Cardiol", v: "2019;73(20):2493–2502", doi: "10.1016/j.jacc.2019.02.065",
+      why: "Low diastolic FA on DT-CMR, a marker of disarray, was associated with ventricular arrhythmia in HCM independent of fibrosis." },
+    { y: 2020, a: "Rider OJ, Apps A, Miller JJJJ, et al.", t: "Noninvasive in vivo assessment of cardiac metabolism in the healthy and diabetic human heart using hyperpolarized 13C MRI.", j: "Circ Res", v: "2020;126(6):725–736", doi: "10.1161/CIRCRESAHA.119.316260",
+      why: "Hyperpolarised ¹³C showed reduced pyruvate dehydrogenase flux in type 2 diabetes." }
+  ] },
   { group: "Flow", id: "p-flow", items: [
     { y: 2010, a: "Gatehouse PD, Rolf MP, Graves MJ, et al.", t: "Flow measurement by cardiovascular magnetic resonance: a multi-centre multi-vendor study of background phase offset errors that can compromise the accuracy of derived regurgitant or shunt flow measurements.", j: "J Cardiovasc Magn Reson", v: "2010;12:5", doi: "10.1186/1532-429X-12-5",
       why: "Showed background phase offsets on clinical scanners are large enough to distort regurgitant and shunt calculations." }
@@ -1639,12 +2023,12 @@ $("#paperHost").innerHTML = PAPERS.map(g => `<article class="section paper-group
     let link;
     if (p.doi) link = `<a href="https://doi.org/${p.doi}" target="_blank" rel="noopener">doi:${p.doi}</a>`;
     else if (p.pmid) link = `<a href="https://pubmed.ncbi.nlm.nih.gov/${p.pmid}/" target="_blank" rel="noopener">PubMed ${p.pmid}</a>`;
-    else link = `<a href="${pmSearch(p.t.replace(/\.$/, ""))}" target="_blank" rel="noopener">Find on PubMed</a> <span class="note">(title search)</span>`;
+    else link = `<a href="${pmSearch(typeof p.search === "string" ? p.search : p.t.replace(/\.$/, ""))}" target="_blank" rel="noopener">Find on PubMed</a> <span class="note">(title search)</span>`;
     return `<div class="paper"><div class="yr">${p.y}</div><div><div class="cite">${p.a} ${p.t} <em>${p.j}</em> ${p.v}.</div><div class="why">${p.why}</div><div class="link">${link}</div></div></div>`;
   }).join("")}</article>`).join("");
 
 /* =========================================================
-   5. QUIZ
+   6. QUIZ
    ========================================================= */
 const Q = [
   { tp: "Physics", q: "Gadolinium-based contrast agents make scar bright on LGE images mainly because they:", o: ["Lengthen T1 of surrounding water", "Shorten T1 of surrounding water", "Lengthen T2*", "Increase proton density"], a: 1,
@@ -1702,11 +2086,34 @@ const Q = [
   { tp: "Interpretation", q: "A young man with complete heart block has patchy mid-wall and subepicardial LGE in the basal septum extending to the RV side, plus lateral wall foci. Consider first:", o: ["Cardiac sarcoidosis", "Old inferior infarct", "Takotsubo", "Iron overload"], a: 0,
     e: "Multifocal non-territorial LGE involving the basal septum (often on the RV side) with conduction disease is typical of cardiac sarcoid. FDG-PET assesses activity." },
   { tp: "Interpretation", q: "Under the 2018 Lake Louise criteria, a CMR diagnosis of myocardial inflammation requires:", o: ["LGE alone", "At least one T2-based and at least one T1-based criterion", "Pericardial effusion plus LGE", "Raised ECV alone"], a: 1,
-    e: "T2-based (T2 map or T2-weighted signal) plus T1-based (native T1, ECV or LGE). One marker alone may still support the diagnosis in the right context, with lower specificity." }
+    e: "T2-based (T2 map or T2-weighted signal) plus T1-based (native T1, ECV or LGE). One marker alone may still support the diagnosis in the right context, with lower specificity." },
+  { tp: "Viability & perfusion", q: "A dysfunctional anterior segment shows 80% transmural LGE. The likelihood of functional recovery after revascularisation is:", o: ["High", "About 50%", "Very low", "Cannot be judged from LGE"], a: 2,
+    e: "Recovery becomes progressively less likely as transmurality rises; segments with > 75% transmural LGE very rarely improve (Kim et al. 2000)." },
+  { tp: "Viability & perfusion", q: "Low-dose dobutamine CMR adds most to LGE in segments with:", o: ["No LGE", "Intermediate (~25–75%) transmural LGE", "Fully transmural LGE", "Normal wall motion"], a: 1,
+    e: "With intermediate scar, LGE alone predicts recovery poorly. Contractile reserve on low-dose dobutamine identifies segments that will improve (Wellnhofer 2004)." },
+  { tp: "Viability & perfusion", q: "What did the STICH viability substudy and REVIVED-BCIS2 show about viability testing?", o: ["Viable patients had a large survival benefit from revascularisation", "Viability testing did not identify patients who gained a survival benefit from revascularisation", "Viability testing should replace angiography", "Only CMR viability is predictive"], a: 1,
+    e: "In both trials the benefit of revascularisation did not depend on viability status. Viability informs, but does not decide, revascularisation; scar burden remains prognostic." },
+  { tp: "Viability & perfusion", q: "Why do quantitative perfusion methods use a dual-bolus or dual-sequence approach?", o: ["To reduce gadolinium dose", "Because the blood-pool (arterial input) signal saturates at high gadolinium concentration", "To shorten the breath-hold", "To avoid dark-rim artefact"], a: 1,
+    e: "Signal intensity is not linear with concentration at peak bolus in the LV cavity. A dilute pre-bolus or a separate low-sensitivity AIF sequence keeps the input function linear for deconvolution." },
+  { tp: "Viability & perfusion", q: "A tachycardic, hypertensive patient has a stress MBF of 2.4 mL/g/min but an MPR of 1.7. The most likely explanation is:", o: ["Severe three-vessel disease", "A high rest MBF driven by the rate–pressure product", "Inadequate stress", "Microvascular obstruction"], a: 1,
+    e: "Rest MBF rises with heart rate × blood pressure, which lowers MPR even when stress MBF is normal. Interpret stress MBF, or correct rest MBF for rate–pressure product." },
+  { tp: "Viability & perfusion", q: "Globally reduced stress MBF without a regional defect in a patient with unobstructed coronary arteries suggests:", o: ["Coronary microvascular dysfunction", "Normal study", "Single-vessel disease", "Myocarditis"], a: 0,
+    e: "Visual reading can miss global hypoperfusion. Quantitative MBF detects it; with unobstructed epicardial arteries the likely cause is microvascular dysfunction. Very low values favour balanced three-vessel disease (Kotecha 2019)." },
+  { tp: "Research", q: "A reduced myocardial PCr/ATP ratio on ³¹P spectroscopy indicates:", o: ["Myocardial iron loading", "Impaired energetic reserve", "Expanded extracellular volume", "Myocyte disarray"], a: 1,
+    e: "Phosphocreatine buffers ATP via creatine kinase and falls first when energy supply is limited. PCr/ATP is reduced in heart failure and predicted mortality in DCM (Neubauer 1997)." },
+  { tp: "Research", q: "Blood within a cardiac ³¹P spectroscopy voxel will, without correction:", o: ["Raise the apparent PCr/ATP", "Lower the apparent PCr/ATP", "Have no effect", "Abolish the PCr peak"], a: 1,
+    e: "Blood contributes ATP but almost no PCr, so ATP peaks are inflated. The 2,3-DPG signal from red cells is used to estimate and subtract the blood ATP." },
+  { tp: "Research", q: "In hyperpolarised [1-¹³C]pyruvate imaging, the bicarbonate signal mainly reflects:", o: ["Glycolysis to lactate", "Flux through pyruvate dehydrogenase", "Fatty-acid oxidation directly", "Myocardial perfusion"], a: 1,
+    e: "Pyruvate dehydrogenase releases the labelled carbon as CO₂, seen as bicarbonate. It indexes glucose oxidation and was reduced in type 2 diabetes (Rider 2020)." },
+  { tp: "Research", q: "On diffusion tensor CMR, the helix angle across the normal LV wall:", o: ["Is constant at 0°", "Rotates from about +60° at the endocardium to about −60° at the epicardium", "Is highest in the mid-wall", "Is only measurable in systole"], a: 1,
+    e: "Myocytes form a right-handed helix in the subendocardium and a left-handed helix in the subepicardium, with circumferential fibres in the mid-wall." },
+  { tp: "Research", q: "In HCM, reduced diastolic fractional anisotropy on DT-CMR is thought to represent:", o: ["Oedema", "Myocyte disarray", "Iron deposition", "Microvascular obstruction"], a: 1,
+    e: "Disordered myocyte orientation lowers anisotropy. Low diastolic FA was associated with ventricular arrhythmia independent of LGE, ECV and wall thickness (Ariga 2019)." }
 ];
 const qState = { filter: "All", ans: {} };
 try { const sv = JSON.parse(store.get("cmr-quiz") || "{}"); if (sv && typeof sv === "object") qState.ans = sv; } catch (e) { /* ignore */ }
-const TOPICS = ["All", "Physics", "Sequences", "Interpretation"];
+const TOPICS = ["All", "Physics", "Sequences", "Interpretation", "Viability & perfusion", "Research"];
+const TOPIC_PILL = { Physics: "", Sequences: "acc", Interpretation: "gd", "Viability & perfusion": "clin", Research: "early" };
 function saveQuiz() { store.set("cmr-quiz", JSON.stringify(qState.ans)); }
 function renderQuizFilter() {
   $("#quizFilter").innerHTML = TOPICS.map(t => {
@@ -1740,7 +2147,7 @@ function renderQuiz() {
       return `<button type="button" class="${cls}" data-q="${i}" data-o="${j}" ${done ? "disabled" : ""}><b>${L[j]}</b><span>${o}</span></button>`;
     }).join("");
     return `<div class="q ${done ? (ok ? "right" : "wrong") : ""}" id="q${i}">
-      <div class="q-head"><span class="qn">Q${i + 1}</span><span class="pill ${q.tp === "Physics" ? "" : (q.tp === "Sequences" ? "acc" : "gd")}">${q.tp}</span></div>
+      <div class="q-head"><span class="qn">Q${i + 1}</span><span class="pill ${TOPIC_PILL[q.tp]}">${q.tp}</span></div>
       <div class="q-text">${q.q}</div><div class="opts">${opts}</div>
       ${done ? `<div class="explain" aria-live="polite"><strong>${ok ? "Correct." : "Not quite. The answer is " + L[q.a] + "."}</strong>${q.e}</div>` : ""}
     </div>`;
