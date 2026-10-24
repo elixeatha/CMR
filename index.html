@@ -524,11 +524,11 @@ footer.site .wrap { display: grid; gap: 6px; }
         <div id="seqHost"></div>
       </article>
 
-      <article class="section" id="acq-flow" data-title="Flow & valve assessment">
-        <header><span class="eyebrow">Phase-contrast in practice</span><h3>Flow and valve assessment</h3>
-          <p class="lede">How to acquire and analyse phase-contrast flow for valve disease and shunts, recognise and fix aliasing, and read flow–time curves.</p></header>
+      <article class="section" id="acq-flow" data-title="Flow & valve acquisition">
+        <header><span class="eyebrow">Phase-contrast in practice</span><h3>Flow and valve acquisition</h3>
+          <p class="lede">How to acquire phase-contrast flow for valve disease and shunts, and how to recognise and fix aliasing. Analysis, flow–time curves and regurgitation grading are in <strong>Interpretation → Flow &amp; valve analysis</strong>.</p></header>
 
-        <div class="cards-2">
+        <div>
           <div class="card"><h4>Acquiring a flow scan</h4>
             <ol style="margin-top:8px">
               <li><strong>Find the vessel and jet.</strong> Use 3-chamber and coronal LVOT cines (RVOT views for the pulmonary valve). For stenosis, a short in-plane velocity scan shows where the jet is fastest (the vena contracta).</li>
@@ -545,54 +545,7 @@ footer.site .wrap { display: grid; gap: 6px; }
               <li><strong>Breathing:</strong> breath-hold or free-breathing with averaging. Be consistent, because a breath-hold changes venous return.</li>
               <li><strong>Background phase:</strong> keep the vessel near isocentre and apply background (static-tissue or phantom) correction.</li>
             </ol></div>
-          <div class="card"><h4>Analysing it</h4>
-            <ol style="margin-top:8px">
-              <li>Contour the vessel on the magnitude image in every phase (auto-propagate, then check on the phase image).</li>
-              <li>Flow in each phase = mean velocity × area (mL/s). Integrate over the cycle to give <strong>forward</strong>, <strong>backward</strong> and <strong>net</strong> volumes.</li>
-              <li><strong>Regurgitant fraction</strong> = backward ÷ forward × 100.</li>
-              <li><strong>Peak velocity</strong> = highest pixel velocity; estimated gradient = 4v² (v in m/s). It usually reads lower than Doppler.</li>
-              <li><strong>Indirect regurgitation</strong> (atrioventricular valves):
-                <ul>
-                  <li>MR volume = LV stroke volume (from volumes) − aortic forward flow</li>
-                  <li>TR volume = RV stroke volume − pulmonary forward flow</li>
-                </ul></li>
-              <li><strong>Shunts:</strong> Qp:Qs = pulmonary net flow ÷ aortic net flow.</li>
-              <li><strong>Internal checks:</strong> without a shunt, aortic net ≈ pulmonary net. Without MR, LV SV ≈ aortic forward flow. The LV–RV stroke-volume difference should match the difference in regurgitant volumes. Disagreement means an error somewhere.</li>
-            </ol></div>
         </div>
-
-        <div class="fig">
-          <div class="fig-title"><h4>Flow–time curves</h4>
-            <div class="seg" role="group" aria-label="Flow scenario" id="flowScen">
-              <button type="button" data-s="normal" aria-pressed="true">Normal aorta</button>
-              <button type="button" data-s="ar" aria-pressed="false">Aortic regurgitation</button>
-              <button type="button" data-s="desc" aria-pressed="false">Descending aorta in AR</button>
-              <button type="button" data-s="pr" aria-pressed="false">Pulmonary regurgitation</button>
-              <button type="button" data-s="as" aria-pressed="false">Aortic stenosis</button>
-            </div></div>
-          <div class="controls">
-            <div class="ctl" id="flowSevWrap"><label for="flowSev"><span>Regurgitant fraction</span><output id="flowSevOut" class="num">30%</output></label><input type="range" id="flowSev" min="0" max="65" step="1" value="30"></div>
-          </div>
-          <div class="svg-scroll"><svg id="flowPlot" viewBox="0 0 640 270" role="img" aria-label="Flow versus time curve" style="min-width:520px"></svg></div>
-          <div class="readout" id="flowRead"></div>
-          <div class="status" id="flowStatus" aria-live="polite"></div>
-          <p class="fig-cap">Simulated curves for one heartbeat at 70 bpm with a net stroke volume of 70 mL. Blue area above zero = forward volume; orange area below zero = backward (regurgitant) volume.</p>
-        </div>
-
-        <div class="table-wrap">
-          <table class="data">
-            <thead><tr><th>Regurgitant fraction (CMR)</th><th>Grade</th><th>Source</th></tr></thead>
-            <tbody>
-              <tr><td class="num">≤ 15%</td><td>Mild</td><td rowspan="4">CMR thresholds that best matched echo grading, for AR and MR (Gelfand 2006)</td></tr>
-              <tr><td class="num">16–25%</td><td>Moderate</td></tr>
-              <tr><td class="num">26–48%</td><td>Moderate–severe</td></tr>
-              <tr><td class="num">&gt; 48%</td><td>Severe</td></tr>
-              <tr><td class="num">RVol ≥ 60 mL or RF ≥ 50%</td><td>Severe</td><td>Echo-derived guideline thresholds commonly applied to CMR</td></tr>
-              <tr><td class="num">AR: RF &gt; 33%</td><td>Prognostic</td><td>Predicted progression to aortic valve surgery in asymptomatic patients (Myerson 2012)</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="callout">Grading is not one number. Integrate the regurgitant volume and fraction with ventricular size and function, the mechanism on cine, and (for AR) <strong>holodiastolic flow reversal in the descending aorta</strong>, which supports severe regurgitation. CMR and echo often disagree on MR severity, and in one multicentre study CMR regurgitant volume related better to post-surgical LV remodelling (Uretsky 2015).</p>
 
         <div class="fig">
           <div class="fig-title"><h4>Aliasing on the phase image</h4>
@@ -717,6 +670,58 @@ footer.site .wrap { display: grid; gap: 6px; }
           </table>
         </div>
         <p class="callout">These are rounded teaching values. For reporting, use sex- and age-specific ranges matched to your contouring method (Kawel-Boehm et al., JCMR 2020; see Seminal papers).</p>
+      </article>
+
+      <article class="section" id="int-flow" data-title="Flow & valve analysis">
+        <header><span class="eyebrow">Valves and shunts</span><h3>Flow and valve analysis</h3>
+          <p class="lede">Turning phase-contrast data into stroke volumes, regurgitant volumes and fractions, shunt ratios and gradients. Planning, VENC choice and aliasing are covered in <strong>Acquisition → Flow &amp; valve acquisition</strong>.</p></header>
+        <div class="card"><h4>Analysing a flow scan</h4>
+            <ol style="margin-top:8px">
+              <li>Contour the vessel on the magnitude image in every phase (auto-propagate, then check on the phase image).</li>
+              <li>Flow in each phase = mean velocity × area (mL/s). Integrate over the cycle to give <strong>forward</strong>, <strong>backward</strong> and <strong>net</strong> volumes.</li>
+              <li><strong>Regurgitant fraction</strong> = backward ÷ forward × 100.</li>
+              <li><strong>Peak velocity</strong> = highest pixel velocity; estimated gradient = 4v² (v in m/s). It usually reads lower than Doppler.</li>
+              <li><strong>Indirect regurgitation</strong> (atrioventricular valves):
+                <ul>
+                  <li>MR volume = LV stroke volume (from volumes) − aortic forward flow</li>
+                  <li>TR volume = RV stroke volume − pulmonary forward flow</li>
+                </ul></li>
+              <li><strong>Shunts:</strong> Qp:Qs = pulmonary net flow ÷ aortic net flow.</li>
+              <li><strong>Internal checks:</strong> without a shunt, aortic net ≈ pulmonary net. Without MR, LV SV ≈ aortic forward flow. The LV–RV stroke-volume difference should match the difference in regurgitant volumes. Disagreement means an error somewhere.</li>
+            </ol></div>
+
+        <div class="fig">
+          <div class="fig-title"><h4>Flow–time curves</h4>
+            <div class="seg" role="group" aria-label="Flow scenario" id="flowScen">
+              <button type="button" data-s="normal" aria-pressed="true">Normal aorta</button>
+              <button type="button" data-s="ar" aria-pressed="false">Aortic regurgitation</button>
+              <button type="button" data-s="desc" aria-pressed="false">Descending aorta in AR</button>
+              <button type="button" data-s="pr" aria-pressed="false">Pulmonary regurgitation</button>
+              <button type="button" data-s="as" aria-pressed="false">Aortic stenosis</button>
+            </div></div>
+          <div class="controls">
+            <div class="ctl" id="flowSevWrap"><label for="flowSev"><span>Regurgitant fraction</span><output id="flowSevOut" class="num">30%</output></label><input type="range" id="flowSev" min="0" max="65" step="1" value="30"></div>
+          </div>
+          <div class="svg-scroll"><svg id="flowPlot" viewBox="0 0 640 270" role="img" aria-label="Flow versus time curve" style="min-width:520px"></svg></div>
+          <div class="readout" id="flowRead"></div>
+          <div class="status" id="flowStatus" aria-live="polite"></div>
+          <p class="fig-cap">Simulated curves for one heartbeat at 70 bpm with a net stroke volume of 70 mL. Blue area above zero = forward volume; orange area below zero = backward (regurgitant) volume.</p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Regurgitant fraction (CMR)</th><th>Grade</th><th>Source</th></tr></thead>
+            <tbody>
+              <tr><td class="num">≤ 15%</td><td>Mild</td><td rowspan="4">CMR thresholds that best matched echo grading, for AR and MR (Gelfand 2006)</td></tr>
+              <tr><td class="num">16–25%</td><td>Moderate</td></tr>
+              <tr><td class="num">26–48%</td><td>Moderate–severe</td></tr>
+              <tr><td class="num">&gt; 48%</td><td>Severe</td></tr>
+              <tr><td class="num">RVol ≥ 60 mL or RF ≥ 50%</td><td>Severe</td><td>Echo-derived guideline thresholds commonly applied to CMR</td></tr>
+              <tr><td class="num">AR: RF &gt; 33%</td><td>Prognostic</td><td>Predicted progression to aortic valve surgery in asymptomatic patients (Myerson 2012)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="callout">Grading is not one number. Integrate the regurgitant volume and fraction with ventricular size and function, the mechanism on cine, and (for AR) <strong>holodiastolic flow reversal in the descending aorta</strong>, which supports severe regurgitation. CMR and echo often disagree on MR severity, and in one multicentre study CMR regurgitant volume related better to post-surgical LV remodelling (Uretsky 2015).</p>
       </article>
 
       <article class="section" id="int-lge" data-title="LGE patterns">
@@ -1456,7 +1461,7 @@ const SEQS = [
       ["Background phase offset (eddy currents)", "Small errors become large regurgitant fraction errors. Phantom or stationary-tissue correction, position the vessel at isocentre."],
       ["Plane not perpendicular / partial volume", "Re-plan on two orthogonal views; adequate pixel size (≥ 4 pixels across the vessel)."]
     ],
-    after: "See <strong>Flow and valve assessment</strong> below for acquisition and analysis step by step, flow–time curves and an aliasing demo.",
+    after: "See <strong>Flow and valve acquisition</strong> below for step-by-step planning and an aliasing demo, and <strong>Interpretation → Flow &amp; valve analysis</strong> for analysis, flow–time curves and grading.",
     widget: "venc"
   },
   {
