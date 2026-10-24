@@ -368,6 +368,11 @@ ol.approach p { font-size: 0.96rem; color: var(--muted); }
 .readout b { font: 700 1.5rem/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
 .two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; }
 @media (max-width: 720px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
+.field { width: 100%; font: 400 0.97rem/1.4 var(--font-body); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.field:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+textarea.field { resize: vertical; min-height: 130px; }
+a.btn { display: inline-flex; align-items: center; text-decoration: none; }
+.card ol { padding-left: 1.3em; display: grid; gap: 6px; } .card ol li + li { margin-top: 0; } .card ol ul { margin-top: 4px; }
 footer.site { border-top: 1px solid var(--line); padding-block: 22px 40px; color: var(--muted); font-size: var(--step--1); }
 footer.site .wrap { display: grid; gap: 6px; }
 
@@ -407,6 +412,7 @@ footer.site .wrap { display: grid; gap: 6px; }
       <button class="tab" role="tab" id="tab-research" aria-controls="research" data-tab="research"><span class="n">4</span>Research techniques</button>
       <button class="tab" role="tab" id="tab-papers" aria-controls="papers" data-tab="papers"><span class="n">5</span>Seminal papers</button>
       <button class="tab" role="tab" id="tab-quiz" aria-controls="quiz" data-tab="quiz"><span class="n">6</span>Quiz</button>
+      <button class="tab" role="tab" id="tab-about" aria-controls="about" data-tab="about"><span class="n">7</span>About</button>
     </nav>
   </div>
 </header>
@@ -516,6 +522,98 @@ footer.site .wrap { display: grid; gap: 6px; }
           <p class="lede">For each: what it shows, the parameters that matter, and the artefacts you will meet with their fixes.</p></header>
         <div class="dx-tabs" id="seqChips" role="group" aria-label="Choose sequence"></div>
         <div id="seqHost"></div>
+      </article>
+
+      <article class="section" id="acq-flow" data-title="Flow & valve assessment">
+        <header><span class="eyebrow">Phase-contrast in practice</span><h3>Flow and valve assessment</h3>
+          <p class="lede">How to acquire and analyse phase-contrast flow for valve disease and shunts, recognise and fix aliasing, and read flow–time curves.</p></header>
+
+        <div class="cards-2">
+          <div class="card"><h4>Acquiring a flow scan</h4>
+            <ol style="margin-top:8px">
+              <li><strong>Find the vessel and jet.</strong> Use 3-chamber and coronal LVOT cines (RVOT views for the pulmonary valve). For stenosis, a short in-plane velocity scan shows where the jet is fastest (the vena contracta).</li>
+              <li><strong>Plan perpendicular to flow</strong> on two orthogonal views of the vessel.</li>
+              <li><strong>Choose the level.</strong>
+                <ul>
+                  <li>Aortic stroke volume and AR: just above the valve, at the sinotubular junction.</li>
+                  <li>Pulmonary flow and PR: mid main pulmonary artery, before the bifurcation.</li>
+                  <li>Peak velocity in AS: at the vena contracta, often repeated at 2–3 levels just above the valve tips.</li>
+                </ul></li>
+              <li><strong>Set VENC</strong> 10–25% above the expected peak: ~150 cm/s for a normal aorta, ~100–150 cm/s for the MPA, guided by Doppler in stenosis. Run a VENC scout if unsure.</li>
+              <li><strong>Through-plane encoding</strong> for volumes; retrospective gating to cover the whole cycle, including late diastole where regurgitation lives. Aim for temporal resolution ≤ 30–45 ms.</li>
+              <li><strong>Resolution:</strong> at least 4 pixels across the vessel diameter; smaller pixels for peak jet velocity.</li>
+              <li><strong>Breathing:</strong> breath-hold or free-breathing with averaging. Be consistent, because a breath-hold changes venous return.</li>
+              <li><strong>Background phase:</strong> keep the vessel near isocentre and apply background (static-tissue or phantom) correction.</li>
+            </ol></div>
+          <div class="card"><h4>Analysing it</h4>
+            <ol style="margin-top:8px">
+              <li>Contour the vessel on the magnitude image in every phase (auto-propagate, then check on the phase image).</li>
+              <li>Flow in each phase = mean velocity × area (mL/s). Integrate over the cycle to give <strong>forward</strong>, <strong>backward</strong> and <strong>net</strong> volumes.</li>
+              <li><strong>Regurgitant fraction</strong> = backward ÷ forward × 100.</li>
+              <li><strong>Peak velocity</strong> = highest pixel velocity; estimated gradient = 4v² (v in m/s). It usually reads lower than Doppler.</li>
+              <li><strong>Indirect regurgitation</strong> (atrioventricular valves):
+                <ul>
+                  <li>MR volume = LV stroke volume (from volumes) − aortic forward flow</li>
+                  <li>TR volume = RV stroke volume − pulmonary forward flow</li>
+                </ul></li>
+              <li><strong>Shunts:</strong> Qp:Qs = pulmonary net flow ÷ aortic net flow.</li>
+              <li><strong>Internal checks:</strong> without a shunt, aortic net ≈ pulmonary net. Without MR, LV SV ≈ aortic forward flow. The LV–RV stroke-volume difference should match the difference in regurgitant volumes. Disagreement means an error somewhere.</li>
+            </ol></div>
+        </div>
+
+        <div class="fig">
+          <div class="fig-title"><h4>Flow–time curves</h4>
+            <div class="seg" role="group" aria-label="Flow scenario" id="flowScen">
+              <button type="button" data-s="normal" aria-pressed="true">Normal aorta</button>
+              <button type="button" data-s="ar" aria-pressed="false">Aortic regurgitation</button>
+              <button type="button" data-s="desc" aria-pressed="false">Descending aorta in AR</button>
+              <button type="button" data-s="pr" aria-pressed="false">Pulmonary regurgitation</button>
+              <button type="button" data-s="as" aria-pressed="false">Aortic stenosis</button>
+            </div></div>
+          <div class="controls">
+            <div class="ctl" id="flowSevWrap"><label for="flowSev"><span>Regurgitant fraction</span><output id="flowSevOut" class="num">30%</output></label><input type="range" id="flowSev" min="0" max="65" step="1" value="30"></div>
+          </div>
+          <div class="svg-scroll"><svg id="flowPlot" viewBox="0 0 640 270" role="img" aria-label="Flow versus time curve" style="min-width:520px"></svg></div>
+          <div class="readout" id="flowRead"></div>
+          <div class="status" id="flowStatus" aria-live="polite"></div>
+          <p class="fig-cap">Simulated curves for one heartbeat at 70 bpm with a net stroke volume of 70 mL. Blue area above zero = forward volume; orange area below zero = backward (regurgitant) volume.</p>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data">
+            <thead><tr><th>Regurgitant fraction (CMR)</th><th>Grade</th><th>Source</th></tr></thead>
+            <tbody>
+              <tr><td class="num">≤ 15%</td><td>Mild</td><td rowspan="4">CMR thresholds that best matched echo grading, for AR and MR (Gelfand 2006)</td></tr>
+              <tr><td class="num">16–25%</td><td>Moderate</td></tr>
+              <tr><td class="num">26–48%</td><td>Moderate–severe</td></tr>
+              <tr><td class="num">&gt; 48%</td><td>Severe</td></tr>
+              <tr><td class="num">RVol ≥ 60 mL or RF ≥ 50%</td><td>Severe</td><td>Echo-derived guideline thresholds commonly applied to CMR</td></tr>
+              <tr><td class="num">AR: RF &gt; 33%</td><td>Prognostic</td><td>Predicted progression to aortic valve surgery in asymptomatic patients (Myerson 2012)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="callout">Grading is not one number. Integrate the regurgitant volume and fraction with ventricular size and function, the mechanism on cine, and (for AR) <strong>holodiastolic flow reversal in the descending aorta</strong>, which supports severe regurgitation. CMR and echo often disagree on MR severity, and in one multicentre study CMR regurgitant volume related better to post-surgical LV remodelling (Uretsky 2015).</p>
+
+        <div class="fig">
+          <div class="fig-title"><h4>Aliasing on the phase image</h4>
+            <div class="seg" role="group" aria-label="Unwrap" id="aliasUnwrap"><button type="button" data-u="0" aria-pressed="true">As acquired</button><button type="button" data-u="1" aria-pressed="false">Unwrapped</button></div></div>
+          <div class="controls">
+            <div class="ctl"><label for="aliasPeak"><span>Peak jet velocity</span><output id="aliasPeakOut" class="num">350 cm/s</output></label><input type="range" id="aliasPeak" min="100" max="550" step="10" value="350"></div>
+            <div class="ctl"><label for="aliasVenc"><span>VENC</span><output id="aliasVencOut" class="num">250 cm/s</output></label><input type="range" id="aliasVenc" min="100" max="600" step="10" value="250"></div>
+          </div>
+          <div class="split">
+            <div style="display:grid;gap:10px">
+              <div class="status" id="aliasStatus" aria-live="polite"></div>
+              <ul style="font-size:0.95rem">
+                <li><strong>Recognise it:</strong> an island of the opposite colour (black inside white) in the centre of the jet, and a sudden flip or "notch" at the peak of the flow curve.</li>
+                <li><strong>Fix it:</strong> repeat with a higher VENC, the most reliable option. Single wrap-around can be unwrapped in software by adding 2 × VENC to the affected pixels. A VENC scout or dual-VENC acquisition avoids it.</li>
+                <li><strong>Don't overshoot:</strong> a VENC far above the peak adds velocity noise and degrades low-velocity measurements such as diastolic regurgitation.</li>
+              </ul>
+            </div>
+            <div><canvas id="aliasCanvas" width="64" height="64" aria-label="Simulated phase-contrast image of a jet" style="width:100%;max-width:260px;aspect-ratio:1;display:block;margin:0 auto;border-radius:8px;image-rendering:pixelated;background:var(--img-bg)"></canvas>
+              <p class="fig-cap" style="text-align:center;margin-top:6px">Through-plane phase image: white = flow towards you, black = away, grey = static</p></div>
+          </div>
+        </div>
       </article>
 
     </div>
@@ -877,11 +975,48 @@ footer.site .wrap { display: grid; gap: 6px; }
   </div>
 </section>
 
+<!-- ============ 7. ABOUT ============ -->
+<section class="panel" id="about" role="tabpanel" aria-labelledby="tab-about" hidden>
+  <div class="panel-head">
+    <span class="eyebrow">Tab 7 · About</span>
+    <h2>About this app</h2>
+    <p>This app was created by Dr Jennie Han for educational purposes only.</p>
+  </div>
+  <div class="content" style="max-width:760px">
+    <div class="prose">
+      <p>CMR Primer is an interactive introduction to cardiovascular magnetic resonance for cardiologists. It covers acquisition, standard views and protocols, interpretation, research techniques, a curated reading list and a self-test quiz.</p>
+      <p class="callout warn"><strong>Educational use only.</strong> The content is not clinical guidance and must not be used to make decisions about individual patients. Numerical values are rounded teaching figures; use local reference ranges, your scanner's validated methods and current guidelines in practice.</p>
+    </div>
+
+    <article class="section" id="feedback">
+      <header><span class="eyebrow">Feedback</span><h3>Suggestions and comments</h3>
+        <p class="lede">Ideas to improve the app, corrections or general comments are welcome. They go by email to <span class="mono" id="fbAddr">Jennie.han@nhs.net</span>.</p></header>
+      <form class="card" id="fbForm" novalidate style="display:grid;gap:14px">
+        <div class="two-col">
+          <div class="ctl"><label for="fbName"><span>Your name (optional)</span></label><input class="field" id="fbName" type="text" autocomplete="name"></div>
+          <div class="ctl"><label for="fbEmail"><span>Your email, if you'd like a reply (optional)</span></label><input class="field" id="fbEmail" type="email" autocomplete="email"></div>
+        </div>
+        <div class="ctl"><label for="fbType"><span>Type</span></label>
+          <select class="field" id="fbType"><option>Suggestion</option><option>Correction</option><option>Comment</option></select></div>
+        <div class="ctl"><label for="fbMsg"><span>Message</span><output id="fbCount" class="num">0 characters</output></label>
+          <textarea class="field" id="fbMsg" rows="6" placeholder="e.g. Please add a section on congenital heart disease, or: the T2* table should mention 3 T values."></textarea></div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+          <a class="btn primary" id="fbSend" href="mailto:Jennie.han@nhs.net" role="button">Open in email app</a>
+          <button class="btn" type="button" id="fbCopy">Copy message</button>
+          <button class="btn" type="button" id="fbCopyAddr">Copy email address</button>
+        </div>
+        <div class="status" id="fbStatus" aria-live="polite" hidden></div>
+        <p class="fig-cap">"Open in email app" starts a new email to Jennie.han@nhs.net with your message filled in. Nothing is sent until you press send in your email app. If no email app opens, copy the message and paste it into an email to the address above.</p>
+      </form>
+    </article>
+  </div>
+</section>
+
 </main>
 
 <footer class="site">
   <div class="wrap">
-    <p>An educational overview for clinicians learning CMR. Values are rounded teaching figures; use local reference ranges and current guidelines for clinical reporting.</p>
+    <p>Created by Dr Jennie Han for educational purposes only. Values are rounded teaching figures; use local reference ranges and current guidelines for clinical reporting.</p>
   </div>
 </footer>
 
@@ -925,7 +1060,7 @@ if (window.matchMedia) {
 }
 
 /* ---------- tabs ---------- */
-const TABS = ["acquisition", "views", "interpretation", "research", "papers", "quiz"];
+const TABS = ["acquisition", "views", "interpretation", "research", "papers", "quiz", "about"];
 function showTab(id, push) {
   if (!TABS.includes(id)) id = "acquisition";
   $$(".tab").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === id)));
@@ -1321,6 +1456,7 @@ const SEQS = [
       ["Background phase offset (eddy currents)", "Small errors become large regurgitant fraction errors. Phantom or stationary-tissue correction, position the vessel at isocentre."],
       ["Plane not perpendicular / partial volume", "Re-plan on two orthogonal views; adequate pixel size (≥ 4 pixels across the vessel)."]
     ],
+    after: "See <strong>Flow and valve assessment</strong> below for acquisition and analysis step by step, flow–time curves and an aliasing demo.",
     widget: "venc"
   },
   {
@@ -1379,6 +1515,7 @@ function seqHTML(q) {
       <div class="seq-col"><h5>Key parameters</h5><ul>${li(q.params)}</ul></div>
     </div>
     ${fig}
+    ${q.after ? `<div class="artefacts" style="border-top:0;padding-bottom:0"><p class="callout" style="max-width:none">${q.after}</p></div>` : ""}
     <div class="artefacts"><h5>Artefacts → fixes</h5><table class="fix-table"><tbody>${art}</tbody></table></div>
   </div>`;
 }
@@ -1543,6 +1680,106 @@ function drawVenc() {
 }
 
 showSeq("cine");
+
+/* --- flow & valves: flow-time curves --- */
+const FLOW_SCEN = {
+  normal: { sev: false, rf: 0.02, label: "ascending aorta", note: "Normal: a systolic forward hump and a tiny backward dip at valve closure (plus coronary filling), so the regurgitant fraction is only a few percent." },
+  ar: { sev: true, label: "ascending aorta", note: "Aortic regurgitation: backward flow through diastole after the valve closes. Forward volume rises because the LV ejects the stroke volume plus the regurgitant volume." },
+  desc: { sev: true, label: "descending aorta", desc: true, note: "Descending aorta in AR: diastolic reversal travels down the aorta. Reversal persisting to end-diastole (holodiastolic) supports severe AR." },
+  pr: { sev: true, label: "main pulmonary artery", note: "Pulmonary regurgitation (e.g. after tetralogy of Fallot repair): early-diastolic reversal that ends as RV and PA pressures equalise." },
+  as: { sev: false, rf: 0.03, label: "ascending aorta", as: true, note: "Aortic stenosis: the volume curve looks normal. Severity comes from the peak velocity at the vena contracta (VENC must exceed it), together with valve planimetry on cine." }
+};
+let flowScen = "normal";
+function flowShape(t, sc, rf) {
+  // t in ms over RR 857; returns [forwardShape, backwardShape]
+  const Ts = 330;
+  const fwd = t < Ts ? Math.pow(Math.sin(Math.PI * t / Ts), 1.6) : 0;
+  let back = 0;
+  if (t >= Ts) {
+    const u = t - Ts;
+    if (sc.desc) back = (rf > 0.35 ? 1 : Math.max(0, 1 - Math.pow(u / 520, 1.5))) * (1 - Math.exp(-u / 25)) * Math.exp(-u / (rf > 0.35 ? 900 : 260));
+    else if (flowScen === "pr") back = (1 - Math.exp(-u / 20)) * Math.exp(-u / 120);
+    else if (flowScen === "ar") back = (1 - Math.exp(-u / 18)) * Math.exp(-u / 420);
+    else back = u < 60 ? Math.sin(Math.PI * u / 60) : 0;
+  }
+  return [fwd, back];
+}
+function drawFlow() {
+  const sc = FLOW_SCEN[flowScen];
+  $("#flowSevWrap").hidden = !sc.sev;
+  const rf = sc.sev ? +$("#flowSev").value / 100 : sc.rf;
+  $("#flowSevOut").textContent = Math.round(rf * 100) + "%";
+  const RR = 857, n = 400, dt = RR / n, net = sc.desc ? 50 : 70;
+  const fwdVol = net / (1 - rf), backVol = fwdVol - net;
+  let fs = 0, bs = 0; const F = [], Bk = [];
+  for (let i = 0; i <= n; i++) { const [f, b] = flowShape(i * dt, sc, rf); F.push(f); Bk.push(b); fs += f * dt / 1000; bs += b * dt / 1000; }
+  const fa = fwdVol / fs, ba = bs > 0 ? backVol / bs : 0;
+  const Q = F.map((f, i) => f * fa - Bk[i] * ba);
+  const qmax = Math.max(...Q), qmin = Math.min(...Q);
+  const top = Math.max(500, Math.ceil(qmax / 100) * 100), bot = Math.min(-100, Math.floor(qmin / 100) * 100);
+  const L = 56, R = 624, T = 14, B = 222;
+  const X = t => L + t / RR * (R - L), Y = q => T + (top - q) / (top - bot) * (B - T);
+  let s = "";
+  for (let g = bot; g <= top; g += 100) s += `<line x1="${L}" x2="${R}" y1="${Y(g)}" y2="${Y(g)}" class="${g === 0 ? "s-muted" : "s-line"}"/><text x="${L - 6}" y="${Y(g) + 4}" font-size="10" text-anchor="end" class="t-muted t-mono">${g}</text>`;
+  [0, 200, 400, 600, 800].forEach(t => { s += `<text x="${X(t)}" y="${B + 15}" font-size="10" text-anchor="middle" class="t-muted t-mono">${t}</text>`; });
+  let pos = `M${X(0)} ${Y(0)}`, neg = `M${X(0)} ${Y(0)}`, line = "";
+  Q.forEach((q, i) => { const x = X(i * dt).toFixed(1); pos += ` L${x} ${Y(Math.max(q, 0)).toFixed(1)}`; neg += ` L${x} ${Y(Math.min(q, 0)).toFixed(1)}`; line += (i ? "L" : "M") + x + " " + Y(q).toFixed(1); });
+  pos += ` L${X(RR)} ${Y(0)} Z`; neg += ` L${X(RR)} ${Y(0)} Z`;
+  s += `<path d="${pos}" fill="var(--c-myo)" opacity="0.22"/><path d="${neg}" fill="var(--c-scar)" opacity="0.3"/>`;
+  s += `<path d="${line}" fill="none" class="s-ink" stroke-width="1.8"/>`;
+  s += `<line x1="${X(330)}" x2="${X(330)}" y1="${T}" y2="${B}" class="s-line" stroke-dasharray="3 4"/><text x="${X(330) + 4}" y="${T + 10}" font-size="10" class="t-muted">valve closes</text>`;
+  s += `<text x="${(L + R) / 2}" y="${B + 34}" font-size="11.5" text-anchor="middle" class="t-muted">Time from R wave (ms) · ${sc.label}</text>`;
+  s += `<text x="14" y="${(T + B) / 2}" font-size="11.5" text-anchor="middle" class="t-muted" transform="rotate(-90 14 ${(T + B) / 2})">Flow (mL/s)</text>`;
+  if (sc.desc && rf > 0.35) s += `<text x="${X(700)}" y="${Y(qmin) + 18}" font-size="10.5" text-anchor="middle" fill="var(--c-scar)">reversal to end-diastole</text>`;
+  $("#flowPlot").innerHTML = s;
+  const grade = rf <= 0.15 ? "Mild" : rf <= 0.25 ? "Moderate" : rf <= 0.48 ? "Moderate–severe" : "Severe";
+  let read = `<div><span>Forward</span><b>${fwdVol.toFixed(0)} mL</b></div><div><span>Backward</span><b>${backVol.toFixed(0)} mL</b></div><div><span>Net</span><b>${net} mL</b></div><div><span>Regurgitant fraction</span><b>${Math.round(rf * 100)}%</b></div>`;
+  if (sc.as) read += `<div><span>Peak velocity (example)</span><b>4.3 m/s</b></div><div><span>Estimated gradient (4v²)</span><b>74 mmHg</b></div>`;
+  $("#flowRead").innerHTML = read;
+  const st = $("#flowStatus");
+  let msg = sc.note;
+  if (sc.sev && !sc.desc) msg += ` <strong>Grade by RF: ${grade}</strong>${backVol >= 60 || rf >= 0.5 ? " (meets guideline severe: RVol ≥ 60 mL or RF ≥ 50%)" : ""}${flowScen === "ar" && rf > 0.33 ? "; RF > 33% predicted progression to surgery (Myerson 2012)" : ""}.`;
+  st.className = "status " + (sc.sev && rf > 0.25 ? "bad" : "good");
+  st.innerHTML = msg;
+}
+$$("#flowScen button").forEach(b => b.addEventListener("click", () => {
+  flowScen = b.dataset.s; $$("#flowScen button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); drawFlow();
+}));
+$("#flowSev").addEventListener("input", drawFlow);
+drawFlow();
+
+/* --- flow & valves: aliasing on the phase image --- */
+let aliasUnwrap = false;
+function drawAlias() {
+  const vp = +$("#aliasPeak").value, venc = +$("#aliasVenc").value;
+  $("#aliasPeakOut").textContent = vp + " cm/s"; $("#aliasVencOut").textContent = venc + " cm/s";
+  const n = 64, ctx = $("#aliasCanvas").getContext("2d"), img = ctx.createImageData(n, n);
+  let seed = 3; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647 - 0.5; };
+  let aliased = 0;
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+    const dx = (x - 32) / 32, dy = (y - 32) / 32, r = Math.hypot(dx - 0.05, dy) / 0.42, body = Math.hypot(dx / 0.95, dy / 0.85) < 1;
+    let v, mag = body ? 0.55 : 0.05;
+    if (r < 1) { v = vp * Math.max(0, 1 - Math.pow(r, 2.5)); mag = 0.9; } else v = 0;
+    let w = ((v + venc) % (2 * venc) + 2 * venc) % (2 * venc) - venc;
+    if (r < 1 && Math.abs(w - v) > 1) { aliased++; if (aliasUnwrap && Math.abs(w + 2 * venc - v) < 1) w += 2 * venc; }
+    const noise = rnd() * (mag > 0.3 ? 0.04 : 0.9) * venc;
+    const g = clamp(0.5 + (w + noise) / (2 * venc) * (aliasUnwrap ? 0.5 : 1), 0, 1);
+    const c = Math.round(g * 255), o = (y * n + x) * 4;
+    img.data[o] = c; img.data[o + 1] = c; img.data[o + 2] = c; img.data[o + 3] = 255;
+  }
+  ctx.putImageData(img, 0, 0);
+  const st = $("#aliasStatus");
+  if (vp <= venc) { st.className = "status good"; st.innerHTML = `<strong>No aliasing.</strong> The jet core is the brightest part of the vessel and velocities map correctly.${venc > vp * 1.8 ? " VENC is much higher than needed, so velocity noise is increased." : ""}`; }
+  else if (vp <= 3 * venc && aliasUnwrap) { st.className = "status good"; st.innerHTML = `<strong>Unwrapped.</strong> Adding 2 × VENC to the wrapped pixels restores the jet core, which is reliable only for a single wrap. A repeat at higher VENC is safer.`; }
+  else { st.className = "status bad"; st.innerHTML = `<strong>Aliasing:</strong> the jet core (${vp} cm/s) exceeds VENC (${venc} cm/s) and wraps to the opposite direction, seen as a dark island inside the bright jet. Repeat with VENC ≈ ${Math.ceil(vp * 1.15 / 10) * 10} cm/s.`; }
+}
+["aliasPeak", "aliasVenc"].forEach(id => $("#" + id).addEventListener("input", drawAlias));
+$$("#aliasUnwrap button").forEach(b => b.addEventListener("click", () => {
+  aliasUnwrap = b.dataset.u === "1"; $$("#aliasUnwrap button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); drawAlias();
+}));
+drawAlias();
+
+
 
 /* =========================================================
    2. VIEWS
@@ -2107,7 +2344,13 @@ const PAPERS = [
     { y: 2020, a: "Rider OJ, Apps A, Miller JJJJ, et al.", t: "Noninvasive in vivo assessment of cardiac metabolism in the healthy and diabetic human heart using hyperpolarized 13C MRI.", j: "Circ Res", v: "2020;126(6):725–736", doi: "10.1161/CIRCRESAHA.119.316260",
       why: "Hyperpolarised ¹³C showed reduced pyruvate dehydrogenase flux in type 2 diabetes." }
   ] },
-  { group: "Flow", id: "p-flow", items: [
+  { group: "Flow and valve disease", id: "p-flow", items: [
+    { y: 2006, a: "Gelfand EV, et al.", t: "Severity of mitral and aortic regurgitation as assessed by cardiovascular magnetic resonance: optimizing correlation with Doppler echocardiography.", j: "J Cardiovasc Magn Reson", v: "2006;8(3)", search: true,
+      why: "Derived the CMR regurgitant-fraction grades (≤ 15, 16–25, 26–48, > 48%) that best match echo grading for AR and MR." },
+    { y: 2012, a: "Myerson SG, d'Arcy J, Mohiaddin R, et al.", t: "Aortic regurgitation quantification using cardiovascular magnetic resonance: association with clinical outcome.", j: "Circulation", v: "2012;126(12):1452–1460", search: true,
+      why: "In asymptomatic AR, CMR regurgitant fraction > 33% strongly predicted progression to surgery." },
+    { y: 2015, a: "Uretsky S, Gillam L, Lang R, et al.", t: "Discordance between echocardiography and MRI in the assessment of mitral regurgitation severity: a prospective multicenter trial.", j: "J Am Coll Cardiol", v: "2015;65(11):1078–1088", search: true,
+      why: "Echo and CMR often disagreed on MR severity; CMR regurgitant volume related better to LV remodelling after surgery." },
     { y: 2010, a: "Gatehouse PD, Rolf MP, Graves MJ, et al.", t: "Flow measurement by cardiovascular magnetic resonance: a multi-centre multi-vendor study of background phase offset errors that can compromise the accuracy of derived regurgitant or shunt flow measurements.", j: "J Cardiovasc Magn Reson", v: "2010;12:5", doi: "10.1186/1532-429X-12-5",
       why: "Showed background phase offsets on clinical scanners are large enough to distort regurgitant and shunt calculations." }
   ] }
@@ -2197,6 +2440,14 @@ const Q = [
     e: "Kellman interleaves a fast low-resolution AIF image each heartbeat (dual-sequence, one bolus). The King's workflow uses a dilute pre-bolus whose unsaturated blood curve is scaled up to give the AIF (Ishida 2011 universal scheme)." },
   { tp: "Viability & perfusion", q: "A department switches from Kellman inline maps to a dual-bolus Fermi pipeline. Which statement is most appropriate?", o: ["Keep using a 1.94 mL/g/min stress MBF cut-off", "Absolute MBF thresholds should be re-validated; MPR tends to be more comparable between methods", "MPR cannot be calculated with dual-bolus", "Perfusion maps no longer need visual review"], a: 1,
     e: "Absolute MBF depends on the AIF method, tissue model, resolution and field strength, so cut-offs are method-specific. In dual-bolus vs PET data, MPR agreed better than absolute MBF (Morton 2012)." },
+  { tp: "Flow & valves", q: "With no shunt, how is mitral regurgitant volume usually calculated by CMR?", o: ["Aortic backward flow", "LV stroke volume (from the SAX stack) minus aortic forward flow", "RV stroke volume minus LV stroke volume", "Pulmonary net flow minus aortic net flow"], a: 1,
+    e: "The LV ejects forward into the aorta and backward into the LA. Volumetric LV stroke volume minus phase-contrast aortic forward flow gives the mitral regurgitant volume, even if AR is present." },
+  { tp: "Flow & valves", q: "On an aortic through-plane phase image in severe AS, the centre of the jet appears black while the surrounding forward flow is white. The best fix is:", o: ["Lower the VENC", "Repeat with a higher VENC", "Increase slice thickness", "Switch to bSSFP cine"], a: 1,
+    e: "Velocities above VENC wrap to the opposite sign (aliasing). Repeating with VENC ~10–25% above the true peak is the most reliable fix; software unwrapping works only for a single wrap." },
+  { tp: "Flow & valves", q: "Which finding in the descending aorta supports severe aortic regurgitation?", o: ["Brief early-diastolic reversal only", "Holodiastolic flow reversal persisting to end-diastole", "Higher systolic peak velocity than the ascending aorta", "Zero diastolic flow"], a: 1,
+    e: "Reversal throughout diastole far down the aorta implies a large regurgitant volume. It is specific but not very sensitive, so combine it with regurgitant volume, fraction and LV size." },
+  { tp: "Flow & valves", q: "Aortic forward flow is 110 mL and backward flow 40 mL. The regurgitant fraction and Gelfand CMR grade are:", o: ["36%, moderate–severe", "57%, severe", "27%, moderate", "64%, severe"], a: 0,
+    e: "RF = backward ÷ forward = 40 ÷ 110 ≈ 36%, which falls in the 26–48% moderate–severe band. It also exceeds the 33% value that predicted surgery in asymptomatic AR (Myerson 2012)." },
   { tp: "Research", q: "A reduced myocardial PCr/ATP ratio on ³¹P spectroscopy indicates:", o: ["Myocardial iron loading", "Impaired energetic reserve", "Expanded extracellular volume", "Myocyte disarray"], a: 1,
     e: "Phosphocreatine buffers ATP via creatine kinase and falls first when energy supply is limited. PCr/ATP is reduced in heart failure and predicted mortality in DCM (Neubauer 1997)." },
   { tp: "Research", q: "Blood within a cardiac ³¹P spectroscopy voxel will, without correction:", o: ["Raise the apparent PCr/ATP", "Lower the apparent PCr/ATP", "Have no effect", "Abolish the PCr peak"], a: 1,
@@ -2210,8 +2461,8 @@ const Q = [
 ];
 const qState = { filter: "All", ans: {} };
 try { const sv = JSON.parse(store.get("cmr-quiz") || "{}"); if (sv && typeof sv === "object") qState.ans = sv; } catch (e) { /* ignore */ }
-const TOPICS = ["All", "Physics", "Sequences", "Interpretation", "Viability & perfusion", "Research"];
-const TOPIC_PILL = { Physics: "", Sequences: "acc", Interpretation: "gd", "Viability & perfusion": "clin", Research: "early" };
+const TOPICS = ["All", "Physics", "Sequences", "Flow & valves", "Interpretation", "Viability & perfusion", "Research"];
+const TOPIC_PILL = { "Flow & valves": "acc", Physics: "", Sequences: "acc", Interpretation: "gd", "Viability & perfusion": "clin", Research: "early" };
 function saveQuiz() { store.set("cmr-quiz", JSON.stringify(qState.ans)); }
 function renderQuizFilter() {
   $("#quizFilter").innerHTML = TOPICS.map(t => {
@@ -2260,6 +2511,45 @@ function renderQuiz() {
 $("#quizReset").addEventListener("click", () => { qState.ans = {}; saveQuiz(); renderQuiz(); });
 renderQuizFilter();
 renderQuiz();
+
+/* =========================================================
+   7. ABOUT: feedback by email (mailto; the viewer's email app sends it)
+   ========================================================= */
+const FB_TO = "Jennie.han@nhs.net";
+function fbCompose() {
+  const name = $("#fbName").value.trim(), email = $("#fbEmail").value.trim(), type = $("#fbType").value, msg = $("#fbMsg").value.trim();
+  const subject = `CMR Primer: ${type}`;
+  const body = `${msg}\n\n—\nType: ${type}${name ? "\nFrom: " + name : ""}${email ? "\nReply to: " + email : ""}`;
+  return { subject, body, msg };
+}
+function fbUpdate() {
+  const { subject, body, msg } = fbCompose();
+  $("#fbSend").href = `mailto:${FB_TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  $("#fbCount").textContent = msg.length + " characters";
+  store.set("cmr-fb-draft", JSON.stringify({ n: $("#fbName").value, e: $("#fbEmail").value, t: $("#fbType").value, m: $("#fbMsg").value }));
+}
+function fbStatus(text, cls) { const s = $("#fbStatus"); s.hidden = false; s.className = "status " + (cls || ""); s.innerHTML = text; }
+async function fbCopyText(text, label) {
+  try { await navigator.clipboard.writeText(text); fbStatus(`${label} copied.`, "good"); }
+  catch (e) {
+    const ta = $("#fbMsg"); ta.focus(); ta.select();
+    fbStatus(`Copying is blocked here. The message is selected: press Ctrl/⌘ + C, then paste it into an email to <span class="mono">${FB_TO}</span>.`);
+  }
+}
+try { const d = JSON.parse(store.get("cmr-fb-draft") || "null"); if (d) { $("#fbName").value = d.n || ""; $("#fbEmail").value = d.e || ""; $("#fbType").value = d.t || "Suggestion"; $("#fbMsg").value = d.m || ""; } } catch (e) { /* ignore */ }
+["fbName", "fbEmail", "fbType", "fbMsg"].forEach(id => $("#" + id).addEventListener("input", fbUpdate));
+$("#fbForm").addEventListener("submit", e => e.preventDefault());
+$("#fbSend").addEventListener("click", e => {
+  if (!$("#fbMsg").value.trim()) { e.preventDefault(); fbStatus("Write a message first, then open it in your email app.", "bad"); $("#fbMsg").focus(); return; }
+  fbStatus(`Your email app should open with the message addressed to <span class="mono">${FB_TO}</span>. Press send there to submit it. If nothing opened, use <strong>Copy message</strong> and email it yourself.`);
+});
+$("#fbCopy").addEventListener("click", () => {
+  const { subject, body, msg } = fbCompose();
+  if (!msg) { fbStatus("Write a message first.", "bad"); return; }
+  fbCopyText(`To: ${FB_TO}\nSubject: ${subject}\n\n${body}`, "Message");
+});
+$("#fbCopyAddr").addEventListener("click", () => fbCopyText(FB_TO, "Email address"));
+fbUpdate();
 
 /* build contents lists last (papers inject sections dynamically) */
 $$("[data-toc]").forEach(buildToc);
